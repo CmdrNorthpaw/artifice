@@ -1,4 +1,4 @@
-NatanFudge has abandomed this library, but I need it, so here is my fork.
+NatanFudge has abandoned this library, but I need it, so here is my fork.
 
 # Artifice
 [![Discord](https://img.shields.io/discord/219787567262859264?color=blue&label=Discord)](https://discord.gg/CFaCu97)
