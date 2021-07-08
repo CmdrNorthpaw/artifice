@@ -1,99 +1,98 @@
-package com.swordglowsblue.artifice.api.builder.data;
+package com.swordglowsblue.artifice.api.builder.data
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.resource.JsonResource;
-import com.swordglowsblue.artifice.api.util.Processor;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.google.gson.JsonObject
+import com.google.gson.JsonArray
+import kotlin.jvm.JvmOverloads
+import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.util.process
+import net.minecraft.text.Text
+import net.minecraft.util.Identifier
+import java.util.function.Function
 
 /**
- * Builder for advancement files ({@code namespace:advancements/advid.json}).
- * @see <a href="https://minecraft.gamepedia.com/Advancements#JSON_Format" target="_blank">Minecraft Wiki</a>
+ * Builder for advancement files (`namespace:advancements/advid.json`).
+ * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Advancements.JSON_Format)
  */
-public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
-    public AdvancementBuilder() { super(new JsonObject(), JsonResource::new); }
-
+class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+    JsonObject(),
+    Function<JsonObject, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
     /**
      * Set the display options for this advancement.
-     * @param settings A callback which will be passed a {@link Display}.
+     * @param settings A callback which will be passed a [Display].
      * @return this
      */
-    public AdvancementBuilder display(Processor<Display> settings) {
-        with("display", JsonObject::new, display ->
-            settings.process(new Display()).buildTo(display));
-        return this;
+    fun display(settings: Display.() -> Unit): AdvancementBuilder {
+        with("display", { JsonObject() }) {
+                displayObject: JsonObject? -> Display().process(settings).buildTo(displayObject)
+        }
+        return this
     }
 
     /**
      * Set the parent advancement for this to inherit from.
-     * @param id The parent advancement ID ({@code namespace:advid}).
+     * @param id The parent advancement ID (`namespace:advid`).
      * @return this
      */
-    public AdvancementBuilder parent(Identifier id) {
-        root.addProperty("parent", id.toString());
-        return this;
+    fun parent(id: Identifier): AdvancementBuilder {
+        root.addProperty("parent", id.toString())
+        return this
     }
 
     /**
      * Add a critera for this advancement to be received.
      * @param name The name of this criteria.
-     * @param settings A callback which will be passed a {@link Criteria}.
+     * @param settings A callback which will be passed a [Criteria].
      * @return this
      */
-    public AdvancementBuilder criteria(String name, Processor<Criteria> settings) {
-        with("criteria", JsonObject::new, criteria -> with(criteria, name, JsonObject::new, criterion ->
-            settings.process(new Criteria()).buildTo(criterion)));
-        return this;
+    fun criteria(name: String?, settings: Criteria.() -> Unit): AdvancementBuilder {
+        with("criteria", { JsonObject() }) { criteria: JsonObject? ->
+            with(criteria, name, { JsonObject() }) { criterion: JsonObject? ->
+                Criteria().process(settings)
+                    .buildTo(criterion)
+            }
+        }
+        return this
     }
 
     /**
      * Set which criteria are required to receive this advancement.
      * Passing multiple critera names will allow the advancement to be received if any of the given critera are completed.
      * Calling this multiple times will add a new set of requirements. Each set must have at least one contained criteria completed
-     *  to receive the advancement.
+     * to receive the advancement.
      * If this is not called, all criteria will be required by default.
      *
      * @param anyOf A list of criteria names, any of which can be completed to fulfill this requirement.
      * @return this
      */
-    public AdvancementBuilder requirement(String... anyOf) {
-        with("requirements", JsonArray::new, requirements -> {
-            JsonArray array = new JsonArray();
-            for(String name : anyOf) array.add(name);
-            requirements.add(array);
-        });
-        return this;
+    fun requirement(vararg anyOf: String?): AdvancementBuilder {
+        with("requirements", { JsonArray() }) { requirements: JsonArray ->
+            val array = JsonArray()
+            for (name in anyOf) array.add(name)
+            requirements.add(array)
+        }
+        return this
     }
 
     /**
      * Builder for advancement display properties.
      * @see AdvancementBuilder
      */
-    public static final class Display extends TypedJsonBuilder<JsonObject> {
-        private Display() { super(new JsonObject(), j->j); }
-
-        /**
-         * Set the icon item of this advancement.
-         * @param item The item ID.
-         * @return this
-         */
-        public Display icon(Identifier item) { return icon(item, null); }
-
+    class Display : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
         /**
          * Set the icon item of this advancement.
          * @param item The item ID.
          * @param nbt A string containing the JSON-serialized NBT of the item.
          * @return this
          */
-        public Display icon(Identifier item, String nbt) {
-            with("icon", JsonObject::new, icon -> {
-               icon.addProperty("item", item.toString());
-               if(nbt != null) icon.addProperty("nbt", nbt);
-            });
-            return this;
+        @JvmOverloads
+        fun icon(item: Identifier, nbt: String? = null): Display {
+            with("icon", { JsonObject() }) { icon: JsonObject ->
+                icon.addProperty("item", item.toString())
+                if (nbt != null) icon.addProperty("nbt", nbt)
+            }
+            return this
         }
 
         /**
@@ -101,9 +100,9 @@ public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<Json
          * @param title The title.
          * @return this
          */
-        public Display title(String title) {
-            root.addProperty("title", title);
-            return this;
+        fun title(title: String?): Display {
+            root.addProperty("title", title)
+            return this
         }
 
         /**
@@ -111,9 +110,9 @@ public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<Json
          * @param title The title.
          * @return this
          */
-        public Display title(Text title) {
-            root.add("title", Text.Serializer.toJsonTree(title));
-            return this;
+        fun title(title: Text?): Display {
+            root.add("title", Text.Serializer.toJsonTree(title))
+            return this
         }
 
         /**
@@ -121,19 +120,19 @@ public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<Json
          * @param frame The frame type.
          * @return this
          */
-        public Display frame(Frame frame) {
-            root.addProperty("frame", frame.name);
-            return this;
+        fun frame(frame: Frame): Display {
+            root.addProperty("frame", frame.type)
+            return this
         }
 
         /**
          * Set the background texture of this advancement. Only applicable for root advancements.
-         * @param id The texture path ({@code namespace:textures/gui/advancements/backgrounds/bgname.png}).
+         * @param id The texture path (`namespace:textures/gui/advancements/backgrounds/bgname.png`).
          * @return this
          */
-        public Display background(Identifier id) {
-            root.addProperty("background", id.toString());
-            return this;
+        fun background(id: Identifier): Display {
+            root.addProperty("background", id.toString())
+            return this
         }
 
         /**
@@ -141,9 +140,9 @@ public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<Json
          * @param desc The description.
          * @return this
          */
-        public Display description(String desc) {
-            root.addProperty("description", desc);
-            return this;
+        fun description(desc: String?): Display {
+            root.addProperty("description", desc)
+            return this
         }
 
         /**
@@ -151,9 +150,9 @@ public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<Json
          * @param desc The description.
          * @return this
          */
-        public Display description(Text desc) {
-            root.add("description", Text.Serializer.toJsonTree(desc));
-            return this;
+        fun description(desc: Text?): Display {
+            root.add("description", Text.Serializer.toJsonTree(desc))
+            return this
         }
 
         /**
@@ -161,9 +160,9 @@ public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<Json
          * @param show Whether to show the toast.
          * @return this
          */
-        public Display showToast(boolean show) {
-            root.addProperty("show_toast", show);
-            return this;
+        fun showToast(show: Boolean): Display {
+            root.addProperty("show_toast", show)
+            return this
         }
 
         /**
@@ -171,9 +170,9 @@ public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<Json
          * @param announce Whether to announce.
          * @return this
          */
-        public Display announceToChat(boolean announce) {
-            root.addProperty("announce_to_chat", announce);
-            return this;
+        fun announceToChat(announce: Boolean): Display {
+            root.addProperty("announce_to_chat", announce)
+            return this
         }
 
         /**
@@ -181,55 +180,51 @@ public final class AdvancementBuilder extends TypedJsonBuilder<JsonResource<Json
          * @param hidden Whether to hide.
          * @return this
          */
-        public Display hidden(boolean hidden) {
-            root.addProperty("hidden", hidden);
-            return this;
+        fun hidden(hidden: Boolean): Display {
+            root.addProperty("hidden", hidden)
+            return this
         }
 
         /**
-         * Options for {@link Display#frame}.
+         * Options for [Display.frame].
          */
-        public enum Frame {
-            CHALLENGE("challenge"),
-            GOAL("goal"),
-            TASK("task");
-
-            /** The name of this frame when outputted to JSON. */
-            public final String name;
-            Frame(String name) { this.name = name; }
+        enum class Frame(
+            /** The name of this frame when outputted to JSON.  */
+            val type: String
+        ) {
+            CHALLENGE("challenge"), GOAL("goal"), TASK("task");
         }
     }
 
     /**
      * Builder for advancement criteria.
      * @see AdvancementBuilder
-     * @see <a href="https://minecraft.gamepedia.com/Advancements#List_of_triggers" target="_blank">Minecraft Wiki</a>
+     *
+     * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Advancements.List_of_triggers)
      */
-    public static final class Criteria extends TypedJsonBuilder<JsonObject> {
-        private Criteria() { super(new JsonObject(), j->j); }
-
+    class Criteria : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
         /**
          * Set the trigger condition of this criteria.
-         * @param id The trigger ID ({@code namespace:triggerid}).
+         * @param id The trigger ID (`namespace:triggerid`).
          * @return this
-         * @see <a href="https://minecraft.gamepedia.com/Advancements#List_of_triggers" target="_blank">Minecraft Wiki</a>
+         * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Advancements.List_of_triggers)
          */
-        public Criteria trigger(Identifier id) {
-            root.addProperty("trigger", id.toString());
-            return this;
+        fun trigger(id: Identifier): Criteria {
+            root.addProperty("trigger", id.toString())
+            return this
         }
 
         /**
          * Set the condition values for the given trigger.
          * These vary from trigger to trigger, so this falls through to direct JSON building.
          *
-         * @param settings A callback which will be passed a {@link JsonObjectBuilder}.
+         * @param settings A callback which will be passed a [JsonObjectBuilder].
          * @return this
-         * @see <a href="https://minecraft.gamepedia.com/Advancements#List_of_triggers" target="_blank">Minecraft Wiki</a>
+         * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Advancements.List_of_triggers)
          */
-        public Criteria conditions(Processor<JsonObjectBuilder> settings) {
-            root.add("conditions", settings.process(new JsonObjectBuilder()).build());
-            return this;
+        fun conditions(settings: JsonObjectBuilder.() -> Unit): Criteria {
+            root.add("conditions", JsonObjectBuilder().process(settings).build())
+            return this
         }
     }
 }
