@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier
  * Builder for a stonecutting recipe (`namespace:recipes/id.json`).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class StonecuttingRecipeBuilder : RecipeBuilder<StonecuttingRecipeBuilder?>() {
+class StonecuttingRecipeBuilder : RecipeBuilder<StonecuttingRecipeBuilder?>(Identifier("stonecutting")) {
     /**
      * Set the item being cut.
      * @param id The item ID.
@@ -62,7 +62,4 @@ class StonecuttingRecipeBuilder : RecipeBuilder<StonecuttingRecipeBuilder?>() {
         return this
     }
 
-    init {
-        type(Identifier("stonecutting"))
-    }
 }

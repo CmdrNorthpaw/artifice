@@ -7,12 +7,13 @@ import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
 import com.swordglowsblue.artifice.api.util.Processor
 import com.swordglowsblue.artifice.api.util.process
+import net.minecraft.util.Identifier
 
 /**
  * Builder for a recipe of an unknown type (`namespace:recipes/id.json`)
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class GenericRecipeBuilder : RecipeBuilder<GenericRecipeBuilder?>() {
+class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilder?>(type) {
     /**
      * Add a JSON element to this recipe.
      * @param name The key.

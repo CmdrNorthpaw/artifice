@@ -1,27 +1,30 @@
-package com.swordglowsblue.artifice.api.builder.data.recipe;
+package com.swordglowsblue.artifice.api.builder.data.recipe
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.resource.JsonResource;
-import net.minecraft.util.Identifier;
+import com.swordglowsblue.artifice.api.builder.data.recipe.RecipeBuilder
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.google.gson.JsonObject
+import net.minecraft.util.Identifier
+import java.util.function.Function
 
 /**
- * Base builder for a recipe ({@code namespace:recipes/id.json}).
+ * Base builder for a recipe (`namespace:recipes/id.json`).
  * @param <T> this
- * @see <a href="https://minecraft.gamepedia.com/Recipe#JSON_format" target="_blank">Minecraft Wiki</a>
- */
-@SuppressWarnings("unchecked")
-public abstract class RecipeBuilder<T extends RecipeBuilder<T>> extends TypedJsonBuilder<JsonResource<JsonObject>> {
-    protected RecipeBuilder() { super(new JsonObject(), JsonResource::new); }
-
+ * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
+</T> */
+abstract class RecipeBuilder<T : RecipeBuilder<T>?>(
+    type: Identifier?
+) : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+        JsonObject(),
+        Function<JsonObject, JsonResource<JsonObject?>?> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the type of this recipe.
      * @param id The type [Identifier].
      * @return this
      */
-    public T type(Identifier id) {
-        root.addProperty("type", id.toString());
-        return (T)this;
+
+    init {
+        type?.let { root.addProperty("type", type.toString()) }
     }
 
     /**
@@ -29,8 +32,8 @@ public abstract class RecipeBuilder<T extends RecipeBuilder<T>> extends TypedJso
      * @param id The group [Identifier].
      * @return this
      */
-    public T group(Identifier id) {
-        root.addProperty("group", id.toString());
-        return (T)this;
+    fun group(id: Identifier): T {
+        root.addProperty("group", id.toString())
+        return this as T
     }
 }

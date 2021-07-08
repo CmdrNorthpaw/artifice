@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier
  * Builder for a shaped crafting recipe (`namespace:recipes/id.json`).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>() {
+class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("crafting_shaped")) {
     /**
      * Set the recipe pattern for this recipe.
      * Each character of the given strings should correspond to a key registered for an ingredient.
@@ -81,9 +81,5 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>() {
     fun result(id: Identifier, count: Int): ShapedRecipeBuilder {
         root.add("result", JsonObjectBuilder().add("item", id.toString()).add("count", count).build())
         return this
-    }
-
-    init {
-        type(Identifier("crafting_shaped"))
     }
 }

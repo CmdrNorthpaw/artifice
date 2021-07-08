@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier
  * Builder for a smithing recipe (`namespace:recipes/id.json`).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder?>() {
+class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder?>(Identifier("smithing")) {
     /**
      * Set the item being smithed
      * @param id The item [Identifier]
@@ -91,9 +91,5 @@ class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder?>() {
 
     private fun tag(id: Identifier): JsonObject {
         return JsonObjectBuilder().add("tag", id.toString()).build()
-    }
-
-    init {
-        type(Identifier("smithing"))
     }
 }

@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier
  * Used for all types of cooking (smelting, blasting, smoking, campfire_cooking).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class CookingRecipeBuilder : RecipeBuilder<CookingRecipeBuilder?>() {
+class CookingRecipeBuilder(type: CookingRecipeType) : RecipeBuilder<CookingRecipeBuilder?>(type.type) {
     /**
      * Set the item being cooked.
      * @param id The item ID.
@@ -72,5 +72,12 @@ class CookingRecipeBuilder : RecipeBuilder<CookingRecipeBuilder?>() {
     fun cookingTime(time: Int): CookingRecipeBuilder {
         root.addProperty("cookingtime", time)
         return this
+    }
+
+    enum class CookingRecipeType(val type: Identifier) {
+        SMELTING(Identifier("smelting")),
+        SMOKING(Identifier("smoking")),
+        CAMPFIRE(Identifier("campfire_cooking")),
+        BLASTING(Identifier("blasting"))
     }
 }

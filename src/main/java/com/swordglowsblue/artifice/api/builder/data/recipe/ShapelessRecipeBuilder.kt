@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier
  * Builder for a shapeless crafting recipe (`namespace:recipes/id.json`).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder?>() {
+class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder?>(Identifier("crafting_shapeless")) {
     /**
      * Add an ingredient item.
      * @param id The item ID.
@@ -71,9 +71,5 @@ class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder?>() {
     fun result(id: Identifier, count: Int): ShapelessRecipeBuilder {
         root.add("result", JsonObjectBuilder().add("item", id.toString()).add("count", count).build())
         return this
-    }
-
-    init {
-        type(Identifier("crafting_shapeless"))
     }
 }
