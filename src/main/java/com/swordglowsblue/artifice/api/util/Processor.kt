@@ -1,17 +1,21 @@
-package com.swordglowsblue.artifice.api.util;
+package com.swordglowsblue.artifice.api.util
 
-import kotlin.Deprecated;
+import java.lang.FunctionalInterface
+import java.util.function.Consumer
 
-import java.util.function.Consumer;
-
-/** A wrapper around {@link Consumer} that returns its argument instead of {@code void}.
- *  @param <T> The type to be passed in and returned. */
+/** A wrapper around [Consumer] that returns its argument instead of `void`.
+ * @param <T> The type to be passed in and returned.
+</T> */
 @Deprecated(message = "Please use a Kotlin lambda instead")
 @FunctionalInterface
-public interface Processor<T> extends Consumer<T> {
-    default T process(T t) {
-        this.accept(t);
-        return t;
+interface Processor<T> : Consumer<T> {
+    fun process(t: T): T {
+        accept(t)
+        return t
     }
 }
 
+fun <T> T.process(function: T.() -> Unit): T {
+    function(this)
+    return this
+}
