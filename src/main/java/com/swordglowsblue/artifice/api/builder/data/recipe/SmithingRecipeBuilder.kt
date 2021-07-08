@@ -1,97 +1,99 @@
-package com.swordglowsblue.artifice.api.builder.data.recipe;
+package com.swordglowsblue.artifice.api.builder.data.recipe
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
-import net.minecraft.util.Identifier;
+import com.swordglowsblue.artifice.api.builder.data.recipe.RecipeBuilder
+import com.swordglowsblue.artifice.api.builder.data.recipe.SmithingRecipeBuilder
+import com.swordglowsblue.artifice.api.builder.data.recipe.MultiIngredientBuilder
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.util.process
+import net.minecraft.util.Identifier
 
 /**
- * Builder for a smithing recipe ({@code namespace:recipes/id.json}).
- * @see <a href="https://minecraft.gamepedia.com/Recipe#JSON_format" target="_blank">Minecraft Wiki</a>
+ * Builder for a smithing recipe (`namespace:recipes/id.json`).
+ * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-public class SmithingRecipeBuilder extends RecipeBuilder<SmithingRecipeBuilder> {
-    public SmithingRecipeBuilder() {
-        super();
-        type(new Identifier("smithing"));
-    }
-
+class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder?>() {
     /**
      * Set the item being smithed
-     * @param id The item ID
+     * @param id The item [Identifier]
      * @return this
-     * */
-    public SmithingRecipeBuilder baseItem(Identifier id) {
-        root.add("base", item(id));
-        return this;
+     */
+    fun baseItem(id: Identifier): SmithingRecipeBuilder {
+        root.add("base", item(id))
+        return this
     }
 
     /**
      * Set the item being smithed to be any one of the given tag
-     * @param id The tag ID
+     * @param id The tag [Identifier]
      * @return this
-     * */
-    public SmithingRecipeBuilder baseTag(Identifier id) {
-        root.add("base", tag(id));
-        return this;
+     */
+    fun baseTag(id: Identifier): SmithingRecipeBuilder {
+        root.add("base", tag(id))
+        return this
     }
 
     /**
      * Set the item being smithed as one of a list of options.
-     * @param settings A callback which will be passed a {@link MultiIngredientBuilder}.
+     * @param settings A callback which will be passed a [MultiIngredientBuilder].
      * @return this
      */
-    public SmithingRecipeBuilder multiBase(Processor<MultiIngredientBuilder> settings) {
-        root.add("base", settings.process(new MultiIngredientBuilder()).build());
-        return this;
+    fun multiBase(settings: MultiIngredientBuilder.() -> Unit): SmithingRecipeBuilder {
+        root.add("base", MultiIngredientBuilder().process(settings).build())
+        return this
     }
 
     /**
      * Set the item to be added on during the smithing
-     * @param id The item ID
+     * @param id The item [Identifier]
      * @return this
-     * */
-    public SmithingRecipeBuilder additionItem(Identifier id) {
-        root.add("addition", item(id));
-        return this;
+     */
+    fun additionItem(id: Identifier): SmithingRecipeBuilder {
+        root.add("addition", item(id))
+        return this
     }
 
     /**
      * Set the item to be added on to be any one of the given tag
-     * @param id The ta ID
+     * @param id The ta [Identifier]
      * @return this
-     * */
-    public SmithingRecipeBuilder additionTag(Identifier id) {
-        root.add("addition", tag(id));
-        return this;
+     */
+    fun additionTag(id: Identifier): SmithingRecipeBuilder {
+        root.add("addition", tag(id))
+        return this
     }
 
     /**
      * Set the item being added on as one of a list of options.
-     * @param settings A callback which will be passed a {@link MultiIngredientBuilder}.
+     * @param settings A callback which will be passed a [MultiIngredientBuilder].
      * @return this
      */
-    public SmithingRecipeBuilder multiAddition(Processor<MultiIngredientBuilder> settings) {
-        root.add("addition", settings.process(new MultiIngredientBuilder()).build());
-        return this;
+    fun multiAddition(settings: MultiIngredientBuilder.() -> Unit): SmithingRecipeBuilder {
+        root.add("addition", MultiIngredientBuilder().process(settings).build())
+        return this
     }
 
     /**
      * Set the result of the smithing.
      * Item NBT will be preserved.
-     * @param id The ID of the resulting item
+     * @param id The [Identifier] of the resulting item
      * @return this
-     * */
-    public SmithingRecipeBuilder result(Identifier id) {
-        root.add("result", new JsonPrimitive(id.toString()));
-        return this;
+     */
+    fun result(id: Identifier): SmithingRecipeBuilder {
+        root.add("result", JsonPrimitive(id.toString()))
+        return this
     }
 
-    private JsonObject item(Identifier id) {
-        return new JsonObjectBuilder().add("item", id.toString()).build();
+    private fun item(id: Identifier): JsonObject {
+        return JsonObjectBuilder().add("item", id.toString()).build()
     }
 
-    private JsonObject tag(Identifier id) {
-        return new JsonObjectBuilder().add("tag", id.toString()).build();
+    private fun tag(id: Identifier): JsonObject {
+        return JsonObjectBuilder().add("tag", id.toString()).build()
+    }
+
+    init {
+        type(Identifier("smithing"))
     }
 }

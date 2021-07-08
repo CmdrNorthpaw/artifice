@@ -16,7 +16,7 @@ public abstract class RecipeBuilder<T extends RecipeBuilder<T>> extends TypedJso
 
     /**
      * Set the type of this recipe.
-     * @param id The type ID.
+     * @param id The type [Identifier].
      * @return this
      */
     public T type(Identifier id) {
@@ -26,7 +26,7 @@ public abstract class RecipeBuilder<T extends RecipeBuilder<T>> extends TypedJso
 
     /**
      * Set the recipe book group of this recipe.
-     * @param id The group ID.
+     * @param id The group [Identifier].
      * @return this
      */
     public T group(Identifier id) {

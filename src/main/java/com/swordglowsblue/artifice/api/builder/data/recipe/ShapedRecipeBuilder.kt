@@ -1,26 +1,27 @@
-package com.swordglowsblue.artifice.api.builder.data.recipe;
+package com.swordglowsblue.artifice.api.builder.data.recipe
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
-import net.minecraft.util.Identifier;
+import com.swordglowsblue.artifice.api.builder.data.recipe.RecipeBuilder
+import com.swordglowsblue.artifice.api.builder.data.recipe.ShapedRecipeBuilder
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.builder.data.recipe.MultiIngredientBuilder
+import com.swordglowsblue.artifice.api.util.process
+import net.minecraft.util.Identifier
 
 /**
- * Builder for a shaped crafting recipe ({@code namespace:recipes/id.json}).
- * @see <a href="https://minecraft.gamepedia.com/Recipe#JSON_format" target="_blank">Minecraft Wiki</a>
+ * Builder for a shaped crafting recipe (`namespace:recipes/id.json`).
+ * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-public final class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder> {
-    public ShapedRecipeBuilder() { super(); type(new Identifier("crafting_shaped")); }
-
+class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>() {
     /**
      * Set the recipe pattern for this recipe.
      * Each character of the given strings should correspond to a key registered for an ingredient.
      * @param rows The individual rows of the pattern.
      * @return this
      */
-    public ShapedRecipeBuilder pattern(String... rows) {
-        root.add("pattern", arrayOf(rows));
-        return this;
+    fun pattern(vararg rows: String): ShapedRecipeBuilder {
+        root.add("pattern", arrayOf(*rows))
+        return this
     }
 
     /**
@@ -29,10 +30,14 @@ public final class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder
      * @param id The item ID.
      * @return this
      */
-    public ShapedRecipeBuilder ingredientItem(Character key, Identifier id) {
-        with("key", JsonObject::new, ingredients ->
-            ingredients.add(key.toString(), new JsonObjectBuilder().add("item", id.toString()).build()));
-        return this;
+    fun ingredientItem(key: Char, id: Identifier): ShapedRecipeBuilder {
+        with("key", { JsonObject() }) { ingredients: JsonObject ->
+            ingredients.add(
+                key.toString(),
+                JsonObjectBuilder().add("item", id.toString()).build()
+            )
+        }
+        return this
     }
 
     /**
@@ -41,22 +46,30 @@ public final class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder
      * @param id The tag ID.
      * @return this
      */
-    public ShapedRecipeBuilder ingredientTag(Character key, Identifier id) {
-        with("key", JsonObject::new, ingredients ->
-            ingredients.add(key.toString(), new JsonObjectBuilder().add("tag", id.toString()).build()));
-        return this;
+    fun ingredientTag(key: Char, id: Identifier): ShapedRecipeBuilder {
+        with("key", { JsonObject() }) { ingredients: JsonObject ->
+            ingredients.add(
+                key.toString(),
+                JsonObjectBuilder().add("tag", id.toString()).build()
+            )
+        }
+        return this
     }
 
     /**
      * Add an ingredient item as one of a list of options.
      * @param key The key in the recipe pattern corresponding to this ingredient.
-     * @param settings A callback which will be passed a {@link MultiIngredientBuilder}.
+     * @param settings A callback which will be passed a [MultiIngredientBuilder].
      * @return this
      */
-    public ShapedRecipeBuilder multiIngredient(Character key, Processor<MultiIngredientBuilder> settings) {
-        with("key", JsonObject::new, ingredients ->
-            ingredients.add(key.toString(), settings.process(new MultiIngredientBuilder()).build()));
-        return this;
+    fun multiIngredient(key: Char, settings: MultiIngredientBuilder.() -> Unit): ShapedRecipeBuilder {
+        with("key", { JsonObject() }) { ingredients: JsonObject ->
+            ingredients.add(
+                key.toString(),
+                MultiIngredientBuilder().process(settings).build()
+            )
+        }
+        return this
     }
 
     /**
@@ -65,8 +78,12 @@ public final class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder
      * @param count The number of result items.
      * @return this
      */
-    public ShapedRecipeBuilder result(Identifier id, int count) {
-        root.add("result", new JsonObjectBuilder().add("item", id.toString()).add("count", count).build());
-        return this;
+    fun result(id: Identifier, count: Int): ShapedRecipeBuilder {
+        root.add("result", JsonObjectBuilder().add("item", id.toString()).add("count", count).build())
+        return this
+    }
+
+    init {
+        type(Identifier("crafting_shaped"))
     }
 }
