@@ -49,8 +49,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
     fun criteria(name: String?, settings: Criteria.() -> Unit): AdvancementBuilder {
         with("criteria", { JsonObject() }) { criteria: JsonObject? ->
             with(criteria, name, { JsonObject() }) { criterion: JsonObject? ->
-                Criteria().process(settings)
-                    .buildTo(criterion)
+                Criteria().process(settings).buildTo(criterion)
             }
         }
         return this
@@ -89,8 +88,8 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
         @JvmOverloads
         fun icon(item: Identifier, nbt: String? = null): Display {
             with("icon", { JsonObject() }) { icon: JsonObject ->
-                icon.addProperty("item", item.toString())
-                if (nbt != null) icon.addProperty("nbt", nbt)
+                icon.addProperty("icon", item.toString())
+                nbt?.let { icon.addProperty("nbt", nbt) }
             }
             return this
         }
