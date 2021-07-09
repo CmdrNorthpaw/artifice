@@ -8,7 +8,7 @@ import java.util.function.Consumer
 </T> */
 @Deprecated(message = "Please use a Kotlin lambda instead")
 @FunctionalInterface
-interface Processor<T> : Consumer<T> {
+fun interface Processor<T> : Consumer<T> {
     fun process(t: T): T {
         accept(t)
         return t
