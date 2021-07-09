@@ -1,93 +1,102 @@
-package com.swordglowsblue.artifice.api.builder;
+package com.swordglowsblue.artifice.api.builder
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.google.gson.JsonElement
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
+import com.google.gson.JsonArray
+import com.swordglowsblue.artifice.api.util.Processor
+import com.swordglowsblue.artifice.api.util.process
+import java.util.function.Consumer
+import java.util.function.Function
+import java.util.function.Supplier
 
-import java.util.function.Function;
-import java.util.function.Supplier;
+abstract class TypedJsonBuilder<T>(
+    val root: JsonObject,
+    private val ctor: (JsonObject) -> T
+)  {
 
-public abstract class TypedJsonBuilder<T> {
-    protected final JsonObject root;
-    private final Function<JsonObject, T> ctor;
-
-    protected TypedJsonBuilder(JsonObject root, Function<JsonObject, T> ctor) {
-        this.root = root;
-        this.ctor = ctor;
+    fun build(): T {
+        return buildTo(JsonObject())
     }
 
-    public T build() { return buildTo(new JsonObject()); }
-    public T buildTo(JsonObject target) {
-        root.entrySet().forEach(e -> target.add(e.getKey(), e.getValue()));
-        return ctor.apply(target);
+    fun buildTo(target: JsonObject): T {
+        root.entrySet().forEach(Consumer { (key, value) ->
+            target.add(
+                key, value
+            )
+        })
+        return ctor(target)
     }
 
-    @SuppressWarnings("unchecked")
-    protected  <J extends JsonElement> void with(JsonObject in, String key, Supplier<J> ctor, Processor<J> run) {
-        in.add(key, run.process(in.has(key) ? (J)in.get(key) : ctor.get())); }
-
-
-    public <J extends JsonElement> void with(String key, Supplier<J> ctor, Processor<J> run) {
-        this.with(root, key, ctor, run);
+    protected fun <J : JsonElement?> with(`in`: JsonObject, key: String?, ctor: () -> J, run: (J) -> Unit) {
+        val toProcess = if (`in`.has(key)) `in`[key] as J else ctor()
+        `in`.add(key, toProcess.process(run))
     }
 
-    public TypedJsonBuilder<T> jsonElement(String name, JsonElement value) {
-        root.add(name, value);
-        return this;
+    fun <J : JsonElement?> with(key: String?, ctor: () -> J, run: (J) -> Unit) {
+        this.with(root, key, ctor, run)
     }
 
-    public TypedJsonBuilder<T> jsonString(String name, String value) {
-        root.addProperty(name, value);
-        return this;
+    fun jsonElement(name: String?, value: JsonElement?): TypedJsonBuilder<T> {
+        root.add(name, value)
+        return this
     }
 
-    public TypedJsonBuilder<T> jsonBoolean(String name, boolean value) {
-        root.addProperty(name, value);
-        return this;
+    fun jsonString(name: String?, value: String?): TypedJsonBuilder<T> {
+        root.addProperty(name, value)
+        return this
     }
 
-    public TypedJsonBuilder<T> jsonNumber(String name, Number value) {
-        root.addProperty(name, value);
-        return this;
+    fun jsonBoolean(name: String?, value: Boolean): TypedJsonBuilder<T> {
+        root.addProperty(name, value)
+        return this
     }
 
-    public TypedJsonBuilder<T> jsonChar(String name, Character value) {
-        root.addProperty(name, value);
-        return this;
+    fun jsonNumber(name: String?, value: Number?): TypedJsonBuilder<T> {
+        root.addProperty(name, value)
+        return this
     }
 
-    public TypedJsonBuilder<T> jsonObject(String name, Processor<JsonObjectBuilder> settings) {
-        root.add(name, settings.process(new JsonObjectBuilder()).build());
-        return this;
+    fun jsonChar(name: String?, value: Char?): TypedJsonBuilder<T> {
+        root.addProperty(name, value)
+        return this
     }
 
-    public TypedJsonBuilder<T> jsonArray(String name, Processor<JsonArrayBuilder> settings) {
-        root.add(name, settings.process(new JsonArrayBuilder()).build());
-        return this;
+    @Deprecated("Please use the lambda version instead")
+    @SuppressWarnings("DEPRECATED")
+    fun jsonArray(name: String?, settings: Processor<JsonArrayBuilder>): TypedJsonBuilder<T> {
+        root.add(name, settings.process(JsonArrayBuilder()).build())
+        return this
     }
 
-    protected JsonArray arrayOf(boolean... values) {
-        JsonArray array = new JsonArray();
-        for(boolean i : values) array.add(i);
-        return array;
+    fun jsonArray(name: String, settings: JsonArrayBuilder.() -> Unit): TypedJsonBuilder<T> {
+        root.add(name, JsonArrayBuilder().process(settings).build())
+        return this
     }
 
-    protected JsonArray arrayOf(Character... values) {
-        JsonArray array = new JsonArray();
-        for(Character i : values) array.add(i);
-        return array;
+    protected fun arrayOf(vararg values: Boolean): JsonArray {
+        val array = JsonArray()
+        for (i in values) array.add(i)
+        return array
     }
 
-    protected JsonArray arrayOf(Number... values) {
-        JsonArray array = new JsonArray();
-        for(Number i : values) array.add(i);
-        return array;
+    protected fun arrayOf(vararg values: Char?): JsonArray {
+        val array = JsonArray()
+        for (i in values) array.add(i)
+        return array
     }
 
-    protected JsonArray arrayOf(String... values) {
-        JsonArray array = new JsonArray();
-        for(String i : values) array.add(i);
-        return array;
+    protected fun arrayOf(vararg values: Number?): JsonArray {
+        val array = JsonArray()
+        for (i in values) array.add(i)
+        return array
+    }
+
+    protected fun arrayOf(vararg values: String?): JsonArray {
+        val array = JsonArray()
+        for (i in values) array.add(i)
+        return array
     }
 }
