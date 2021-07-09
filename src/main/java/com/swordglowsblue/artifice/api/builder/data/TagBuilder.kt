@@ -1,26 +1,28 @@
-package com.swordglowsblue.artifice.api.builder.data;
+package com.swordglowsblue.artifice.api.builder.data
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.resource.JsonResource;
-import net.minecraft.util.Identifier;
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.TagBuilder
+import com.google.gson.JsonArray
+import net.minecraft.util.Identifier
+import java.util.function.Function
 
 /**
- * Builder for tag files ({@code namespace:tags/type/tagid.json}).
- * @see <a href="https://minecraft.gamepedia.com/Tag" target="_blank">Minecraft Wiki</a>
+ * Builder for tag files (`namespace:tags/type/tagid.json`).
+ * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Tag)
  */
-public final class TagBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
-    public TagBuilder() { super(new JsonObject(), JsonResource::new); }
-
+class TagBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+    JsonObject(),
+    Function<JsonObject, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
     /**
      * Set whether this tag should override or append to versions of the same tag in lower priority data packs.
      * @param replace Whether to replace.
      * @return this
      */
-    public TagBuilder replace(boolean replace) {
-        root.addProperty("replace", replace);
-        return this;
+    fun replace(replace: Boolean): TagBuilder {
+        root.addProperty("replace", replace)
+        return this
     }
 
     /**
@@ -28,9 +30,9 @@ public final class TagBuilder extends TypedJsonBuilder<JsonResource<JsonObject>>
      * @param id The value ID.
      * @return this
      */
-    public TagBuilder value(Identifier id) {
-        with("values", JsonArray::new, values -> values.add(id.toString()));
-        return this;
+    fun value(id: Identifier): TagBuilder {
+        with("values", { JsonArray() }) { values: JsonArray -> values.add(id.toString()) }
+        return this
     }
 
     /**
@@ -38,9 +40,9 @@ public final class TagBuilder extends TypedJsonBuilder<JsonResource<JsonObject>>
      * @param ids The value IDs.
      * @return this
      */
-    public TagBuilder values(Identifier... ids) {
-        with("values", JsonArray::new, values -> { for(Identifier id : ids) values.add(id.toString()); });
-        return this;
+    fun values(vararg ids: Identifier): TagBuilder {
+        with("values", { JsonArray() }) { values: JsonArray -> for (id in ids) values.add(id.toString()) }
+        return this
     }
 
     /**
@@ -48,8 +50,8 @@ public final class TagBuilder extends TypedJsonBuilder<JsonResource<JsonObject>>
      * @param tagId The tag ID.
      * @return this
      */
-    public TagBuilder include(Identifier tagId) {
-        with("values", JsonArray::new, values -> values.add("#"+tagId.toString()));
-        return this;
+    fun include(tagId: Identifier): TagBuilder {
+        with("values", { JsonArray() }) { values: JsonArray -> values.add("#$tagId") }
+        return this
     }
 }
