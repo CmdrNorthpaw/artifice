@@ -14,8 +14,3 @@ fun interface Processor<T> : Consumer<T> {
         return t
     }
 }
-
-fun <T> T.process(function: T.() -> Unit): T {
-    function(this)
-    return this
-}
