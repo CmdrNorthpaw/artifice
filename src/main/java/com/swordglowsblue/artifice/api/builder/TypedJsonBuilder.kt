@@ -6,6 +6,7 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
 import com.google.gson.JsonArray
+import com.swordglowsblue.artifice.api.resource.JsonResource
 import com.swordglowsblue.artifice.api.util.Processor
 import com.swordglowsblue.artifice.api.util.process
 import java.util.function.Consumer
@@ -13,26 +14,26 @@ import java.util.function.Function
 import java.util.function.Supplier
 
 abstract class TypedJsonBuilder<T>(
-    val root: JsonObject,
-    private val ctor: (JsonObject) -> T
+    @JvmField protected val root: JsonObject,
+    private val ctor: Function<JsonObject?, T>
 )  {
 
     fun build(): T {
         return buildTo(JsonObject())
     }
 
-    fun buildTo(target: JsonObject): T {
+    fun buildTo(target: JsonObject?): T {
         root.entrySet().forEach(Consumer { (key, value) ->
-            target.add(
+            target?.add(
                 key, value
             )
         })
-        return ctor(target)
+        return ctor.apply(target)
     }
 
-    protected fun <J : JsonElement?> with(`in`: JsonObject, key: String?, ctor: () -> J, run: (J) -> Unit) {
-        val toProcess = if (`in`.has(key)) `in`[key] as J else ctor()
-        `in`.add(key, toProcess.process(run))
+    protected fun <J : JsonElement?> with(`in`: JsonObject?, key: String?, ctor: () -> J, run: (J) -> Unit) {
+        val toProcess = if (`in`?.has(key) == true) `in`.get(key) as J else ctor()
+        `in`?.add(key, toProcess.process(run))
     }
 
     fun <J : JsonElement?> with(key: String?, ctor: () -> J, run: (J) -> Unit) {
@@ -72,7 +73,7 @@ abstract class TypedJsonBuilder<T>(
     }
 
     fun jsonArray(name: String, settings: JsonArrayBuilder.() -> Unit): TypedJsonBuilder<T> {
-        root.add(name, JsonArrayBuilder().process(settings).build())
+        root.add(name, JsonArrayBuilder().apply(settings).build())
         return this
     }
 
