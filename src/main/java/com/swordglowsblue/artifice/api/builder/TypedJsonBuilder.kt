@@ -8,7 +8,6 @@ import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
 import com.google.gson.JsonArray
 import com.swordglowsblue.artifice.api.resource.JsonResource
 import com.swordglowsblue.artifice.api.util.Processor
-import com.swordglowsblue.artifice.api.util.process
 import java.util.function.Consumer
 import java.util.function.Function
 import java.util.function.Supplier
@@ -33,7 +32,7 @@ abstract class TypedJsonBuilder<T>(
 
     protected fun <J : JsonElement?> with(`in`: JsonObject?, key: String?, ctor: () -> J, run: (J) -> Unit) {
         val toProcess = if (`in`?.has(key) == true) `in`.get(key) as J else ctor()
-        `in`?.add(key, toProcess.process(run))
+        `in`?.add(key, toProcess.also(run))
     }
 
     fun <J : JsonElement?> with(key: String?, ctor: () -> J, run: (J) -> Unit) {
