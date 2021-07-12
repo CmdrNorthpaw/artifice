@@ -1,20 +1,18 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen;
+package com.swordglowsblue.artifice.api.builder.data.worldgen
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
+import java.util.function.Function
 
-public class UniformIntDistributionBuilder extends TypedJsonBuilder<JsonObject> {
-    public UniformIntDistributionBuilder() {
-        super(new JsonObject(), j->j);
+class UniformIntDistributionBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    fun base(base: Int): UniformIntDistributionBuilder {
+        this.root.addProperty("base", base)
+        return this
     }
 
-    public UniformIntDistributionBuilder base(int base) {
-        this.root.addProperty("base", base);
-        return this;
-    }
-
-    public UniformIntDistributionBuilder spread(int spread) {
-        this.root.addProperty("spread", spread);
-        return this;
+    fun spread(spread: Int): UniformIntDistributionBuilder {
+        this.root.addProperty("spread", spread)
+        return this
     }
 }

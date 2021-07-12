@@ -1,73 +1,72 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen;
+package com.swordglowsblue.artifice.api.builder.data.worldgen
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder.SimpleBlockStateProviderBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder.WeightedBlockStateProviderBuilder
+import com.google.gson.JsonArray
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder.PillarBlockStateProviderBuilder
+import com.swordglowsblue.artifice.api.util.Processor
+import java.util.function.Function
 
-public class BlockStateProviderBuilder extends TypedJsonBuilder<JsonObject> {
-
-    public BlockStateProviderBuilder() {
-        super(new JsonObject(), j->j);
+open class BlockStateProviderBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    fun <P : BlockStateProviderBuilder?> type(type: String?): P {
+        this.root.addProperty("type", type)
+        return this as P
     }
 
-    public <P extends BlockStateProviderBuilder> P type(String type) {
-        this.root.addProperty("type", type);
-        return (P)this;
-    }
-
-    public static class SimpleBlockStateProviderBuilder extends BlockStateProviderBuilder {
-        public SimpleBlockStateProviderBuilder() {
-            super();
-            this.type("minecraft:simple_state_provider");
+    class SimpleBlockStateProviderBuilder : BlockStateProviderBuilder() {
+        fun state(processor: Processor<StateDataBuilder>): SimpleBlockStateProviderBuilder {
+            with("state", { JsonObject() }) { jsonObject: JsonObject? ->
+                processor.process(StateDataBuilder()).buildTo(jsonObject)
+            }
+            return this
         }
 
-        public SimpleBlockStateProviderBuilder state(Processor<StateDataBuilder> processor) {
-            with("state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-            return this;
-        }
-    }
-
-    public static class WeightedBlockStateProviderBuilder extends BlockStateProviderBuilder {
-        public WeightedBlockStateProviderBuilder() {
-            super();
-            this.type("minecraft:weighted_state_provider");
-            this.root.add("entries", new JsonArray());
-        }
-
-        public WeightedBlockStateProviderBuilder addEntry(int weight, Processor<StateDataBuilder> processor) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("weight", weight);
-            jsonObject.add("data", processor.process(new StateDataBuilder()).buildTo(new JsonObject()));
-            this.root.getAsJsonArray("entries").add(jsonObject);
-            return this;
+        init {
+            type<BlockStateProviderBuilder>("minecraft:simple_state_provider")
         }
     }
 
-    public static class PlainFlowerBlockStateProviderBuilder extends BlockStateProviderBuilder {
-        public PlainFlowerBlockStateProviderBuilder() {
-            super();
-            this.type("minecraft:plain_flower_provider");
+    class WeightedBlockStateProviderBuilder : BlockStateProviderBuilder() {
+        fun addEntry(weight: Int, processor: Processor<StateDataBuilder>): WeightedBlockStateProviderBuilder {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("weight", weight)
+            jsonObject.add("data", processor.process(StateDataBuilder()).buildTo(JsonObject()))
+            this.root.getAsJsonArray("entries").add(jsonObject)
+            return this
+        }
+
+        init {
+            type<BlockStateProviderBuilder>("minecraft:weighted_state_provider")
+            this.root.add("entries", JsonArray())
         }
     }
 
-    public static class ForestFlowerBlockStateProviderBuilder extends BlockStateProviderBuilder {
-        public ForestFlowerBlockStateProviderBuilder() {
-            super();
-            this.type("minecraft:forest_flower_provider");
+    class PlainFlowerBlockStateProviderBuilder : BlockStateProviderBuilder() {
+        init {
+            type<BlockStateProviderBuilder>("minecraft:plain_flower_provider")
         }
     }
 
-    public static class PillarBlockStateProviderBuilder extends BlockStateProviderBuilder {
-        public PillarBlockStateProviderBuilder() {
-            super();
-            this.type("minecraft:pillar_state_provider");
+    class ForestFlowerBlockStateProviderBuilder : BlockStateProviderBuilder() {
+        init {
+            type<BlockStateProviderBuilder>("minecraft:forest_flower_provider")
+        }
+    }
+
+    class PillarBlockStateProviderBuilder : BlockStateProviderBuilder() {
+        fun state(processor: Processor<StateDataBuilder>): PillarBlockStateProviderBuilder {
+            with("state", { JsonObject() }) { jsonObject: JsonObject? ->
+                processor.process(StateDataBuilder()).buildTo(jsonObject)
+            }
+            return this
         }
 
-        public PillarBlockStateProviderBuilder state(Processor<StateDataBuilder> processor) {
-            with("state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-            return this;
+        init {
+            type<BlockStateProviderBuilder>("minecraft:pillar_state_provider")
         }
     }
 }
