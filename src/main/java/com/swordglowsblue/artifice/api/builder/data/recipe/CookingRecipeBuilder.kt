@@ -40,7 +40,7 @@ class CookingRecipeBuilder(type: CookingRecipeType) : RecipeBuilder<CookingRecip
      * @return this
      */
     fun multiIngredient(settings: MultiIngredientBuilder.() -> Unit): CookingRecipeBuilder {
-        root.add("ingredient", MultiIngredientBuilder().process(settings).build())
+        root.add("ingredient", MultiIngredientBuilder().apply(settings).build())
         return this
     }
 

@@ -32,7 +32,7 @@ class LootTableBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @return this
      */
     fun pool(settings: Pool.() -> Unit): LootTableBuilder {
-        with("pools", { JsonArray() }) { pools: JsonArray -> pools.add(Pool().process(settings).build()) }
+        with("pools", { JsonArray() }) { pools: JsonArray -> pools.add(Pool().apply(settings).build()) }
         return this
     }
 
@@ -47,7 +47,7 @@ class LootTableBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
          * @return this
          */
         fun entry(settings: LootTableEntry.() -> Unit): Pool {
-            with("entries", { JsonArray() }) { entries: JsonArray -> entries.add(LootTableEntry().process(settings).build()) }
+            with("entries", { JsonArray() }) { entries: JsonArray -> entries.add(LootTableEntry().apply(settings).build()) }
             return this
         }
 
@@ -64,7 +64,7 @@ class LootTableBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
             with("conditions", { JsonArray() }) { conditions: JsonArray ->
                 conditions.add(
                     JsonObjectBuilder().add("condition", id.toString())
-                        .process(settings)
+                        .apply(settings)
                         .build()
                 )
             }
@@ -150,7 +150,7 @@ class LootTableEntry internal constructor() :
     fun child(settings: LootTableEntry.() -> Unit): LootTableEntry {
         with("children", { JsonArray() }) { children: JsonArray ->
             children.add(
-                LootTableEntry().process(settings).build()
+                LootTableEntry().apply(settings).build()
             )
         }
         return this
@@ -197,7 +197,7 @@ class LootTableEntry internal constructor() :
         with("functions", { JsonArray() }) { functions: JsonArray ->
             val function = JsonObjectBuilder().add("function", id.toString()).build()
             functions.add(
-                Function(function).process(settings).build()
+                Function(function).apply(settings).build()
             )
         }
         return this
@@ -216,7 +216,7 @@ class LootTableEntry internal constructor() :
         with("conditions", { JsonArray() }) { conditions: JsonArray ->
             conditions.add(
                 JsonObjectBuilder().add("condition", id.toString())
-                    .process(settings)
+                    .apply(settings)
                     .build()
             )
         }
@@ -243,7 +243,7 @@ class LootTableEntry internal constructor() :
             with("conditions", { JsonArray() }) { conditions: JsonArray ->
                 conditions.add(
                     JsonObjectBuilder().add("condition", id.toString())
-                        .process(settings)
+                        .apply(settings)
                         .build()
                 )
             }

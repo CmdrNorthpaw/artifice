@@ -66,7 +66,7 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
         with("key", { JsonObject() }) { ingredients: JsonObject ->
             ingredients.add(
                 key.toString(),
-                MultiIngredientBuilder().process(settings).build()
+                MultiIngredientBuilder().apply(settings).build()
             )
         }
         return this

@@ -56,7 +56,7 @@ class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder?>(Identifier
     fun multiIngredient(settings: MultiIngredientBuilder.() -> Unit): ShapelessRecipeBuilder {
         with("ingredients", { JsonArray() }) { ingredients: JsonArray ->
             ingredients.add(
-                MultiIngredientBuilder().process(settings).build()
+                MultiIngredientBuilder().apply(settings).build()
             )
         }
         return this

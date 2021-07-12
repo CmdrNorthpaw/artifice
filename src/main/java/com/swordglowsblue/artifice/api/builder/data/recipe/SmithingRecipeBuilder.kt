@@ -40,7 +40,7 @@ class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder?>(Identifier("
      * @return this
      */
     fun multiBase(settings: MultiIngredientBuilder.() -> Unit): SmithingRecipeBuilder {
-        root.add("base", MultiIngredientBuilder().process(settings).build())
+        root.add("base", MultiIngredientBuilder().apply(settings).build())
         return this
     }
 
@@ -70,7 +70,7 @@ class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder?>(Identifier("
      * @return this
      */
     fun multiAddition(settings: MultiIngredientBuilder.() -> Unit): SmithingRecipeBuilder {
-        root.add("addition", MultiIngredientBuilder().process(settings).build())
+        root.add("addition", MultiIngredientBuilder().apply(settings).build())
         return this
     }
 

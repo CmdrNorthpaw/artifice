@@ -87,7 +87,7 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @return this
      */
     fun addArray(name: String?, settings: JsonArrayBuilder.() -> Unit): RecipeBuilder<*> {
-        root.add(name, JsonArrayBuilder().process(settings).build())
+        root.add(name, JsonArrayBuilder().apply(settings).build())
         return this
     }
 }

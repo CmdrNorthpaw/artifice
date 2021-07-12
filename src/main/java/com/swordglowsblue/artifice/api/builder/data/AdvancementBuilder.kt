@@ -17,7 +17,7 @@ import java.util.function.Function
  */
 class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
+    { root: JsonObject? -> JsonResource(root) }) {
     /**
      * Set the display options for this advancement.
      * @param settings A callback which will be passed a [Display].
@@ -25,7 +25,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      */
     fun display(settings: Display.() -> Unit): AdvancementBuilder {
         with("display", { JsonObject() }) {
-                displayObject: JsonObject? -> Display().process(settings).buildTo(displayObject)
+                displayObject: JsonObject? -> Display().apply(settings).buildTo(displayObject)
         }
         return this
     }
@@ -49,7 +49,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
     fun criteria(name: String?, settings: Criteria.() -> Unit): AdvancementBuilder {
         with("criteria", { JsonObject() }) { criteria: JsonObject? ->
             with(criteria, name, { JsonObject() }) { criterion: JsonObject? ->
-                Criteria().process(settings).buildTo(criterion)
+                Criteria().apply(settings).buildTo(criterion)
             }
         }
         return this
@@ -222,7 +222,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
          * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Advancements.List_of_triggers)
          */
         fun conditions(settings: JsonObjectBuilder.() -> Unit): Criteria {
-            root.add("conditions", JsonObjectBuilder().process(settings).build())
+            root.add("conditions", JsonObjectBuilder().apply(settings).build())
             return this
         }
     }

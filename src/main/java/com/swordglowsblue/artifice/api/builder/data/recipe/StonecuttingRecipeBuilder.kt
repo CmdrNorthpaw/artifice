@@ -38,7 +38,7 @@ class StonecuttingRecipeBuilder : RecipeBuilder<StonecuttingRecipeBuilder?>(Iden
      * @return this
      */
     fun multiIngredient(settings: MultiIngredientBuilder.() -> Unit): StonecuttingRecipeBuilder {
-        root.add("ingredient", MultiIngredientBuilder().process(settings).build())
+        root.add("ingredient", MultiIngredientBuilder().apply(settings).build())
         return this
     }
 
