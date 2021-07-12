@@ -1,100 +1,95 @@
-package com.swordglowsblue.artifice.api.builder.data;
+package com.swordglowsblue.artifice.api.builder.data
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder
+import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.BlockRuleTestBuilder
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
+import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.BlockStateRuleTestBuilder
+import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.TagMatchRuleTestBuilder
+import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.RandomBlockMatchRuleTestBuilder
+import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.RandomBlockStateMatchRuleTestBuilder
+import com.swordglowsblue.artifice.api.util.Processor
+import java.util.function.Function
 
-public class RuleTestBuilder extends TypedJsonBuilder<JsonObject> {
-
-    public RuleTestBuilder() {
-        super(new JsonObject(), j->j);
+open class RuleTestBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    fun <R : RuleTestBuilder?> predicateType(type: String?): R {
+        this.root.addProperty("predicate_type", type)
+        return this as R
     }
 
-    public <R extends RuleTestBuilder> R predicateType(String type) {
-        this.root.addProperty("predicate_type", type);
-        return (R) this;
-    }
-
-    public static class AlwaysTrueRuleTestBuilder extends RuleTestBuilder {
-
-        public AlwaysTrueRuleTestBuilder() {
-            super();
-            this.predicateType("minecraft:always_true");
-        }
-    }
-
-    public static class BlockRuleTestBuilder extends RuleTestBuilder {
-
-        public BlockRuleTestBuilder() {
-            super();
-            this.predicateType("minecraft:block_match");
-        }
-
-        public BlockRuleTestBuilder block(String blockID) {
-            this.root.addProperty("block", blockID);
-            return this;
+    class AlwaysTrueRuleTestBuilder : RuleTestBuilder() {
+        init {
+            predicateType<RuleTestBuilder>("minecraft:always_true")
         }
     }
 
-    public static class BlockStateRuleTestBuilder extends RuleTestBuilder {
-
-        public BlockStateRuleTestBuilder() {
-            super();
-            this.predicateType("minecraft:blockstate_match");
+    class BlockRuleTestBuilder : RuleTestBuilder() {
+        fun block(blockID: String?): BlockRuleTestBuilder {
+            this.root.addProperty("block", blockID)
+            return this
         }
 
-        public BlockStateRuleTestBuilder blockState(Processor<StateDataBuilder> processor) {
-            with("block_state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-            return this;
+        init {
+            predicateType<RuleTestBuilder>("minecraft:block_match")
         }
     }
 
-    public static class TagMatchRuleTestBuilder extends RuleTestBuilder {
-
-        public TagMatchRuleTestBuilder() {
-            super();
-            this.predicateType("minecraft:tag_match");
+    class BlockStateRuleTestBuilder : RuleTestBuilder() {
+        fun blockState(processor: StateDataBuilder.() -> Unit): BlockStateRuleTestBuilder {
+            with("block_state", { JsonObject() }) { jsonObject: JsonObject? ->
+                StateDataBuilder().apply(processor).buildTo(jsonObject)
+            }
+            return this
         }
 
-        public TagMatchRuleTestBuilder tag(String tagID) {
-            this.root.addProperty("tag", tagID);
-            return this;
-        }
-    }
-
-    public static class RandomBlockMatchRuleTestBuilder extends RuleTestBuilder {
-
-        public RandomBlockMatchRuleTestBuilder() {
-            super();
-            this.predicateType("minecraft:random_block_match");
-        }
-
-        public RandomBlockMatchRuleTestBuilder block(String blockID) {
-            this.root.addProperty("block", blockID);
-            return this;
-        }
-
-        public RandomBlockMatchRuleTestBuilder probability(float probability) {
-            this.root.addProperty("probability", probability);
-            return this;
+        init {
+            predicateType<RuleTestBuilder>("minecraft:blockstate_match")
         }
     }
 
-    public static class RandomBlockStateMatchRuleTestBuilder extends RuleTestBuilder {
-
-        public RandomBlockStateMatchRuleTestBuilder() {
-            super();
-            this.predicateType("minecraft:random_block_match");
+    class TagMatchRuleTestBuilder : RuleTestBuilder() {
+        fun tag(tagID: String?): TagMatchRuleTestBuilder {
+            this.root.addProperty("tag", tagID)
+            return this
         }
 
-        public RandomBlockStateMatchRuleTestBuilder blockState(Processor<StateDataBuilder> processor) {
-            with("block_state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-            return this;
+        init {
+            predicateType<RuleTestBuilder>("minecraft:tag_match")
+        }
+    }
+
+    class RandomBlockMatchRuleTestBuilder : RuleTestBuilder() {
+        fun block(blockID: String?): RandomBlockMatchRuleTestBuilder {
+            this.root.addProperty("block", blockID)
+            return this
         }
 
-        public RandomBlockStateMatchRuleTestBuilder probability(float probability) {
-            this.root.addProperty("probability", probability);
-            return this;
+        fun probability(probability: Float): RandomBlockMatchRuleTestBuilder {
+            this.root.addProperty("probability", probability)
+            return this
+        }
+
+        init {
+            predicateType<RuleTestBuilder>("minecraft:random_block_match")
+        }
+    }
+
+    class RandomBlockStateMatchRuleTestBuilder : RuleTestBuilder() {
+        fun blockState(processor: Processor<StateDataBuilder>): RandomBlockStateMatchRuleTestBuilder {
+            with("block_state", { JsonObject() }) { jsonObject: JsonObject? ->
+                processor.process(StateDataBuilder()).buildTo(jsonObject)
+            }
+            return this
+        }
+
+        fun probability(probability: Float): RandomBlockStateMatchRuleTestBuilder {
+            this.root.addProperty("probability", probability)
+            return this
+        }
+
+        init {
+            predicateType<RuleTestBuilder>("minecraft:random_block_match")
         }
     }
 }
