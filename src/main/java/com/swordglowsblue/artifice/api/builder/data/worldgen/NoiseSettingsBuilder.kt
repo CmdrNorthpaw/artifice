@@ -7,7 +7,6 @@ import com.swordglowsblue.artifice.api.builder.data.worldgen.NoiseSettingsBuilde
 import com.swordglowsblue.artifice.api.builder.data.dimension.NoiseConfigBuilder
 import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 import com.swordglowsblue.artifice.api.builder.data.dimension.StructureManagerBuilder
-import com.swordglowsblue.artifice.api.util.Processor
 import java.util.function.Function
 
 class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
@@ -79,9 +78,9 @@ class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @param blockStateBuilderProcessor
      * @return
      */
-    fun setBlockState(id: String?, blockStateBuilderProcessor: Processor<StateDataBuilder>): NoiseSettingsBuilder {
+    fun setBlockState(id: String?, blockStateBuilderProcessor: StateDataBuilder.() -> Unit): NoiseSettingsBuilder {
         with(id, { JsonObject() }) { jsonObject: JsonObject? ->
-            blockStateBuilderProcessor.process(StateDataBuilder()).buildTo(jsonObject)
+            StateDataBuilder().also(blockStateBuilderProcessor).buildTo(jsonObject)
         }
         return this
     }
@@ -91,7 +90,7 @@ class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @param blockStateBuilderProcessor
      * @return
      */
-    fun defaultBlock(blockStateBuilderProcessor: Processor<StateDataBuilder>): NoiseSettingsBuilder {
+    fun defaultBlock(blockStateBuilderProcessor: StateDataBuilder.() -> Unit): NoiseSettingsBuilder {
         return setBlockState("default_block", blockStateBuilderProcessor)
     }
 
@@ -100,7 +99,7 @@ class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @param blockStateBuilderProcessor
      * @return
      */
-    fun defaultFluid(blockStateBuilderProcessor: Processor<StateDataBuilder>): NoiseSettingsBuilder {
+    fun defaultFluid(blockStateBuilderProcessor: StateDataBuilder.() -> Unit): NoiseSettingsBuilder {
         return setBlockState("default_fluid", blockStateBuilderProcessor)
     }
 
@@ -109,11 +108,9 @@ class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @param structureManagerBuilder
      * @return
      */
-    fun structureManager(structureManagerBuilder: Processor<StructureManagerBuilder>): NoiseSettingsBuilder {
+    fun structureManager(structureManagerBuilder: StructureManagerBuilder.() -> Unit): NoiseSettingsBuilder {
         with("structures", { JsonObject() }) { jsonObject: JsonObject? ->
-            structureManagerBuilder.process(
-                StructureManagerBuilder()
-            ).buildTo(jsonObject)
+            StructureManagerBuilder().apply(structureManagerBuilder).buildTo(jsonObject)
         }
         return this
     }
