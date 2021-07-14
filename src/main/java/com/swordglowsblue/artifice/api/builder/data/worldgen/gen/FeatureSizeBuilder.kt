@@ -1,95 +1,104 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.gen;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.gen
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.BlockPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.BlockPlacerBuilder.ColumnPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder
+import java.lang.IllegalArgumentException
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder.TwoLayersFeatureSizeBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder.ThreeLayersFeatureSizeBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder.GiantTrunkPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.BlobFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.SpruceFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.PineFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.JungleFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.MegaPineFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.CocoaTreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.BeeHiveTreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.AlterGroundTreeDecoratorBuilder
+import sun.tools.jstat.Identifier
+import java.util.function.Function
 
-public class FeatureSizeBuilder extends TypedJsonBuilder<JsonObject> {
+sealed class FeatureSizeBuilder(
+    type: Identifier
+) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
 
-    public FeatureSizeBuilder() {
-        super(new JsonObject(), j->j);
+    @Suppress("UNCHECKED_CAST")
+    fun <S : FeatureSizeBuilder> minClippedHeight(minClippedHeight: Int): S {
+        require(minClippedHeight <= 80) { "minClippedHeight can't be higher than 80! Found $minClippedHeight" }
+        require(minClippedHeight >= 0) { "minClippedHeight can't be higher than 0! Found $minClippedHeight" }
+        this.root.addProperty("min_clipped_height", minClippedHeight)
+        return this as S
     }
 
-    public <S extends FeatureSizeBuilder> S type(String type) {
-        this.root.addProperty("type", type);
-        return (S) this;
+    class TwoLayersFeatureSizeBuilder : FeatureSizeBuilder(Identifier("two_layers_feature_size")) {
+        fun limit(limit: Int): TwoLayersFeatureSizeBuilder {
+            require(limit <= 81) { "limit can't be higher than 81! Found $limit" }
+            require(limit >= 0) { "limit can't be higher than 0! Found $limit" }
+            this.root.addProperty("limit", limit)
+            return this
+        }
+
+        fun lowerSize(lowerSize: Int): TwoLayersFeatureSizeBuilder {
+            require(lowerSize <= 16) { "lowerSize can't be higher than 16! Found $lowerSize" }
+            require(lowerSize >= 0) { "lowerSize can't be higher than 0! Found $lowerSize" }
+            this.root.addProperty("lower_size", lowerSize)
+            return this
+        }
+
+        fun upperSize(upperSize: Int): TwoLayersFeatureSizeBuilder {
+            require(upperSize <= 16) { "upperSize can't be higher than 16! Found $upperSize" }
+            require(upperSize >= 0) { "upperSize can't be higher than 0! Found $upperSize" }
+            this.root.addProperty("upper_size", upperSize)
+            return this
+        }
+
     }
 
-    public <S extends FeatureSizeBuilder> S minClippedHeight(int minClippedHeight) {
-        if (minClippedHeight > 80) throw new IllegalArgumentException("minClippedHeight can't be higher than 80! Found " + minClippedHeight);
-        if (minClippedHeight < 0) throw new IllegalArgumentException("minClippedHeight can't be higher than 0! Found " + minClippedHeight);
-        this.root.addProperty("min_clipped_height", minClippedHeight);
-        return (S) this;
+    class ThreeLayersFeatureSizeBuilder : FeatureSizeBuilder(Identifier("three_layers_feature_size")) {
+        fun limit(limit: Int): ThreeLayersFeatureSizeBuilder {
+            require(limit <= 80) { "limit can't be higher than 80! Found $limit" }
+            require(limit >= 0) { "limit can't be higher than 0! Found $limit" }
+            this.root.addProperty("limit", limit)
+            return this
+        }
+
+        fun upperLimit(upperLimit: Int): ThreeLayersFeatureSizeBuilder {
+            require(upperLimit <= 80) { "upperLimit can't be higher than 80! Found $upperLimit" }
+            require(upperLimit >= 0) { "upperLimit can't be higher than 0! Found $upperLimit" }
+            this.root.addProperty("upper_limit", upperLimit)
+            return this
+        }
+
+        fun lowerSize(lowerSize: Int): ThreeLayersFeatureSizeBuilder {
+            require(lowerSize <= 16) { "lowerSize can't be higher than 16! Found $lowerSize" }
+            require(lowerSize >= 0) { "lowerSize can't be higher than 0! Found $lowerSize" }
+            this.root.addProperty("lower_size", lowerSize)
+            return this
+        }
+
+        fun middleSize(middleSize: Int): ThreeLayersFeatureSizeBuilder {
+            require(middleSize <= 16) { "middleSize can't be higher than 16! Found $middleSize" }
+            require(middleSize >= 0) { "middleSize can't be higher than 0! Found $middleSize" }
+            this.root.addProperty("middle_size", middleSize)
+            return this
+        }
+
+        fun upperSize(upperSize: Int): ThreeLayersFeatureSizeBuilder {
+            require(upperSize <= 16) { "upperSize can't be higher than 16! Found $upperSize" }
+            require(upperSize >= 0) { "upperSize can't be higher than 0! Found $upperSize" }
+            this.root.addProperty("upper_size", upperSize)
+            return this
+        }
     }
 
-    public static class TwoLayersFeatureSizeBuilder extends FeatureSizeBuilder {
-
-        public TwoLayersFeatureSizeBuilder() {
-            super();
-            this.type("minecraft:two_layers_feature_size");
-        }
-
-        public TwoLayersFeatureSizeBuilder limit(int limit) {
-            if (limit > 81) throw new IllegalArgumentException("limit can't be higher than 81! Found " + limit);
-            if (limit < 0) throw new IllegalArgumentException("limit can't be higher than 0! Found " + limit);
-            this.root.addProperty("limit", limit);
-            return this;
-        }
-
-        public TwoLayersFeatureSizeBuilder lowerSize(int lowerSize) {
-            if (lowerSize > 16) throw new IllegalArgumentException("lowerSize can't be higher than 16! Found " + lowerSize);
-            if (lowerSize < 0) throw new IllegalArgumentException("lowerSize can't be higher than 0! Found " + lowerSize);
-            this.root.addProperty("lower_size", lowerSize);
-            return this;
-        }
-
-        public TwoLayersFeatureSizeBuilder upperSize(int upperSize) {
-            if (upperSize > 16) throw new IllegalArgumentException("upperSize can't be higher than 16! Found " + upperSize);
-            if (upperSize < 0) throw new IllegalArgumentException("upperSize can't be higher than 0! Found " + upperSize);
-            this.root.addProperty("upper_size", upperSize);
-            return this;
-        }
-    }
-
-    public static class ThreeLayersFeatureSizeBuilder extends FeatureSizeBuilder {
-
-        public ThreeLayersFeatureSizeBuilder() {
-            super();
-            this.type("minecraft:three_layers_feature_size");
-        }
-
-        public ThreeLayersFeatureSizeBuilder limit(int limit) {
-            if (limit > 80) throw new IllegalArgumentException("limit can't be higher than 80! Found " + limit);
-            if (limit < 0) throw new IllegalArgumentException("limit can't be higher than 0! Found " + limit);
-            this.root.addProperty("limit", limit);
-            return this;
-        }
-
-        public ThreeLayersFeatureSizeBuilder upperLimit(int upperLimit) {
-            if (upperLimit > 80) throw new IllegalArgumentException("upperLimit can't be higher than 80! Found " + upperLimit);
-            if (upperLimit < 0) throw new IllegalArgumentException("upperLimit can't be higher than 0! Found " + upperLimit);
-            this.root.addProperty("upper_limit", upperLimit);
-            return this;
-        }
-
-        public ThreeLayersFeatureSizeBuilder lowerSize(int lowerSize) {
-            if (lowerSize > 16) throw new IllegalArgumentException("lowerSize can't be higher than 16! Found " + lowerSize);
-            if (lowerSize < 0) throw new IllegalArgumentException("lowerSize can't be higher than 0! Found " + lowerSize);
-            this.root.addProperty("lower_size", lowerSize);
-            return this;
-        }
-
-        public ThreeLayersFeatureSizeBuilder middleSize(int middleSize) {
-            if (middleSize > 16) throw new IllegalArgumentException("middleSize can't be higher than 16! Found " + middleSize);
-            if (middleSize < 0) throw new IllegalArgumentException("middleSize can't be higher than 0! Found " + middleSize);
-            this.root.addProperty("middle_size", middleSize);
-            return this;
-        }
-
-        public ThreeLayersFeatureSizeBuilder upperSize(int upperSize) {
-            if (upperSize > 16) throw new IllegalArgumentException("upperSize can't be higher than 16! Found " + upperSize);
-            if (upperSize < 0) throw new IllegalArgumentException("upperSize can't be higher than 0! Found " + upperSize);
-            this.root.addProperty("upper_size", upperSize);
-            return this;
-        }
+    init {
+        root.addProperty("type", type.toString())
     }
 }
