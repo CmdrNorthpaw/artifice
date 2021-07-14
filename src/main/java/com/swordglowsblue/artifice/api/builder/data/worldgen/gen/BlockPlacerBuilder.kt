@@ -1,50 +1,51 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.gen;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.gen
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.BlockPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.BlockPlacerBuilder.ColumnPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder
+import java.lang.IllegalArgumentException
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder.TwoLayersFeatureSizeBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder.ThreeLayersFeatureSizeBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder.GiantTrunkPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.BlobFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.SpruceFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.PineFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.JungleFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.MegaPineFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.CocoaTreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.BeeHiveTreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.AlterGroundTreeDecoratorBuilder
+import sun.tools.jstat.Identifier
+import java.util.function.Function
 
-public class BlockPlacerBuilder extends TypedJsonBuilder<JsonObject> {
+sealed class BlockPlacerBuilder(
+    type: Identifier
+) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
 
-    public BlockPlacerBuilder() {
-        super(new JsonObject(), j->j);
+    init {
+        root.addProperty("type", type.toString())
     }
 
-    public <P extends BlockPlacerBuilder> P type(String type) {
-        this.root.addProperty("type", type);
-        return (P) this;
-    }
+    class SimpleBlockPlacerBuilder : BlockPlacerBuilder(Identifier("simple_block_placer"))
 
-    public static class SimpleBlockPlacerBuilder extends BlockPlacerBuilder {
+    class DoublePlantPlacerBuilder : BlockPlacerBuilder(Identifier("double_plant_placer"))
 
-        public SimpleBlockPlacerBuilder() {
-            super();
-            this.type("minecraft:simple_block_placer");
-        }
-    }
-
-    public static class DoublePlantPlacerBuilder extends BlockPlacerBuilder {
-
-        public DoublePlantPlacerBuilder() {
-            super();
-            this.type("minecraft:double_plant_placer");
-        }
-    }
-
-    public static class ColumnPlacerBuilder extends BlockPlacerBuilder {
-
-        public ColumnPlacerBuilder() {
-            super();
-            this.type("minecraft:column_placer");
+    class ColumnPlacerBuilder : BlockPlacerBuilder(Identifier("column_placer")) {
+        fun minSize(minSize: Int): ColumnPlacerBuilder {
+            this.root.addProperty("min_size", minSize)
+            return this
         }
 
-        public ColumnPlacerBuilder minSize(int minSize) {
-            this.root.addProperty("min_size", minSize);
-            return this;
-        }
-
-        public ColumnPlacerBuilder extraSize(int extraSize) {
-            this.root.addProperty("extra_size", extraSize);
-            return this;
+        fun extraSize(extraSize: Int): ColumnPlacerBuilder {
+            this.root.addProperty("extra_size", extraSize)
+            return this
         }
     }
 }
