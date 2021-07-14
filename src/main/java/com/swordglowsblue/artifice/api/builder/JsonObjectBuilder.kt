@@ -1,45 +1,50 @@
-package com.swordglowsblue.artifice.api.builder;
+package com.swordglowsblue.artifice.api.builder
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.util.Processor;
+import kotlin.jvm.JvmOverloads
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
+import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.google.gson.JsonObject
+import java.util.function.Function
 
-public class JsonObjectBuilder extends TypedJsonBuilder<JsonObject> {
-    public JsonObjectBuilder() { super(new JsonObject(), j->j); }
-    public JsonObjectBuilder(JsonObject root) { super(root, j->j); }
+open class JsonObjectBuilder : TypedJsonBuilder<JsonObject?> {
+    constructor() : super(JsonObject(), Function<JsonObject?, JsonObject?> { j: JsonObject? -> j }) {}
+    constructor(root: JsonObject) : super(root, Function<JsonObject?, JsonObject?> { j: JsonObject? -> j }) {}
 
-    public JsonObjectBuilder add(String name, JsonElement value) {
-        root.add(name, value);
-        return this;
+    fun add(name: String, value: JsonElement): JsonObjectBuilder {
+        root.add(name, value)
+        return this
     }
 
-    public JsonObjectBuilder add(String name, String value) {
-        root.addProperty(name, value);
-        return this;
+    fun add(name: String, value: String): JsonObjectBuilder {
+        root.addProperty(name, value)
+        return this
     }
 
-    public JsonObjectBuilder add(String name, boolean value) {
-        root.addProperty(name, value);
-        return this;
+    fun add(name: String, value: Boolean): JsonObjectBuilder {
+        root.addProperty(name, value)
+        return this
     }
 
-    public JsonObjectBuilder add(String name, Number value) {
-        root.addProperty(name, value);
-        return this;
+    fun add(name: String, value: Number): JsonObjectBuilder {
+        root.addProperty(name, value)
+        return this
     }
 
-    public JsonObjectBuilder add(String name, Character value) {
-        root.addProperty(name, value);
-        return this;
+    fun add(name: String, value: Char): JsonObjectBuilder {
+        root.addProperty(name, value)
+        return this
     }
 
-    public JsonObjectBuilder addObject(String name, Processor<JsonObjectBuilder> settings) {
-        root.add(name, settings.process(new JsonObjectBuilder()).build());
-        return this;
+    fun addObject(name: String, settings: JsonObjectBuilder.() -> Unit): JsonObjectBuilder {
+        root.add(name, JsonObjectBuilder().apply(settings).build())
+        return this
     }
 
-    public JsonObjectBuilder addArray(String name, Processor<JsonArrayBuilder> settings) {
-        root.add(name, settings.process(new JsonArrayBuilder()).build());
-        return this;
+    fun addArray(name: String, settings: JsonArrayBuilder.() -> Unit): JsonObjectBuilder {
+        root.add(name, JsonArrayBuilder().apply(settings).build())
+        return this
     }
 }
