@@ -22,7 +22,7 @@ import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBu
 import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.BeeHiveTreeDecoratorBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.AlterGroundTreeDecoratorBuilder
-import sun.tools.jstat.Identifier
+import net.minecraft.util.Identifier
 import java.util.function.Function
 
 sealed class FeatureSizeBuilder(
