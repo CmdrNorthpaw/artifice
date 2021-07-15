@@ -50,7 +50,7 @@ sealed class ChunkGeneratorTypeBuilder (type: Identifier) :
         }
 
         @Deprecated("use noiseSettings instead.")
-        fun presetSettings(presetId: String?): NoiseChunkGeneratorTypeBuilder {
+        fun presetSettings(presetId: String): NoiseChunkGeneratorTypeBuilder {
             noiseSettings(presetId)
             return this
         }
@@ -60,7 +60,7 @@ sealed class ChunkGeneratorTypeBuilder (type: Identifier) :
          * @param noiseSettingsID
          * @return
          */
-        fun noiseSettings(noiseSettingsID: String?): NoiseChunkGeneratorTypeBuilder {
+        fun noiseSettings(noiseSettingsID: String): NoiseChunkGeneratorTypeBuilder {
             this.root.addProperty("settings", noiseSettingsID)
             return this
         }
