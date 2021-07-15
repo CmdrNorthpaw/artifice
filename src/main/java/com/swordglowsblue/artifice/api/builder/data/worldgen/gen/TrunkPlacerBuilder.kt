@@ -1,85 +1,97 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.gen;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.gen
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.BlockPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.BlockPlacerBuilder.ColumnPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder
+import java.lang.IllegalArgumentException
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder.TwoLayersFeatureSizeBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder.ThreeLayersFeatureSizeBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder.GiantTrunkPlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.BlobFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.SpruceFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.PineFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.JungleFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.MegaPineFoliagePlacerBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.CocoaTreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.BeeHiveTreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.AlterGroundTreeDecoratorBuilder
+import net.minecraft.util.Identifier
+import java.util.function.Function
 
-public class TrunkPlacerBuilder extends TypedJsonBuilder<JsonObject> {
+sealed class TrunkPlacerBuilder<out B: TrunkPlacerBuilder<B>>(
+    type: Identifier
+) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    protected abstract val me: B
 
-    public TrunkPlacerBuilder() {
-        super(new JsonObject(), j->j);
+    init {
+        root.addProperty("type", type.toString())
+    }
+    
+    fun type(type: String?): B {
+        this.root.addProperty("type", type)
+        return me
     }
 
-    public <P extends TrunkPlacerBuilder> P type(String type) {
-        this.root.addProperty("type", type);
-        return (P)this;
+    fun baseHeight(base_height: Int): B {
+        require(base_height <= 32) { "base_height can't be higher than 32! Found $base_height" }
+        require(base_height >= 0) { "base_height can't be smaller than 0! Found $base_height" }
+        this.root.addProperty("base_height", base_height)
+        return me
     }
 
-    public <P extends TrunkPlacerBuilder> P baseHeight(int base_height) {
-        if (base_height > 32) throw new IllegalArgumentException("base_height can't be higher than 32! Found " + base_height);
-        if (base_height < 0) throw new IllegalArgumentException("base_height can't be smaller than 0! Found " + base_height);
-        this.root.addProperty("base_height", base_height);
-        return (P) this;
+    fun heightRandA(height_rand_a: Int): B {
+        require(height_rand_a <= 24) { "height_rand_a can't be higher than 24! Found $height_rand_a" }
+        require(height_rand_a >= 0) { "height_rand_a can't be smaller than 0! Found $height_rand_a" }
+        this.root.addProperty("height_rand_a", height_rand_a)
+        return me
     }
 
-    public <P extends TrunkPlacerBuilder> P heightRandA(int height_rand_a) {
-        if (height_rand_a > 24) throw new IllegalArgumentException("height_rand_a can't be higher than 24! Found " + height_rand_a);
-        if (height_rand_a < 0) throw new IllegalArgumentException("height_rand_a can't be smaller than 0! Found " + height_rand_a);
-        this.root.addProperty("height_rand_a", height_rand_a);
-        return (P) this;
+    fun heightRandB(height_rand_b: Int): B {
+        require(height_rand_b <= 24) { "height_rand_b can't be higher than 24! Found $height_rand_b" }
+        require(height_rand_b >= 0) { "height_rand_b can't be smaller than 0! Found $height_rand_b" }
+        this.root.addProperty("height_rand_b", height_rand_b)
+        return me
     }
 
-    public <P extends TrunkPlacerBuilder> P heightRandB(int height_rand_b) {
-        if (height_rand_b > 24) throw new IllegalArgumentException("height_rand_b can't be higher than 24! Found " + height_rand_b);
-        if (height_rand_b < 0) throw new IllegalArgumentException("height_rand_b can't be smaller than 0! Found " + height_rand_b);
-        this.root.addProperty("height_rand_b", height_rand_b);
-        return (P) this;
+    class StraightTrunkPlacerBuilder : TrunkPlacerBuilder<StraightTrunkPlacerBuilder>(
+        Identifier("straight_trunk_placer")
+    ) {
+        override val me: StraightTrunkPlacerBuilder
+            get() = this
     }
 
-    public static class StraightTrunkPlacerBuilder extends TrunkPlacerBuilder {
-
-        public StraightTrunkPlacerBuilder() {
-            super();
-            this.type("minecraft:straight_trunk_placer");
-        }
+    class ForkingTrunkPlacerBuilder : TrunkPlacerBuilder<ForkingTrunkPlacerBuilder>(
+        Identifier("forking_trunk_placer")
+    ) {
+        override val me: ForkingTrunkPlacerBuilder
+            get() = this
     }
 
-    public static class ForkingTrunkPlacerBuilder extends TrunkPlacerBuilder {
+    sealed class GiantTrunkPlacerBuilder<out G: GiantTrunkPlacerBuilder<G>>(
+        type: Identifier = Identifier("giant_trunk_placer")
+    ) : TrunkPlacerBuilder<G>(type)
 
-        public ForkingTrunkPlacerBuilder() {
-            super();
-            this.type("minecraft:forking_trunk_placer");
-        }
+    class MegaJungleTrunkPlacerBuilder : GiantTrunkPlacerBuilder<MegaJungleTrunkPlacerBuilder>(
+        Identifier("mega_jungle_trunk_placer")
+    ) {
+        override val me: MegaJungleTrunkPlacerBuilder
+            get() = this
     }
 
-    public static class GiantTrunkPlacerBuilder extends TrunkPlacerBuilder {
-
-        public GiantTrunkPlacerBuilder() {
-            super();
-            this.type("minecraft:giant_trunk_placer");
-        }
+    class DarkOakTrunkPlacerBuilder : TrunkPlacerBuilder<DarkOakTrunkPlacerBuilder>(Identifier("dark_oak_trunk_placer")) {
+        override val me: DarkOakTrunkPlacerBuilder
+            get() = this
     }
 
-    public static class MegaJungleTrunkPlacerBuilder extends GiantTrunkPlacerBuilder {
-
-        public MegaJungleTrunkPlacerBuilder() {
-            super();
-            this.type("minecraft:mega_jungle_trunk_placer");
-        }
-    }
-
-    public static class DarkOakTrunkPlacerBuilder extends TrunkPlacerBuilder {
-
-        public DarkOakTrunkPlacerBuilder() {
-            super();
-            this.type("minecraft:dark_oak_trunk_placer");
-        }
-    }
-
-    public static class FancyTrunkPlacerBuilder extends TrunkPlacerBuilder {
-
-        public FancyTrunkPlacerBuilder() {
-            super();
-            this.type("minecraft:fancy_trunk_placer");
-        }
+    class FancyTrunkPlacerBuilder : TrunkPlacerBuilder<FancyTrunkPlacerBuilder>(Identifier("fancy_trunk_placer")) {
+        override val me: FancyTrunkPlacerBuilder
+            get() = this
     }
 }
