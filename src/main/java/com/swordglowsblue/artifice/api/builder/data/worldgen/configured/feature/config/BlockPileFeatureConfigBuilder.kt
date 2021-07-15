@@ -1,17 +1,16 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
 
-public class BlockPileFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public BlockPileFeatureConfigBuilder() {
-        super();
-    }
-
-    public <P extends BlockStateProviderBuilder> BlockPileFeatureConfigBuilder stateProvider(Processor<P> processor, P instance) {
-        with("state_provider", JsonObject::new, jsonObject -> processor.process(instance).buildTo(jsonObject));
-        return this;
+class BlockPileFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun <P : BlockStateProviderBuilder> stateProvider(
+        processor: P.() -> Unit,
+        instance: P
+    ): BlockPileFeatureConfigBuilder {
+        with("state_provider", { JsonObject() }) { jsonObject: JsonObject ->
+            instance.apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 }

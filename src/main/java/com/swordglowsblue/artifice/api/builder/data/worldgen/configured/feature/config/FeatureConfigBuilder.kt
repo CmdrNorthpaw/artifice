@@ -1,11 +1,7 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import java.util.function.Function
 
-public class FeatureConfigBuilder extends TypedJsonBuilder<JsonObject> {
-
-    public FeatureConfigBuilder() {
-        super(new JsonObject(), j->j);
-    }
-}
+open class FeatureConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j })

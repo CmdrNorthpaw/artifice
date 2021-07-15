@@ -1,23 +1,20 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 
-public class FillLayerFeatureConfigBuilder extends FeatureConfigBuilder {
-    public FillLayerFeatureConfigBuilder() {
-        super();
+class FillLayerFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun state(processor: StateDataBuilder.() -> Unit): FillLayerFeatureConfigBuilder {
+        with("state", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public FillLayerFeatureConfigBuilder state(Processor<StateDataBuilder> processor) {
-        with("state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
-    }
-
-    public FillLayerFeatureConfigBuilder height(int height) {
-        if (height > 255) throw new IllegalArgumentException("height can't be higher than 255! Found " + height);
-        if (height < 0) throw new IllegalArgumentException("height can't be smaller than 0! Found " + height);
-        this.root.addProperty("height", height);
-        return this;
+    fun height(height: Int): FillLayerFeatureConfigBuilder {
+        require(height <= 255) { "height can't be higher than 255! Found $height" }
+        require(height >= 0) { "height can't be smaller than 0! Found $height" }
+        this.root.addProperty("height", height)
+        return this
     }
 }

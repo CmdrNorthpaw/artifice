@@ -1,27 +1,31 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
 
-public class HugeMushroomFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public HugeMushroomFeatureConfigBuilder() {
-        super();
+class HugeMushroomFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun <P : BlockStateProviderBuilder> capProvider(
+        processor: P.() -> Unit,
+        instance: P
+    ): HugeMushroomFeatureConfigBuilder {
+        with("cap_provider", { JsonObject() }) { jsonObject: JsonObject ->
+            instance.apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public <P extends BlockStateProviderBuilder> HugeMushroomFeatureConfigBuilder capProvider(Processor<P> processor, P instance) {
-        with("cap_provider", JsonObject::new, jsonObject -> processor.process(instance).buildTo(jsonObject));
-        return this;
+    fun <P : BlockStateProviderBuilder> stemProvider(
+        processor: P.() -> Unit,
+        instance: P
+    ): HugeMushroomFeatureConfigBuilder {
+        with("stem_provider", { JsonObject() }) { jsonObject: JsonObject ->
+            instance.apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public <P extends BlockStateProviderBuilder> HugeMushroomFeatureConfigBuilder stemProvider(Processor<P> processor, P instance) {
-        with("stem_provider", JsonObject::new, jsonObject -> processor.process(instance).buildTo(jsonObject));
-        return this;
-    }
-
-    public HugeMushroomFeatureConfigBuilder foliageRadius(int foliageRadius) {
-        this.root.addProperty("foliage_radius", foliageRadius);
-        return this;
+    fun foliageRadius(foliageRadius: Int): HugeMushroomFeatureConfigBuilder {
+        this.root.addProperty("foliage_radius", foliageRadius)
+        return this
     }
 }

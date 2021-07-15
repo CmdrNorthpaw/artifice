@@ -1,17 +1,13 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 
-public class SingleStateFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public SingleStateFeatureConfigBuilder() {
-        super();
-    }
-
-    public SingleStateFeatureConfigBuilder state(Processor<StateDataBuilder> processor) {
-        with("state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
+class SingleStateFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun state(processor: StateDataBuilder.() -> Unit): SingleStateFeatureConfigBuilder {
+        with("state", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 }

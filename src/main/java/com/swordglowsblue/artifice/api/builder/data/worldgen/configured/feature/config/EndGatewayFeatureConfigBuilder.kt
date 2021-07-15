@@ -1,23 +1,18 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonArray;
+import com.google.gson.JsonArray
 
-public class EndGatewayFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public EndGatewayFeatureConfigBuilder() {
-        super();
+class EndGatewayFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun exit(x: Int, y: Int, z: Int): EndGatewayFeatureConfigBuilder {
+        this.root.add("exit", JsonArray())
+        this.root.getAsJsonArray("exit").add(x)
+        this.root.getAsJsonArray("exit").add(y)
+        this.root.getAsJsonArray("exit").add(z)
+        return this
     }
 
-    public EndGatewayFeatureConfigBuilder exit(int x, int y, int z) {
-        this.root.add("exit", new JsonArray());
-        this.root.getAsJsonArray("exit").add(x);
-        this.root.getAsJsonArray("exit").add(y);
-        this.root.getAsJsonArray("exit").add(z);
-        return this;
-    }
-
-    public EndGatewayFeatureConfigBuilder exact(boolean exact) {
-        this.root.addProperty("exact", exact);
-        return this;
+    fun exact(exact: Boolean): EndGatewayFeatureConfigBuilder {
+        this.root.addProperty("exact", exact)
+        return this
     }
 }

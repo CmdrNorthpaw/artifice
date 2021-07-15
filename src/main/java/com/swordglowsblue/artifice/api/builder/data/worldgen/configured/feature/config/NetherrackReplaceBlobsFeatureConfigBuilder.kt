@@ -1,28 +1,28 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
 
-public class NetherrackReplaceBlobsFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public NetherrackReplaceBlobsFeatureConfigBuilder() {
-        super();
+class NetherrackReplaceBlobsFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun radius(processor: UniformIntDistributionBuilder.() -> Unit): NetherrackReplaceBlobsFeatureConfigBuilder {
+        with("radius", { JsonObject() }) { jsonObject: JsonObject ->
+            UniformIntDistributionBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public NetherrackReplaceBlobsFeatureConfigBuilder radius(Processor<UniformIntDistributionBuilder> processor) {
-        with("radius", JsonObject::new, jsonObject -> processor.process(new UniformIntDistributionBuilder()).buildTo(jsonObject));
-        return this;
+    fun target(processor: StateDataBuilder.() -> Unit): NetherrackReplaceBlobsFeatureConfigBuilder {
+        with("target", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public NetherrackReplaceBlobsFeatureConfigBuilder target(Processor<StateDataBuilder> processor) {
-        with("target", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
-    }
-
-    public NetherrackReplaceBlobsFeatureConfigBuilder state(Processor<StateDataBuilder> processor) {
-        with("state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
+    fun state(processor: StateDataBuilder.() -> Unit): NetherrackReplaceBlobsFeatureConfigBuilder {
+        with("state", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 }

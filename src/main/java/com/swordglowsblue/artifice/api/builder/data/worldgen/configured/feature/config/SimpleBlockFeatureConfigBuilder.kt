@@ -1,36 +1,38 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 
-public class SimpleBlockFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public SimpleBlockFeatureConfigBuilder() {
-        super();
-        this.root.add("place_on", new JsonArray());
-        this.root.add("place_in", new JsonArray());
-        this.root.add("place_under", new JsonArray());
+class SimpleBlockFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun toPlace(processor: StateDataBuilder.() -> Unit): SimpleBlockFeatureConfigBuilder {
+        with("to_place", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public SimpleBlockFeatureConfigBuilder toPlace(Processor<StateDataBuilder> processor) {
-        with("to_place", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
+    fun addPlaceOn(processor: StateDataBuilder.() -> Unit): SimpleBlockFeatureConfigBuilder {
+        this.root.getAsJsonArray("place_on")
+            .add(StateDataBuilder().apply(processor).buildTo(JsonObject()))
+        return this
     }
 
-    public SimpleBlockFeatureConfigBuilder addPlaceOn(Processor<StateDataBuilder> processor) {
-        this.root.getAsJsonArray("place_on").add(processor.process(new StateDataBuilder()).buildTo(new JsonObject()));
-        return this;
+    fun addPlaceIn(processor: StateDataBuilder.() -> Unit): SimpleBlockFeatureConfigBuilder {
+        this.root.getAsJsonArray("place_in")
+            .add(StateDataBuilder().apply(processor).buildTo(JsonObject()))
+        return this
     }
 
-    public SimpleBlockFeatureConfigBuilder addPlaceIn(Processor<StateDataBuilder> processor) {
-        this.root.getAsJsonArray("place_in").add(processor.process(new StateDataBuilder()).buildTo(new JsonObject()));
-        return this;
+    fun addPlaceUnder(processor: StateDataBuilder.() -> Unit): SimpleBlockFeatureConfigBuilder {
+        this.root.getAsJsonArray("place_under")
+            .add(StateDataBuilder().apply(processor).buildTo(JsonObject()))
+        return this
     }
 
-    public SimpleBlockFeatureConfigBuilder addPlaceUnder(Processor<StateDataBuilder> processor) {
-        this.root.getAsJsonArray("place_under").add(processor.process(new StateDataBuilder()).buildTo(new JsonObject()));
-        return this;
+    init {
+        this.root.add("place_on", JsonArray())
+        this.root.add("place_in", JsonArray())
+        this.root.add("place_under", JsonArray())
     }
 }

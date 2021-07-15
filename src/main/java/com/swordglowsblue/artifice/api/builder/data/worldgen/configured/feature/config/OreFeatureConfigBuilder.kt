@@ -1,30 +1,28 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder;
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 
-public class OreFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public OreFeatureConfigBuilder() {
-        super();
+class OreFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun <R : RuleTestBuilder> targetRule(processor: R.() -> Unit, instance: R): OreFeatureConfigBuilder {
+        with("target", { JsonObject() }) { jsonObject: JsonObject ->
+            instance.apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public <R extends RuleTestBuilder> OreFeatureConfigBuilder targetRule(Processor<R> processor, R instance) {
-        with("target", JsonObject::new, jsonObject -> processor.process(instance).buildTo(jsonObject));
-        return this;
+    fun state(processor: StateDataBuilder.() -> Unit): OreFeatureConfigBuilder {
+        with("target", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public OreFeatureConfigBuilder state(Processor<StateDataBuilder> processor) {
-        with("target", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
-    }
-
-    public OreFeatureConfigBuilder size(int size) {
-        if (size > 64) throw new IllegalArgumentException("size can't be higher than 64! Found " + size);
-        if (size < 0) throw new IllegalArgumentException("size can't be smaller than 0! Found " + size);
-        this.root.addProperty("size", size);
-        return this;
+    fun size(size: Int): OreFeatureConfigBuilder {
+        require(size <= 64) { "size can't be higher than 64! Found $size" }
+        require(size >= 0) { "size can't be smaller than 0! Found $size" }
+        this.root.addProperty("size", size)
+        return this
     }
 }

@@ -1,16 +1,14 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonArray;
+import com.google.gson.JsonArray
 
-public class SimpleRandomFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public SimpleRandomFeatureConfigBuilder() {
-        super();
-        this.root.add("features", new JsonArray());
+class SimpleRandomFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun addConfiguredFeature(configuredFeatureID: String?): SimpleRandomFeatureConfigBuilder {
+        this.root.getAsJsonArray("features").add(configuredFeatureID)
+        return this
     }
 
-    public SimpleRandomFeatureConfigBuilder addConfiguredFeature(String configuredFeatureID) {
-        this.root.getAsJsonArray("features").add(configuredFeatureID);
-        return this;
+    init {
+        this.root.add("features", JsonArray())
     }
 }

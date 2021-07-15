@@ -1,18 +1,13 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-public class RandomBooleanFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public RandomBooleanFeatureConfigBuilder() {
-        super();
+class RandomBooleanFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun featureOnTrue(configuredFeatureID: String): RandomBooleanFeatureConfigBuilder {
+        this.root.addProperty("feature_true", configuredFeatureID)
+        return this
     }
 
-    public RandomBooleanFeatureConfigBuilder featureOnTrue(String configuredFeatureID) {
-        this.root.addProperty("feature_true", configuredFeatureID);
-        return this;
-    }
-
-    public RandomBooleanFeatureConfigBuilder featureOnFalse(String configuredFeatureID) {
-        this.root.addProperty("feature_false", configuredFeatureID);
-        return this;
+    fun featureOnFalse(configuredFeatureID: String): RandomBooleanFeatureConfigBuilder {
+        this.root.addProperty("feature_false", configuredFeatureID)
+        return this
     }
 }

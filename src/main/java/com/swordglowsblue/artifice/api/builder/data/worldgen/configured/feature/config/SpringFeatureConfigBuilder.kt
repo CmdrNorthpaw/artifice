@@ -1,39 +1,38 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 
-public class SpringFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public SpringFeatureConfigBuilder() {
-        super();
-        this.root.add("valid_blocks", new JsonArray());
+class SpringFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun fluidState(processor: StateDataBuilder.() -> Unit): SpringFeatureConfigBuilder {
+        with("state", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public SpringFeatureConfigBuilder fluidState(Processor<StateDataBuilder> processor) {
-        with("state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
+    fun addValidBlock(blockID: String): SpringFeatureConfigBuilder {
+        this.root.getAsJsonArray("valid_blocks").add(blockID)
+        return this
     }
 
-    public SpringFeatureConfigBuilder addValidBlock(String blockID) {
-        this.root.getAsJsonArray("valid_blocks").add(blockID);
-        return this;
+    fun requiresBlockBelow(requiresBlockBelow: Boolean): SpringFeatureConfigBuilder {
+        this.root.addProperty("requires_block_below", requiresBlockBelow)
+        return this
     }
 
-    public SpringFeatureConfigBuilder requiresBlockBelow(boolean requiresBlockBelow) {
-        this.root.addProperty("requires_block_below", requiresBlockBelow);
-        return this;
+    fun rockCount(rockCount: Int): SpringFeatureConfigBuilder {
+        this.root.addProperty("rock_count", rockCount)
+        return this
     }
 
-    public SpringFeatureConfigBuilder rockCount(int rockCount) {
-        this.root.addProperty("rock_count", rockCount);
-        return this;
+    fun holeCount(holeCount: Int): SpringFeatureConfigBuilder {
+        this.root.addProperty("hole_count", holeCount)
+        return this
     }
 
-    public SpringFeatureConfigBuilder holeCount(int holeCount) {
-        this.root.addProperty("hole_count", holeCount);
-        return this;
+    init {
+        this.root.add("valid_blocks", JsonArray())
     }
 }

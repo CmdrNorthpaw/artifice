@@ -1,21 +1,18 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
 
-public class CountConfigBuilder extends FeatureConfigBuilder {
-    public CountConfigBuilder() {
-        super();
+class CountConfigBuilder : FeatureConfigBuilder() {
+    fun count(count: Int): CountConfigBuilder {
+        this.root.addProperty("count", count)
+        return this
     }
 
-    public CountConfigBuilder count(int count) {
-        this.root.addProperty("count", count);
-        return this;
-    }
-
-    public CountConfigBuilder count(Processor<UniformIntDistributionBuilder> processor) {
-        with("count", JsonObject::new, jsonObject -> processor.process(new UniformIntDistributionBuilder()).buildTo(jsonObject));
-        return this;
+    fun count(processor: UniformIntDistributionBuilder.() -> Unit): CountConfigBuilder {
+        with("count", { JsonObject() }) { jsonObject: JsonObject ->
+            UniformIntDistributionBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 }

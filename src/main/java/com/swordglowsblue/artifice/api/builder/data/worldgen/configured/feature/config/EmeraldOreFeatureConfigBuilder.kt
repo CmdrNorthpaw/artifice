@@ -1,22 +1,20 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 
-public class EmeraldOreFeatureConfigBuilder extends FeatureConfigBuilder {
-
-    public EmeraldOreFeatureConfigBuilder() {
-        super();
+class EmeraldOreFeatureConfigBuilder : FeatureConfigBuilder() {
+    fun state(processor: StateDataBuilder.() -> Unit): EmeraldOreFeatureConfigBuilder {
+        with("state", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public EmeraldOreFeatureConfigBuilder state(Processor<StateDataBuilder> processor) {
-        with("state", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
-    }
-
-    public EmeraldOreFeatureConfigBuilder target(Processor<StateDataBuilder> processor) {
-        with("target", JsonObject::new, jsonObject -> processor.process(new StateDataBuilder()).buildTo(jsonObject));
-        return this;
+    fun target(processor: StateDataBuilder.() -> Unit): EmeraldOreFeatureConfigBuilder {
+        with("target", { JsonObject() }) { jsonObject: JsonObject ->
+            StateDataBuilder().apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 }
