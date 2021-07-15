@@ -1,36 +1,42 @@
-package com.swordglowsblue.artifice.api.builder.data.dimension;
+package com.swordglowsblue.artifice.api.builder.data.dimension
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.resource.JsonResource;
-import com.swordglowsblue.artifice.api.util.Processor;
-import net.minecraft.util.Identifier;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.builder.data.dimension.ChunkGeneratorTypeBuilder.FlatChunkGeneratorTypeBuilder
+import com.swordglowsblue.artifice.api.builder.data.dimension.ChunkGeneratorTypeBuilder.NoiseChunkGeneratorTypeBuilder
+import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.swordglowsblue.artifice.api.util.Builder
+import net.minecraft.util.Identifier
+import java.util.function.Function
 
-public class DimensionBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
-    public DimensionBuilder() {
-        super(new JsonObject(), JsonResource::new);
-    }
-
+class DimensionBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
+    JsonObject(),
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the dimension type.
      * @param identifier
      * @return
      */
-    public DimensionBuilder dimensionType(Identifier identifier) {
-        this.root.addProperty("type", identifier.toString());
-        return this;
+    fun dimensionType(identifier: Identifier): DimensionBuilder {
+        this.root.addProperty("type", identifier.toString())
+        return this
     }
 
     /**
      * Make a Chunk Generator.
-     * @param generatorBuilder
-     * @param generatorBuilderInstance
+     * @param instance
+     * @param builder
      * @param <T> A class extending ChunkGeneratorTypeBuilder.
      * @return
-     */
-    public <T extends ChunkGeneratorTypeBuilder> DimensionBuilder generator(Processor<T> generatorBuilder, T generatorBuilderInstance) {
-        with("generator", JsonObject::new, generator -> generatorBuilder.process(generatorBuilderInstance).buildTo(generator));
-        return this;
+    </T> */
+    fun <T : ChunkGeneratorTypeBuilder> generator(
+        instance: T,
+        builder: Builder<T>
+    ): DimensionBuilder {
+        with("generator", { JsonObject() }) { generator: JsonObject ->
+            instance.apply(builder).buildTo(generator)
+        }
+        return this
     }
 
     /**
@@ -38,8 +44,8 @@ public class DimensionBuilder extends TypedJsonBuilder<JsonResource<JsonObject>>
      * @param generatorBuilder
      * @return
      */
-    public DimensionBuilder noiseGenerator(Processor<ChunkGeneratorTypeBuilder.NoiseChunkGeneratorTypeBuilder> generatorBuilder) {
-        return this.generator(generatorBuilder, new ChunkGeneratorTypeBuilder.NoiseChunkGeneratorTypeBuilder());
+    fun noiseGenerator(generatorBuilder: Builder<NoiseChunkGeneratorTypeBuilder>): DimensionBuilder {
+        return generator(NoiseChunkGeneratorTypeBuilder(), generatorBuilder)
     }
 
     /**
@@ -47,8 +53,8 @@ public class DimensionBuilder extends TypedJsonBuilder<JsonResource<JsonObject>>
      * @param generatorBuilder
      * @return
      */
-    public DimensionBuilder flatGenerator(Processor<ChunkGeneratorTypeBuilder.FlatChunkGeneratorTypeBuilder> generatorBuilder) {
-        return this.generator(generatorBuilder, new ChunkGeneratorTypeBuilder.FlatChunkGeneratorTypeBuilder());
+    fun flatGenerator(generatorBuilder: Builder<FlatChunkGeneratorTypeBuilder>): DimensionBuilder {
+        return generator(FlatChunkGeneratorTypeBuilder(), generatorBuilder)
     }
 
     /**
@@ -56,10 +62,10 @@ public class DimensionBuilder extends TypedJsonBuilder<JsonResource<JsonObject>>
      * @param generatorId The ID of the chunk generator type.
      * @return this
      */
-    public DimensionBuilder simpleGenerator(String generatorId) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("type", generatorId);
-        this.root.add("generator", jsonObject);
-        return this;
+    fun simpleGenerator(generatorId: String): DimensionBuilder {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("type", generatorId)
+        this.root.add("generator", jsonObject)
+        return this
     }
 }
