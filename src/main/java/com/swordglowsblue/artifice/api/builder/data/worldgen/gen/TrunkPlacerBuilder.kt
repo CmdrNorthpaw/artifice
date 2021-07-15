@@ -7,14 +7,14 @@ import java.util.function.Function
 
 sealed class TrunkPlacerBuilder<out B: TrunkPlacerBuilder<B>>(
     type: Identifier
-) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     protected abstract val me: B
 
     init {
         root.addProperty("type", type.toString())
     }
     
-    fun type(type: String?): B {
+    fun type(type: String): B {
         this.root.addProperty("type", type)
         return me
     }

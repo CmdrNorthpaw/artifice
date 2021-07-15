@@ -5,14 +5,14 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
 import java.util.function.Function
 
-class ConfiguredCarverBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+class ConfiguredCarverBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject?, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * @param id ID of an existing carver.
      * @return this
      */
-    fun name(id: String?): ConfiguredCarverBuilder {
+    fun name(id: String): ConfiguredCarverBuilder {
         this.root.addProperty("type", id)
         return this
     }

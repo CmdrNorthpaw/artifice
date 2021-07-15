@@ -8,7 +8,7 @@ import java.util.function.Function
 
 sealed class TreeDecoratorBuilder(
     type: Identifier
-) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     init {
         root.addProperty("type", type.toString())
     }
@@ -40,7 +40,7 @@ sealed class TreeDecoratorBuilder(
             instance: P,
             processor: P.() -> Unit
         ): AlterGroundTreeDecoratorBuilder {
-            with("provider", { JsonObject() }) { jsonObject: JsonObject? ->
+            with("provider", { JsonObject() }) { jsonObject: JsonObject ->
                 instance.apply(processor).buildTo(jsonObject)
             }
             return this

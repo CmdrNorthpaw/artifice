@@ -11,7 +11,7 @@ class CountConfigBuilder : DecoratorConfigBuilder() {
     }
 
     fun count(processor: Processor<UniformIntDistributionBuilder>): CountConfigBuilder {
-        with("count", { JsonObject() }) { jsonObject: JsonObject? ->
+        with("count", { JsonObject() }) { jsonObject: JsonObject ->
             processor.process(UniformIntDistributionBuilder()).buildTo(jsonObject)
         }
         return this

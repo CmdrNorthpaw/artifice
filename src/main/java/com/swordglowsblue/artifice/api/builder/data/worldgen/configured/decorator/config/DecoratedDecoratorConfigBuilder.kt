@@ -5,14 +5,14 @@ import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorato
 
 class DecoratedDecoratorConfigBuilder : DecoratorConfigBuilder() {
     fun outerDecorator(processor: ConfiguredDecoratorBuilder.() -> Unit): DecoratedDecoratorConfigBuilder {
-        with("outer", { JsonObject() }) { jsonObject: JsonObject? ->
+        with("outer", { JsonObject() }) { jsonObject: JsonObject ->
             ConfiguredDecoratorBuilder().apply(processor).buildTo(jsonObject)
         }
         return this
     }
 
     fun innerDecorator(processor: ConfiguredDecoratorBuilder.() -> Unit): DecoratedDecoratorConfigBuilder {
-        with("inner", { JsonObject() }) { jsonObject: JsonObject? ->
+        with("inner", { JsonObject() }) { jsonObject: JsonObject ->
             ConfiguredDecoratorBuilder().apply(processor).buildTo(jsonObject)
         }
         return this

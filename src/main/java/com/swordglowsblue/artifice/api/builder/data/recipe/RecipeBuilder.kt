@@ -11,11 +11,11 @@ import java.util.function.Function
  * @param <T> this
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
 </T> */
-abstract class RecipeBuilder<T : RecipeBuilder<T>?>(
-    type: Identifier?
-) : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+abstract class RecipeBuilder<T : RecipeBuilder<T>>(
+    type: Identifier
+) : TypedJsonBuilder<JsonResource<JsonObject>>(
         JsonObject(),
-        Function<JsonObject, JsonResource<JsonObject?>?> { root: JsonObject -> JsonResource(root) }) {
+        Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the type of this recipe.
      * @param id The type [Identifier].
@@ -23,7 +23,7 @@ abstract class RecipeBuilder<T : RecipeBuilder<T>?>(
      */
 
     init {
-        type?.let { root.addProperty("type", type.toString()) }
+        type.let { root.addProperty("type", type.toString()) }
     }
 
     /**

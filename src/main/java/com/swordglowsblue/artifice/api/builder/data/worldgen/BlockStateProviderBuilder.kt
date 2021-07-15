@@ -7,15 +7,15 @@ import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 import com.swordglowsblue.artifice.api.util.Processor
 import java.util.function.Function
 
-open class BlockStateProviderBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
-    fun <P : BlockStateProviderBuilder?> type(type: String?): P {
+open class BlockStateProviderBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    fun <P : BlockStateProviderBuilder> type(type: String): P {
         this.root.addProperty("type", type)
         return this as P
     }
 
     class SimpleBlockStateProviderBuilder : BlockStateProviderBuilder() {
         fun state(processor: Processor<StateDataBuilder>): SimpleBlockStateProviderBuilder {
-            with("state", { JsonObject() }) { jsonObject: JsonObject? ->
+            with("state", { JsonObject() }) { jsonObject: JsonObject ->
                 processor.process(StateDataBuilder()).buildTo(jsonObject)
             }
             return this
@@ -55,7 +55,7 @@ open class BlockStateProviderBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(
 
     class PillarBlockStateProviderBuilder : BlockStateProviderBuilder() {
         fun state(processor: Processor<StateDataBuilder>): PillarBlockStateProviderBuilder {
-            with("state", { JsonObject() }) { jsonObject: JsonObject? ->
+            with("state", { JsonObject() }) { jsonObject: JsonObject ->
                 processor.process(StateDataBuilder()).buildTo(jsonObject)
             }
             return this

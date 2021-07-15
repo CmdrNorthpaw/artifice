@@ -12,9 +12,9 @@ import java.util.function.Function
  * Builder for loot table files (`namespace:loot_tables/type/lootid.json`).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Loot_table)
  */
-class LootTableBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+class LootTableBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the type of this loot table.
      * @param id The type ID.
@@ -39,7 +39,7 @@ class LootTableBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * Builder for loot table pools.
      * @see LootTableBuilder
      */
-    class Pool internal constructor() : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class Pool internal constructor() : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         /**
          * Add an entry to this pool.
          * @param settings A callback which will be passed an [LootTableEntry].
@@ -120,7 +120,7 @@ class LootTableBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
 }
 
 class LootTableEntry internal constructor() :
-    TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     /**
      * Set the type of this entry.
      * @param id The type ID.

@@ -5,8 +5,8 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.util.Processor
 import java.util.function.Function
 
-open class RuleTestBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
-    fun <R : RuleTestBuilder?> predicateType(type: String?): R {
+open class RuleTestBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    fun <R : RuleTestBuilder> predicateType(type: String): R {
         this.root.addProperty("predicate_type", type)
         return this as R
     }
@@ -18,7 +18,7 @@ open class RuleTestBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Functio
     }
 
     class BlockRuleTestBuilder : RuleTestBuilder() {
-        fun block(blockID: String?): BlockRuleTestBuilder {
+        fun block(blockID: String): BlockRuleTestBuilder {
             this.root.addProperty("block", blockID)
             return this
         }
@@ -30,7 +30,7 @@ open class RuleTestBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Functio
 
     class BlockStateRuleTestBuilder : RuleTestBuilder() {
         fun blockState(processor: StateDataBuilder.() -> Unit): BlockStateRuleTestBuilder {
-            with("block_state", { JsonObject() }) { jsonObject: JsonObject? ->
+            with("block_state", { JsonObject() }) { jsonObject: JsonObject ->
                 StateDataBuilder().apply(processor).buildTo(jsonObject)
             }
             return this
@@ -42,7 +42,7 @@ open class RuleTestBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Functio
     }
 
     class TagMatchRuleTestBuilder : RuleTestBuilder() {
-        fun tag(tagID: String?): TagMatchRuleTestBuilder {
+        fun tag(tagID: String): TagMatchRuleTestBuilder {
             this.root.addProperty("tag", tagID)
             return this
         }
@@ -53,7 +53,7 @@ open class RuleTestBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Functio
     }
 
     class RandomBlockMatchRuleTestBuilder : RuleTestBuilder() {
-        fun block(blockID: String?): RandomBlockMatchRuleTestBuilder {
+        fun block(blockID: String): RandomBlockMatchRuleTestBuilder {
             this.root.addProperty("block", blockID)
             return this
         }
@@ -70,7 +70,7 @@ open class RuleTestBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Functio
 
     class RandomBlockStateMatchRuleTestBuilder : RuleTestBuilder() {
         fun blockState(processor: Processor<StateDataBuilder>): RandomBlockStateMatchRuleTestBuilder {
-            with("block_state", { JsonObject() }) { jsonObject: JsonObject? ->
+            with("block_state", { JsonObject() }) { jsonObject: JsonObject ->
                 processor.process(StateDataBuilder()).buildTo(jsonObject)
             }
             return this

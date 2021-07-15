@@ -13,12 +13,12 @@ class JsonArrayBuilder @JvmOverloads constructor(private val root: JsonArray = J
         return target
     }
 
-    fun add(value: JsonElement?): JsonArrayBuilder {
+    fun add(value: JsonElement): JsonArrayBuilder {
         root.add(value)
         return this
     }
 
-    fun add(value: String?): JsonArrayBuilder {
+    fun add(value: String): JsonArrayBuilder {
         root.add(value)
         return this
     }
@@ -28,12 +28,12 @@ class JsonArrayBuilder @JvmOverloads constructor(private val root: JsonArray = J
         return this
     }
 
-    fun add(value: Number?): JsonArrayBuilder {
+    fun add(value: Number): JsonArrayBuilder {
         root.add(value)
         return this
     }
 
-    fun add(value: Char?): JsonArrayBuilder {
+    fun add(value: Char): JsonArrayBuilder {
         root.add(value)
         return this
     }

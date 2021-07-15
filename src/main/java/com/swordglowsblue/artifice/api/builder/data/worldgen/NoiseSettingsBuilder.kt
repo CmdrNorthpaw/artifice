@@ -8,9 +8,9 @@ import com.swordglowsblue.artifice.api.builder.data.dimension.StructureManagerBu
 import com.swordglowsblue.artifice.api.resource.JsonResource
 import java.util.function.Function
 
-class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject?, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the bedrock roof position.
      * @param bedrockRoofPosition
@@ -45,7 +45,7 @@ class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * Build noise config.
      */
     fun noiseConfig(noiseConfigBuilder: NoiseConfigBuilder.() -> Unit): NoiseSettingsBuilder {
-        with("noise", { JsonObject() }) { jsonObject: JsonObject? ->
+        with("noise", { JsonObject() }) { jsonObject: JsonObject ->
             NoiseConfigBuilder().also(noiseConfigBuilder).buildTo(jsonObject)
         }
         return this
@@ -77,8 +77,8 @@ class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @param blockStateBuilderProcessor
      * @return
      */
-    fun setBlockState(id: String?, blockStateBuilderProcessor: StateDataBuilder.() -> Unit): NoiseSettingsBuilder {
-        with(id, { JsonObject() }) { jsonObject: JsonObject? ->
+    fun setBlockState(id: String, blockStateBuilderProcessor: StateDataBuilder.() -> Unit): NoiseSettingsBuilder {
+        with(id, { JsonObject() }) { jsonObject: JsonObject ->
             StateDataBuilder().also(blockStateBuilderProcessor).buildTo(jsonObject)
         }
         return this
@@ -108,7 +108,7 @@ class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @return
      */
     fun structureManager(structureManagerBuilder: StructureManagerBuilder.() -> Unit): NoiseSettingsBuilder {
-        with("structures", { JsonObject() }) { jsonObject: JsonObject? ->
+        with("structures", { JsonObject() }) { jsonObject: JsonObject ->
             StructureManagerBuilder().apply(structureManagerBuilder).buildTo(jsonObject)
         }
         return this

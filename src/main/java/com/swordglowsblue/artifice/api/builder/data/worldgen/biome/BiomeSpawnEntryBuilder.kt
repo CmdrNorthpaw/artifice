@@ -4,8 +4,8 @@ import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import java.util.function.Function
 
-class BiomeSpawnEntryBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
-    fun entityID(entityID: String?): BiomeSpawnEntryBuilder {
+class BiomeSpawnEntryBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    fun entityID(entityID: String): BiomeSpawnEntryBuilder {
         this.root.addProperty("type", entityID)
         return this
     }

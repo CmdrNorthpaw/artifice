@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import java.util.function.Function
 
-class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     /**
      * @param fog_color RGB value.
      * @return BiomeBuilder
@@ -68,13 +68,13 @@ class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function
         return this
     }
 
-    fun ambientSound(soundID: String?): BiomeEffectsBuilder {
+    fun ambientSound(soundID: String): BiomeEffectsBuilder {
         this.root.addProperty("ambient_sound", soundID)
         return this
     }
 
     fun moodSound(biomeMoodSoundBuilder: BiomeMoodSoundBuilder.() -> Unit): BiomeEffectsBuilder {
-        with("mood_sound", { JsonObject() }) { biomeMoodSound: JsonObject? ->
+        with("mood_sound", { JsonObject() }) { biomeMoodSound: JsonObject ->
             BiomeMoodSoundBuilder().apply(biomeMoodSoundBuilder).buildTo(biomeMoodSound)
         }
         return this
@@ -83,27 +83,27 @@ class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function
     fun additionsSound(biomeAdditionsSoundBuilder: BiomeAdditionsSoundBuilder.() -> Unit): BiomeEffectsBuilder {
         with(
             "additions_sound",
-            { JsonObject() }) { biomeAdditionsSound: JsonObject? ->
+            { JsonObject() }) { biomeAdditionsSound: JsonObject ->
             BiomeAdditionsSoundBuilder().apply(biomeAdditionsSoundBuilder).buildTo(biomeAdditionsSound)
         }
         return this
     }
 
     fun music(biomeMusicSoundBuilder: BiomeMusicSoundBuilder.() -> Unit): BiomeEffectsBuilder {
-        with("music", { JsonObject() }) { biomeMusicSound: JsonObject? ->
+        with("music", { JsonObject() }) { biomeMusicSound: JsonObject ->
             BiomeMusicSoundBuilder().apply(biomeMusicSoundBuilder).buildTo(biomeMusicSound)
         }
         return this
     }
 
     fun particle(biomeParticleConfigBuilder: BiomeParticleConfigBuilder.() -> Unit): BiomeEffectsBuilder {
-        with("particle", { JsonObject() }) { biomeParticleConfig: JsonObject? ->
+        with("particle", { JsonObject() }) { biomeParticleConfig: JsonObject ->
             BiomeParticleConfigBuilder().apply(biomeParticleConfigBuilder).buildTo(biomeParticleConfig)
         }
         return this
     }
 
-    class BiomeMoodSoundBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class BiomeMoodSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         fun tickDelay(tick_delay: Int): BiomeMoodSoundBuilder {
             this.root.addProperty("tick_delay", tick_delay)
             return this
@@ -119,13 +119,13 @@ class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function
             return this
         }
 
-        fun soundID(soundID: String?): BiomeMoodSoundBuilder {
+        fun soundID(soundID: String): BiomeMoodSoundBuilder {
             this.root.addProperty("sound", soundID)
             return this
         }
     }
 
-    class BiomeMusicSoundBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class BiomeMusicSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         fun minDelay(min_delay: Int): BiomeMusicSoundBuilder {
             this.root.addProperty("min_delay", min_delay)
             return this
@@ -141,31 +141,31 @@ class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function
             return this
         }
 
-        fun soundID(soundID: String?): BiomeMusicSoundBuilder {
+        fun soundID(soundID: String): BiomeMusicSoundBuilder {
             this.root.addProperty("sound", soundID)
             return this
         }
     }
 
-    class BiomeAdditionsSoundBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class BiomeAdditionsSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         fun tickChance(tick_chance: Double): BiomeAdditionsSoundBuilder {
             this.root.addProperty("tick_chance", tick_chance)
             return this
         }
 
-        fun soundID(soundID: String?): BiomeAdditionsSoundBuilder {
+        fun soundID(soundID: String): BiomeAdditionsSoundBuilder {
             this.root.addProperty("sound", soundID)
             return this
         }
     }
 
-    class BiomeParticleConfigBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class BiomeParticleConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         fun probability(probability: Float): BiomeParticleConfigBuilder {
             this.root.addProperty("probability", probability)
             return this
         }
 
-        fun particleID(id: String?): BiomeParticleConfigBuilder {
+        fun particleID(id: String): BiomeParticleConfigBuilder {
             val jsonObject = JsonObject()
             jsonObject.addProperty("type", id)
             this.root.add("options", jsonObject)

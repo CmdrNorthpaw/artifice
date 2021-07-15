@@ -4,9 +4,9 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import java.util.function.Function
 
-open class JsonObjectBuilder : TypedJsonBuilder<JsonObject?> {
-    constructor() : super(JsonObject(), Function<JsonObject?, JsonObject?> { j: JsonObject? -> j }) {}
-    constructor(root: JsonObject) : super(root, Function<JsonObject?, JsonObject?> { j: JsonObject? -> j }) {}
+open class JsonObjectBuilder : TypedJsonBuilder<JsonObject> {
+    constructor() : super(JsonObject(), Function<JsonObject, JsonObject> { j: JsonObject -> j }) {}
+    constructor(root: JsonObject) : super(root, Function<JsonObject, JsonObject> { j: JsonObject -> j }) {}
 
     fun add(name: String, value: JsonElement): JsonObjectBuilder {
         root.add(name, value)

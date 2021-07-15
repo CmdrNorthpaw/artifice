@@ -7,7 +7,7 @@ import java.util.function.Function
 
 sealed class BlockPlacerBuilder(
     type: Identifier
-) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
 
     init {
         root.addProperty("type", type.toString())

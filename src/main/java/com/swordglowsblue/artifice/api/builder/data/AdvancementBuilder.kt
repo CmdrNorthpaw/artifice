@@ -13,9 +13,9 @@ import java.util.function.Function
  * Builder for advancement files (`namespace:advancements/advid.json`).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Advancements.JSON_Format)
  */
-class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    { root: JsonObject? -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the display options for this advancement.
      * @param settings A callback which will be passed a [Display].
@@ -23,7 +23,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      */
     fun display(settings: Display.() -> Unit): AdvancementBuilder {
         with("display", { JsonObject() }) {
-                displayObject: JsonObject? -> Display().apply(settings).buildTo(displayObject)
+                displayObject: JsonObject -> Display().apply(settings).buildTo(displayObject)
         }
         return this
     }
@@ -44,9 +44,9 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @param settings A callback which will be passed a [Criteria].
      * @return this
      */
-    fun criteria(name: String?, settings: Criteria.() -> Unit): AdvancementBuilder {
-        with("criteria", { JsonObject() }) { criteria: JsonObject? ->
-            with(criteria, name, { JsonObject() }) { criterion: JsonObject? ->
+    fun criteria(name: String, settings: Criteria.() -> Unit): AdvancementBuilder {
+        with("criteria", { JsonObject() }) { criteria: JsonObject ->
+            with(criteria, name, { JsonObject() }) { criterion: JsonObject ->
                 Criteria().apply(settings).buildTo(criterion)
             }
         }
@@ -63,7 +63,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * @param anyOf A list of criteria names, any of which can be completed to fulfill this requirement.
      * @return this
      */
-    fun requirement(vararg anyOf: String?): AdvancementBuilder {
+    fun requirement(vararg anyOf: String): AdvancementBuilder {
         with("requirements", { JsonArray() }) { requirements: JsonArray ->
             val array = JsonArray()
             for (name in anyOf) array.add(name)
@@ -76,7 +76,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      * Builder for advancement display properties.
      * @see AdvancementBuilder
      */
-    class Display : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class Display : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         /**
          * Set the icon item of this advancement.
          * @param item The item ID.
@@ -87,7 +87,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
         fun icon(item: Identifier, nbt: String? = null): Display {
             with("icon", { JsonObject() }) { icon: JsonObject ->
                 icon.addProperty("icon", item.toString())
-                nbt?.let { icon.addProperty("nbt", nbt) }
+                nbt.let { icon.addProperty("nbt", nbt) }
             }
             return this
         }
@@ -97,7 +97,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
          * @param title The title.
          * @return this
          */
-        fun title(title: String?): Display {
+        fun title(title: String): Display {
             root.addProperty("title", title)
             return this
         }
@@ -107,7 +107,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
          * @param title The title.
          * @return this
          */
-        fun title(title: Text?): Display {
+        fun title(title: Text): Display {
             root.add("title", Text.Serializer.toJsonTree(title))
             return this
         }
@@ -137,7 +137,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
          * @param desc The description.
          * @return this
          */
-        fun description(desc: String?): Display {
+        fun description(desc: String): Display {
             root.addProperty("description", desc)
             return this
         }
@@ -147,7 +147,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
          * @param desc The description.
          * @return this
          */
-        fun description(desc: Text?): Display {
+        fun description(desc: Text): Display {
             root.add("description", Text.Serializer.toJsonTree(desc))
             return this
         }
@@ -199,7 +199,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
      *
      * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Advancements.List_of_triggers)
      */
-    class Criteria : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class Criteria : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         /**
          * Set the trigger condition of this criteria.
          * @param id The trigger ID (`namespace:triggerid`).

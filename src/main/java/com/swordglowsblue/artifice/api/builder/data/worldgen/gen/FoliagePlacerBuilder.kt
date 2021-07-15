@@ -8,7 +8,7 @@ import java.util.function.Function
 
 sealed class FoliagePlacerBuilder<out F: FoliagePlacerBuilder<F>>(
     type: Identifier
-) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     protected abstract val me: F
 
     init {
@@ -21,7 +21,7 @@ sealed class FoliagePlacerBuilder<out F: FoliagePlacerBuilder<F>>(
     }
 
     fun radius(processor: UniformIntDistributionBuilder.() -> Unit): F {
-        with("radius", { JsonObject() }) { jsonObject: JsonObject? ->
+        with("radius", { JsonObject() }) { jsonObject: JsonObject ->
             UniformIntDistributionBuilder().apply(processor).buildTo(jsonObject)
         }
         return me
@@ -33,7 +33,7 @@ sealed class FoliagePlacerBuilder<out F: FoliagePlacerBuilder<F>>(
     }
 
     fun offset(processor: UniformIntDistributionBuilder.() -> Unit): F {
-        with("offset", { JsonObject() }) { jsonObject: JsonObject? ->
+        with("offset", { JsonObject() }) { jsonObject: JsonObject ->
             UniformIntDistributionBuilder().apply(processor).buildTo(jsonObject)
         }
         return me
@@ -63,7 +63,7 @@ sealed class FoliagePlacerBuilder<out F: FoliagePlacerBuilder<F>>(
         }
 
         fun trunkHeight(processor: UniformIntDistributionBuilder.() -> Unit): SpruceFoliagePlacerBuilder {
-            with("trunk_height", { JsonObject() }) { jsonObject: JsonObject? ->
+            with("trunk_height", { JsonObject() }) { jsonObject: JsonObject ->
                 UniformIntDistributionBuilder().apply(processor).buildTo(jsonObject)
             }
             return this
@@ -80,7 +80,7 @@ sealed class FoliagePlacerBuilder<out F: FoliagePlacerBuilder<F>>(
         }
 
         fun trunkHeight(processor: UniformIntDistributionBuilder.() -> Unit): PineFoliagePlacerBuilder {
-            with("trunk_height", { JsonObject() }) { jsonObject: JsonObject? ->
+            with("trunk_height", { JsonObject() }) { jsonObject: JsonObject ->
                 UniformIntDistributionBuilder().apply(processor).buildTo(jsonObject)
             }
             return this
@@ -128,7 +128,7 @@ sealed class FoliagePlacerBuilder<out F: FoliagePlacerBuilder<F>>(
         }
 
         fun crownHeight(processor: UniformIntDistributionBuilder.() -> Unit): MegaPineFoliagePlacerBuilder {
-            with("crown_height", { JsonObject() }) { jsonObject: JsonObject? ->
+            with("crown_height", { JsonObject() }) { jsonObject: JsonObject ->
                 UniformIntDistributionBuilder().apply(processor).buildTo(jsonObject)
             }
             return this

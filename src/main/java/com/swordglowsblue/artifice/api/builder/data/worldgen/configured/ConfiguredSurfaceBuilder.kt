@@ -6,9 +6,9 @@ import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
 import java.util.function.Function
 
-class ConfiguredSurfaceBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+class ConfiguredSurfaceBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject?, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set a block state.
      * @param id
@@ -22,7 +22,7 @@ class ConfiguredSurfaceBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
         with(
             this.root.getAsJsonObject("config"),
             id,
-            { JsonObject() }) { jsonObject: JsonObject? ->
+            { JsonObject() }) { jsonObject: JsonObject ->
             StateDataBuilder().apply(blockStateBuilderProcessor).buildTo(jsonObject)
         }
         return this
@@ -40,7 +40,7 @@ class ConfiguredSurfaceBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
         return setBlockState("underwater_material", blockStateBuilderProcessor)
     }
 
-    fun surfaceBuilderID(id: String?): ConfiguredSurfaceBuilder {
+    fun surfaceBuilderID(id: String): ConfiguredSurfaceBuilder {
         this.root.addProperty("type", id)
         return this
     }

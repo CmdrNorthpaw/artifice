@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import java.util.function.Function
 
-class StateDataBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+class StateDataBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     private val jsonObject = JsonObject()
 
     /**
@@ -12,7 +12,7 @@ class StateDataBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { 
      * @param id
      * @return
      */
-    fun name(id: String?): StateDataBuilder {
+    fun name(id: String): StateDataBuilder {
         this.root.addProperty("Name", id)
         return this
     }
@@ -23,7 +23,7 @@ class StateDataBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { 
      * @param state
      * @return
      */
-    fun setProperty(property: String?, state: String?): StateDataBuilder {
+    fun setProperty(property: String, state: String): StateDataBuilder {
         jsonObject.addProperty(property, state)
         this.root.add("Properties", jsonObject)
         return this

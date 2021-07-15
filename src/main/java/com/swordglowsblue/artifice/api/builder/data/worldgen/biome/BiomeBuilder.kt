@@ -10,9 +10,9 @@ import net.minecraft.world.biome.Biome.Precipitation
 import net.minecraft.world.gen.GenerationStep
 import java.util.function.Function
 
-class BiomeBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
+class BiomeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject?, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     fun depth(depth: Float): BiomeBuilder {
         this.root.addProperty("depth", depth)
         return this
@@ -33,12 +33,12 @@ class BiomeBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
         return this
     }
 
-    fun parent(parent: String?): BiomeBuilder {
+    fun parent(parent: String): BiomeBuilder {
         this.root.addProperty("parent", parent)
         return this
     }
 
-    fun surfaceBuilder(surface_builder: String?): BiomeBuilder {
+    fun surfaceBuilder(surface_builder: String): BiomeBuilder {
         this.root.addProperty("surface_builder", surface_builder)
         return this
     }
@@ -56,14 +56,14 @@ class BiomeBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
     fun effects(biomeEffectsBuilder: BiomeEffectsBuilder.() -> Unit): BiomeBuilder {
         with(
             "effects",
-            { JsonObject() }) { biomeEffects: JsonObject? ->
+            { JsonObject() }) { biomeEffects: JsonObject ->
             BiomeEffectsBuilder().also(biomeEffectsBuilder).buildTo(biomeEffects)
         }
         return this
     }
 
-    fun addSpawnCosts(entityID: String?, spawnDensityBuilderProcessor: SpawnDensityBuilder.() -> Unit): BiomeBuilder {
-        with(entityID, { JsonObject() }) { spawnDensityBuilder: JsonObject? ->
+    fun addSpawnCosts(entityID: String, spawnDensityBuilderProcessor: SpawnDensityBuilder.() -> Unit): BiomeBuilder {
+        with(entityID, { JsonObject() }) { spawnDensityBuilder: JsonObject ->
             SpawnDensityBuilder().also(spawnDensityBuilderProcessor).buildTo(spawnDensityBuilder)
         }
         return this
@@ -96,17 +96,17 @@ class BiomeBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
         return this
     }
 
-    fun addFeaturesbyStep(step: GenerationStep.Feature, vararg featureIDs: String?): BiomeBuilder {
+    fun addFeaturesbyStep(step: GenerationStep.Feature, vararg featureIDs: String): BiomeBuilder {
         for (featureID in featureIDs) this.root.getAsJsonArray("features")[step.ordinal].asJsonArray.add(featureID)
         return this
     }
 
-    fun addStructure(structureID: String?): BiomeBuilder {
+    fun addStructure(structureID: String): BiomeBuilder {
         this.root.getAsJsonArray("starts").add(structureID)
         return this
     }
 
-    class SpawnDensityBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class SpawnDensityBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         fun energyBudget(energy_budget: Double): SpawnDensityBuilder {
             this.root.addProperty("energy_budget", energy_budget)
             return this

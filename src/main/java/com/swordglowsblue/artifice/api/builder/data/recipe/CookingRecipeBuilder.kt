@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier
  * Used for all types of cooking (smelting, blasting, smoking, campfire_cooking).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class CookingRecipeBuilder(type: CookingRecipeType) : RecipeBuilder<CookingRecipeBuilder?>(type.type) {
+class CookingRecipeBuilder(type: CookingRecipeType) : RecipeBuilder<CookingRecipeBuilder>(type.type) {
     /**
      * Set the item being cooked.
      * @param id The item ID.

@@ -10,14 +10,14 @@ import net.minecraft.util.Identifier
  * Builder for a recipe of an unknown type (`namespace:recipes/id.json`)
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilder?>(type) {
+class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilder>(type) {
     /**
      * Add a JSON element to this recipe.
      * @param name The key.
      * @param value The value.
      * @return this
      */
-    fun add(name: String?, value: JsonElement?): RecipeBuilder<*> {
+    fun add(name: String, value: JsonElement): RecipeBuilder<*> {
         root.add(name, value)
         return this
     }
@@ -28,7 +28,7 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param value The value.
      * @return this
      */
-    fun add(name: String?, value: String?): RecipeBuilder<*> {
+    fun add(name: String, value: String): RecipeBuilder<*> {
         root.addProperty(name, value)
         return this
     }
@@ -39,7 +39,7 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param value The value.
      * @return this
      */
-    fun add(name: String?, value: Boolean): RecipeBuilder<*> {
+    fun add(name: String, value: Boolean): RecipeBuilder<*> {
         root.addProperty(name, value)
         return this
     }
@@ -50,7 +50,7 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param value The value.
      * @return this
      */
-    fun add(name: String?, value: Number?): RecipeBuilder<*> {
+    fun add(name: String, value: Number): RecipeBuilder<*> {
         root.addProperty(name, value)
         return this
     }
@@ -61,7 +61,7 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param value The value.
      * @return this
      */
-    fun add(name: String?, value: Char?): RecipeBuilder<*> {
+    fun add(name: String, value: Char): RecipeBuilder<*> {
         root.addProperty(name, value)
         return this
     }
@@ -72,7 +72,7 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param settings A callback which will be passed a [JsonObjectBuilder].
      * @return this
      */
-    fun addObject(name: String?, settings: Processor<JsonObjectBuilder>): RecipeBuilder<*> {
+    fun addObject(name: String, settings: Processor<JsonObjectBuilder>): RecipeBuilder<*> {
         root.add(name, settings.process(JsonObjectBuilder()).build())
         return this
     }
@@ -83,7 +83,7 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param settings A callback which will be passed a [JsonArrayBuilder].
      * @return this
      */
-    fun addArray(name: String?, settings: JsonArrayBuilder.() -> Unit): RecipeBuilder<*> {
+    fun addArray(name: String, settings: JsonArrayBuilder.() -> Unit): RecipeBuilder<*> {
         root.add(name, JsonArrayBuilder().apply(settings).build())
         return this
     }
