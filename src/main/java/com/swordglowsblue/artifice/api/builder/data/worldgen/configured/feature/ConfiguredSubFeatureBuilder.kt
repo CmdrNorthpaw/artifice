@@ -1,26 +1,24 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config.FeatureConfigBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config.FeatureConfigBuilder
+import java.util.function.Function
 
-public class ConfiguredSubFeatureBuilder extends TypedJsonBuilder<JsonObject> {
-    public ConfiguredSubFeatureBuilder() {
-        super(new JsonObject(), j->j);
+class ConfiguredSubFeatureBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    fun featureID(id: String?): ConfiguredSubFeatureBuilder {
+        this.root.addProperty("type", id)
+        return this
     }
 
-    public ConfiguredSubFeatureBuilder featureID(String id) {
-        this.root.addProperty("type", id);
-        return this;
+    fun <C : FeatureConfigBuilder> featureConfig(instance: C, processor: C.() -> Unit): ConfiguredSubFeatureBuilder {
+        with("config", { JsonObject() }) { jsonObject: JsonObject ->
+            instance.apply(processor).buildTo(jsonObject)
+        }
+        return this
     }
 
-    public <C extends FeatureConfigBuilder> ConfiguredSubFeatureBuilder featureConfig(Processor<C> processor, C instance) {
-        with("config", JsonObject::new, jsonObject -> processor.process(instance).buildTo(jsonObject));
-        return this;
-    }
-
-    public ConfiguredSubFeatureBuilder defaultConfig() {
-        return this.featureConfig(featureConfigBuilder -> {} , new FeatureConfigBuilder());
+    fun defaultConfig(): ConfiguredSubFeatureBuilder {
+        return featureConfig(FeatureConfigBuilder()) {}
     }
 }

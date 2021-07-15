@@ -1,27 +1,29 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature;
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config.FeatureConfigBuilder;
-import com.swordglowsblue.artifice.api.resource.JsonResource;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config.FeatureConfigBuilder
+import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.swordglowsblue.artifice.api.util.Processor
+import java.util.function.Function
 
-public class ConfiguredFeatureBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
-    public ConfiguredFeatureBuilder() {
-        super(new JsonObject(), JsonResource::new);
+class ConfiguredFeatureBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
+    JsonObject(),
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject? -> JsonResource(root) }) {
+    fun featureID(id: String?): ConfiguredFeatureBuilder {
+        this.root.addProperty("type", id)
+        return this
     }
 
-    public ConfiguredFeatureBuilder featureID(String id) {
-        this.root.addProperty("type", id);
-        return this;
+    fun <C : FeatureConfigBuilder?> featureConfig(processor: Processor<C>, instance: C): ConfiguredFeatureBuilder {
+        with("config", { JsonObject() }) { jsonObject: JsonObject? ->
+            processor.process(instance)!!
+                .buildTo(jsonObject!!)
+        }
+        return this
     }
 
-    public <C extends FeatureConfigBuilder> ConfiguredFeatureBuilder featureConfig(Processor<C> processor, C instance) {
-        with("config", JsonObject::new, jsonObject -> processor.process(instance).buildTo(jsonObject));
-        return this;
-    }
-
-    public ConfiguredFeatureBuilder defaultConfig() {
-        return this.featureConfig(featureConfigBuilder -> {} , new FeatureConfigBuilder());
+    fun defaultConfig(): ConfiguredFeatureBuilder {
+        return featureConfig({ featureConfigBuilder: FeatureConfigBuilder? -> }, FeatureConfigBuilder())
     }
 }
