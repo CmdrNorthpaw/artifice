@@ -1,15 +1,14 @@
-package com.swordglowsblue.artifice.api.builder.data.dimension;
+package com.swordglowsblue.artifice.api.builder.data.dimension
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.resource.JsonResource;
-import net.minecraft.util.Identifier;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.resource.JsonResource
+import net.minecraft.util.Identifier
+import java.util.function.Function
 
-public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
-    public DimensionTypeBuilder() {
-        super(new JsonObject(), JsonResource::new);
-    }
-
+class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
+    JsonObject(),
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Overworld -> false
      * Nether -> true
@@ -17,9 +16,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param ultrawarm
      * @return this
      */
-    public DimensionTypeBuilder ultrawarm(boolean ultrawarm) {
-        root.addProperty("ultrawarm", ultrawarm);
-        return this;
+    fun ultrawarm(ultrawarm: Boolean): DimensionTypeBuilder {
+        root.addProperty("ultrawarm", ultrawarm)
+        return this
     }
 
     /**
@@ -29,9 +28,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param natural
      * @return this
      */
-    public DimensionTypeBuilder natural(boolean natural) {
-        root.addProperty("natural", natural);
-        return this;
+    fun natural(natural: Boolean): DimensionTypeBuilder {
+        root.addProperty("natural", natural)
+        return this
     }
 
     /**
@@ -41,11 +40,11 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param coordinate_scale
      * @return this
      */
-    public DimensionTypeBuilder coordinate_scale(double coordinate_scale) {
-        if (coordinate_scale < 0.00001) throw new IllegalArgumentException("Coordinate scale can't be higher than 0.00001D! Found " + coordinate_scale);
-        if (coordinate_scale > 30000000) throw new IllegalArgumentException("Coordinate scale can't be higher than 30000000D! Found " + coordinate_scale);
-        root.addProperty("coordinate_scale", coordinate_scale);
-        return this;
+    fun coordinate_scale(coordinate_scale: Double): DimensionTypeBuilder {
+        require(coordinate_scale >= 0.00001) { "Coordinate scale can't be higher than 0.00001D! Found $coordinate_scale" }
+        require(coordinate_scale <= 30000000) { "Coordinate scale can't be higher than 30000000D! Found $coordinate_scale" }
+        root.addProperty("coordinate_scale", coordinate_scale)
+        return this
     }
 
     /**
@@ -55,10 +54,10 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param ambientLight
      * @return
      */
-    public DimensionTypeBuilder ambientLight(float ambientLight) {
+    fun ambientLight(ambientLight: Float): DimensionTypeBuilder {
 //        if (ambientLight > 1.0F) throw new IllegalArgumentException("Ambient light can't be higher than 1.0F! Found " + ambientLight);
-        root.addProperty("ambient_light", ambientLight);
-        return this;
+        root.addProperty("ambient_light", ambientLight)
+        return this
     }
 
     /**
@@ -68,9 +67,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param hasSkylight
      * @return this
      */
-    public DimensionTypeBuilder hasSkylight(boolean hasSkylight) {
-        root.addProperty("has_skylight", hasSkylight);
-        return this;
+    fun hasSkylight(hasSkylight: Boolean): DimensionTypeBuilder {
+        root.addProperty("has_skylight", hasSkylight)
+        return this
     }
 
     /**
@@ -80,9 +79,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param hasCeiling
      * @return
      */
-    public DimensionTypeBuilder hasCeiling(boolean hasCeiling) {
-        root.addProperty("has_ceiling", hasCeiling);
-        return this;
+    fun hasCeiling(hasCeiling: Boolean): DimensionTypeBuilder {
+        root.addProperty("has_ceiling", hasCeiling)
+        return this
     }
 
     /**
@@ -92,9 +91,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param hasEnderDragonFight
      * @return this
      */
-    public DimensionTypeBuilder hasEnderDragonFight(boolean hasEnderDragonFight) {
-        root.addProperty("has_ender_dragon_fight", hasEnderDragonFight);
-        return this;
+    fun hasEnderDragonFight(hasEnderDragonFight: Boolean): DimensionTypeBuilder {
+        root.addProperty("has_ender_dragon_fight", hasEnderDragonFight)
+        return this
     }
 
     /**
@@ -105,9 +104,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param infiniburn The block tag id.
      * @return this
      */
-    public DimensionTypeBuilder infiniburn(Identifier infiniburn) {
-        root.addProperty("infiniburn", infiniburn.toString());
-        return this;
+    fun infiniburn(infiniburn: Identifier): DimensionTypeBuilder {
+        root.addProperty("infiniburn", infiniburn.toString())
+        return this
     }
 
     /**
@@ -115,9 +114,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * Nether -> 128
      * End -> 256
      */
-    public DimensionTypeBuilder minimumY(int minimumY) {
-        root.addProperty("min_y", minimumY);
-        return this;
+    fun minimumY(minimumY: Int): DimensionTypeBuilder {
+        root.addProperty("min_y", minimumY)
+        return this
     }
 
     /**
@@ -125,9 +124,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * Nether -> 128
      * End -> 256
      */
-    public DimensionTypeBuilder height(int height) {
-        root.addProperty("height", height);
-        return this;
+    fun height(height: Int): DimensionTypeBuilder {
+        root.addProperty("height", height)
+        return this
     }
 
     /**
@@ -137,9 +136,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param logicalHeight
      * @return
      */
-    public DimensionTypeBuilder logicalHeight(int logicalHeight) {
-        root.addProperty("logical_height", logicalHeight);
-        return this;
+    fun logicalHeight(logicalHeight: Int): DimensionTypeBuilder {
+        root.addProperty("logical_height", logicalHeight)
+        return this
     }
 
     /**
@@ -149,9 +148,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param fixedTime Time of the days in ticks
      * @return this
      */
-    public DimensionTypeBuilder fixedTime(long fixedTime) {
-        root.addProperty("fixed_time", fixedTime);
-        return this;
+    fun fixedTime(fixedTime: Long): DimensionTypeBuilder {
+        root.addProperty("fixed_time", fixedTime)
+        return this
     }
 
     /**
@@ -161,9 +160,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param hasRaids
      * @return
      */
-    public DimensionTypeBuilder hasRaids(boolean hasRaids) {
-        root.addProperty("has_raids", hasRaids);
-        return this;
+    fun hasRaids(hasRaids: Boolean): DimensionTypeBuilder {
+        root.addProperty("has_raids", hasRaids)
+        return this
     }
 
     /**
@@ -173,9 +172,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param respawnAnchorWork
      * @return
      */
-    public DimensionTypeBuilder respawnAnchorWorks(boolean respawnAnchorWork) {
-        root.addProperty("respawn_anchor_works", respawnAnchorWork);
-        return this;
+    fun respawnAnchorWorks(respawnAnchorWork: Boolean): DimensionTypeBuilder {
+        root.addProperty("respawn_anchor_works", respawnAnchorWork)
+        return this
     }
 
     /**
@@ -185,9 +184,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param bedWorks
      * @return this
      */
-    public DimensionTypeBuilder bedWorks(boolean bedWorks) {
-        root.addProperty("bed_works", bedWorks);
-        return this;
+    fun bedWorks(bedWorks: Boolean): DimensionTypeBuilder {
+        root.addProperty("bed_works", bedWorks)
+        return this
     }
 
     /**
@@ -197,9 +196,9 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param piglinSafe
      * @return this
      */
-    public DimensionTypeBuilder piglinSafe(boolean piglinSafe) {
-        root.addProperty("piglin_safe", piglinSafe);
-        return this;
+    fun piglinSafe(piglinSafe: Boolean): DimensionTypeBuilder {
+        root.addProperty("piglin_safe", piglinSafe)
+        return this
     }
 
     /**
@@ -211,8 +210,8 @@ public final class DimensionTypeBuilder extends TypedJsonBuilder<JsonResource<Js
      * @param effects thing
      * @return this
      */
-    public DimensionTypeBuilder effects(String effects) {
-        root.addProperty("effects", effects);
-        return this;
+    fun effects(effects: String?): DimensionTypeBuilder {
+        root.addProperty("effects", effects)
+        return this
     }
 }

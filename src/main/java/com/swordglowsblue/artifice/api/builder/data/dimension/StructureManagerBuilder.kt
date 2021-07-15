@@ -1,23 +1,21 @@
-package com.swordglowsblue.artifice.api.builder.data.dimension;
+package com.swordglowsblue.artifice.api.builder.data.dimension
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import java.util.function.Function
+import com.swordglowsblue.artifice.api.util.Builder
 
-public class StructureManagerBuilder extends TypedJsonBuilder<JsonObject> {
-    public StructureManagerBuilder() {
-        super(new JsonObject(), j->j);
-        this.root.add("structures", new JsonObject());
-    }
-
+class StructureManagerBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
     /**
      * Build stronghold settings.
      * @param strongholdSettingsBuilder
      * @return
      */
-    public StructureManagerBuilder strongholdSettings(Processor<StrongholdSettingsBuilder> strongholdSettingsBuilder) {
-        with("stronghold", JsonObject::new, jsonObject -> strongholdSettingsBuilder.process(new StrongholdSettingsBuilder()).buildTo(jsonObject));
-        return this;
+    fun strongholdSettings(strongholdSettingsBuilder: Builder<StrongholdSettingsBuilder>): StructureManagerBuilder {
+        with("stronghold", { JsonObject() }) { jsonObject: JsonObject ->
+            StrongholdSettingsBuilder().apply(strongholdSettingsBuilder).buildTo(jsonObject)
+        }
+        return this
     }
 
     /**
@@ -26,38 +24,37 @@ public class StructureManagerBuilder extends TypedJsonBuilder<JsonObject> {
      * @param structureConfigBuilder
      * @return
      */
-    public StructureManagerBuilder addStructure(String structureId, Processor<StructureConfigBuilder> structureConfigBuilder) {
-        this.with(this.root.getAsJsonObject("structures"), structureId, JsonObject::new, jsonObject -> structureConfigBuilder.process(new StructureConfigBuilder()).buildTo(jsonObject));
-        return this;
+    fun addStructure(
+        structureId: String,
+        structureConfigBuilder: Builder<StructureConfigBuilder>
+    ): StructureManagerBuilder {
+        this.with(this.root.getAsJsonObject("structures"), structureId, { JsonObject() }) { jsonObject ->
+            StructureConfigBuilder().apply(structureConfigBuilder).buildTo(jsonObject)
+        }
+        return this
     }
 
-
-    public static class StrongholdSettingsBuilder extends TypedJsonBuilder<JsonObject> {
-
-        protected StrongholdSettingsBuilder() {
-            super(new JsonObject(), j->j);
-        }
-
+    class StrongholdSettingsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         /**
          * @param distance
          * @return
          */
-        public StrongholdSettingsBuilder distance(int distance) {
-            if (distance > 1023) throw new IllegalArgumentException("Distance can't be higher than 1023! Found " + distance);
-            if (distance < 0) throw new IllegalArgumentException("Distance can't be smaller than 0! Found " + distance);
-            this.root.addProperty("distance", distance);
-            return this;
+        fun distance(distance: Int): StrongholdSettingsBuilder {
+            require(distance <= 1023) { "Distance can't be higher than 1023! Found $distance" }
+            require(distance >= 0) { "Distance can't be smaller than 0! Found $distance" }
+            this.root.addProperty("distance", distance)
+            return this
         }
 
         /**
          * @param spread
          * @return
          */
-        public StrongholdSettingsBuilder spread(int spread) {
-            if (spread > 1023) throw new IllegalArgumentException("Spread can't be higher than 1023! Found " + spread);
-            if (spread < 0) throw new IllegalArgumentException("Spread can't be smaller than 0! Found " + spread);
-            this.root.addProperty("spread", spread);
-            return this;
+        fun spread(spread: Int): StrongholdSettingsBuilder {
+            require(spread <= 1023) { "Spread can't be higher than 1023! Found $spread" }
+            require(spread >= 0) { "Spread can't be smaller than 0! Found $spread" }
+            this.root.addProperty("spread", spread)
+            return this
         }
 
         /**
@@ -65,38 +62,37 @@ public class StructureManagerBuilder extends TypedJsonBuilder<JsonObject> {
          * @param count
          * @return
          */
-        public StrongholdSettingsBuilder count(int count) {
-            if (count > 4095) throw new IllegalArgumentException("Count can't be higher than 4095! Found " + count);
-            if (count < 1) throw new IllegalArgumentException("Count can't be smaller than 1! Found " + count);
-            this.root.addProperty("count", count);
-            return this;
+        fun count(count: Int): StrongholdSettingsBuilder {
+            require(count <= 4095) { "Count can't be higher than 4095! Found $count" }
+            require(count >= 1) { "Count can't be smaller than 1! Found $count" }
+            this.root.addProperty("count", count)
+            return this
         }
     }
 
-    public static class StructureConfigBuilder extends TypedJsonBuilder<JsonObject> {
-
-        protected StructureConfigBuilder() {
-            super(new JsonObject(), j->j);
+    class StructureConfigBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+        fun spacing(spacing: Int): StructureConfigBuilder {
+            require(spacing <= 4096) { "Count can't be higher than 4096! Found $spacing" }
+            require(spacing >= 0) { "Count can't be smaller than 0! Found $spacing" }
+            this.root.addProperty("spacing", spacing)
+            return this
         }
 
-        public StructureConfigBuilder spacing(int spacing) {
-            if (spacing > 4096) throw new IllegalArgumentException("Count can't be higher than 4096! Found " + spacing);
-            if (spacing < 0) throw new IllegalArgumentException("Count can't be smaller than 0! Found " + spacing);
-            this.root.addProperty("spacing", spacing);
-            return this;
+        fun separation(separation: Int): StructureConfigBuilder {
+            require(separation <= 4096) { "Count can't be higher than 4096! Found $separation" }
+            require(separation >= 0) { "Count can't be smaller than 0! Found $separation" }
+            this.root.addProperty("separation", separation)
+            return this
         }
 
-        public StructureConfigBuilder separation(int separation) {
-            if (separation > 4096) throw new IllegalArgumentException("Count can't be higher than 4096! Found " + separation);
-            if (separation < 0) throw new IllegalArgumentException("Count can't be smaller than 0! Found " + separation);
-            this.root.addProperty("separation", separation);
-            return this;
+        fun salt(salt: Int): StructureConfigBuilder {
+            require(salt >= 0) { "Count can't be smaller than 0! Found $salt" }
+            this.root.addProperty("salt", salt)
+            return this
         }
+    }
 
-        public StructureConfigBuilder salt(int salt) {
-            if (salt < 0) throw new IllegalArgumentException("Count can't be smaller than 0! Found " + salt);
-            this.root.addProperty("salt", salt);
-            return this;
-        }
+    init {
+        this.root.add("structures", JsonObject())
     }
 }
