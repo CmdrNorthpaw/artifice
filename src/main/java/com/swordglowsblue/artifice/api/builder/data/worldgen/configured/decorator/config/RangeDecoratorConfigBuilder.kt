@@ -1,4 +1,4 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config
 
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.DecoratorConfigBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
@@ -14,22 +14,20 @@ import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorato
 import net.minecraft.world.gen.GenerationStep
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.DepthAverageDecoratorConfigBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.CountNoiseBiasedDecoratorConfigBuilder
-import java.util.function.Function
 
-class ConfiguredDecoratorBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
-    fun name(decoratorID: String): ConfiguredDecoratorBuilder {
-        this.root.addProperty("type", decoratorID)
+class RangeDecoratorConfigBuilder : DecoratorConfigBuilder() {
+    fun bottomOffset(bottomOffset: Int): RangeDecoratorConfigBuilder {
+        this.root.addProperty("bottom_offset", bottomOffset)
         return this
     }
 
-    fun <C : DecoratorConfigBuilder> config(instance: C, processor: C.() -> Unit): ConfiguredDecoratorBuilder {
-        with("config", { JsonObject() }) { jsonObject: JsonObject? ->
-            instance.apply(processor).buildTo(jsonObject)
-        }
+    fun topOffset(topOffset: Int): RangeDecoratorConfigBuilder {
+        this.root.addProperty("top_offset", topOffset)
         return this
     }
 
-    fun defaultConfig(): ConfiguredDecoratorBuilder {
-        return config(DecoratorConfigBuilder()) {}
+    fun maximum(maximum: Int): RangeDecoratorConfigBuilder {
+        this.root.addProperty("maximum", maximum)
+        return this
     }
 }

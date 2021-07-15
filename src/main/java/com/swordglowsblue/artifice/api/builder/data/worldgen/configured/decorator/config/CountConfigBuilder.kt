@@ -1,4 +1,4 @@
-package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator
+package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config
 
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.DecoratorConfigBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
@@ -14,22 +14,18 @@ import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorato
 import net.minecraft.world.gen.GenerationStep
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.DepthAverageDecoratorConfigBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.CountNoiseBiasedDecoratorConfigBuilder
-import java.util.function.Function
+import com.swordglowsblue.artifice.api.util.Processor
 
-class ConfiguredDecoratorBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
-    fun name(decoratorID: String): ConfiguredDecoratorBuilder {
-        this.root.addProperty("type", decoratorID)
+class CountConfigBuilder : DecoratorConfigBuilder() {
+    fun count(count: Int): CountConfigBuilder {
+        this.root.addProperty("count", count)
         return this
     }
 
-    fun <C : DecoratorConfigBuilder> config(instance: C, processor: C.() -> Unit): ConfiguredDecoratorBuilder {
-        with("config", { JsonObject() }) { jsonObject: JsonObject? ->
-            instance.apply(processor).buildTo(jsonObject)
+    fun count(processor: Processor<UniformIntDistributionBuilder>): CountConfigBuilder {
+        with("count", { JsonObject() }) { jsonObject: JsonObject? ->
+            processor.process(UniformIntDistributionBuilder()).buildTo(jsonObject)
         }
         return this
-    }
-
-    fun defaultConfig(): ConfiguredDecoratorBuilder {
-        return config(DecoratorConfigBuilder()) {}
     }
 }
