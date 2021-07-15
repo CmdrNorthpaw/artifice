@@ -1,14 +1,18 @@
-package com.swordglowsblue.artifice.api.builder.data.dimension;
+package com.swordglowsblue.artifice.api.builder.data.dimension
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import net.minecraft.util.Identifier
+import java.util.function.Function
 
-public class BiomeSourceBuilder extends TypedJsonBuilder<JsonObject> {
+sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
+    type: Identifier
+) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    protected abstract val me: T
 
-    public BiomeSourceBuilder() {
-        super(new JsonObject(), j->j);
+    init {
+        root.addProperty("type", type.toString())
     }
 
     /**
@@ -16,10 +20,10 @@ public class BiomeSourceBuilder extends TypedJsonBuilder<JsonObject> {
      * @param seed
      * @param <T>
      * @return
-     */
-    public <T extends BiomeSourceBuilder> T seed(int seed) {
-        this.root.addProperty("seed", seed);
-        return (T)this;
+    </T> */
+    fun seed(seed: Int): T {
+        this.root.addProperty("seed", seed)
+        return me
     }
 
     /**
@@ -27,52 +31,51 @@ public class BiomeSourceBuilder extends TypedJsonBuilder<JsonObject> {
      * @param type
      * @param <T>
      * @return
-     */
-    public <T extends BiomeSourceBuilder> T type(String type) {
-        this.root.addProperty("type", type);
-        return (T) this;
+    </T> */
+    fun type(type: String?): T {
+        this.root.addProperty("type", type)
+        return me
     }
 
-
-    public static class VanillaLayeredBiomeSourceBuilder extends BiomeSourceBuilder {
-        public VanillaLayeredBiomeSourceBuilder() {
-            super();
-            this.type("minecraft:vanilla_layered");
-        }
+    class VanillaLayeredBiomeSourceBuilder : BiomeSourceBuilder<VanillaLayeredBiomeSourceBuilder>(
+        Identifier("vanilla_layered")
+    ) {
+        override val me: VanillaLayeredBiomeSourceBuilder
+            get() = this
 
         /**
          * @param largeBiomes
          * @return
          */
-        public VanillaLayeredBiomeSourceBuilder largeBiomes(boolean largeBiomes) {
-            this.root.addProperty("large_biomes", largeBiomes);
-            return this;
+        fun largeBiomes(largeBiomes: Boolean): VanillaLayeredBiomeSourceBuilder {
+            this.root.addProperty("large_biomes", largeBiomes)
+            return this
         }
 
         /**
          * @param legacyBiomeInitLayer
          * @return
          */
-        public VanillaLayeredBiomeSourceBuilder legacyBiomeInitLayer(boolean legacyBiomeInitLayer) {
-            this.root.addProperty("legacy_biome_init_layer", legacyBiomeInitLayer);
-            return this;
+        fun legacyBiomeInitLayer(legacyBiomeInitLayer: Boolean): VanillaLayeredBiomeSourceBuilder {
+            this.root.addProperty("legacy_biome_init_layer", legacyBiomeInitLayer)
+            return this
         }
     }
 
-    public static class MultiNoiseBiomeSourceBuilder extends BiomeSourceBuilder {
-        public MultiNoiseBiomeSourceBuilder() {
-            super();
-            this.type("minecraft:multi_noise");
-        }
+    class MultiNoiseBiomeSourceBuilder : BiomeSourceBuilder<MultiNoiseBiomeSourceBuilder>(
+        Identifier("multi_noise")
+    ) {
+        override val me: MultiNoiseBiomeSourceBuilder
+            get() = this
 
         /**
          * Set the preset.
          * @param preset
          * @return
          */
-        public MultiNoiseBiomeSourceBuilder preset(String preset) {
-            this.root.addProperty("preset", preset);
-            return this;
+        fun preset(preset: String?): MultiNoiseBiomeSourceBuilder {
+            this.root.addProperty("preset", preset)
+            return this
         }
 
         /**
@@ -80,24 +83,26 @@ public class BiomeSourceBuilder extends TypedJsonBuilder<JsonObject> {
          * @param biomeBuilder
          * @return
          */
-        public MultiNoiseBiomeSourceBuilder addBiome(Processor<BiomeBuilder> biomeBuilder) {
-            with("biomes", JsonArray::new, biomeArray -> biomeArray.add(biomeBuilder.process(new BiomeBuilder()).buildTo(new JsonObject())));
-            return this;
+        fun addBiome(biomeBuilder: BiomeBuilder.() -> Unit): MultiNoiseBiomeSourceBuilder {
+            with(
+                "biomes",
+                { JsonArray() }) { biomeArray: JsonArray ->
+                biomeArray.add(
+                    BiomeBuilder().apply(biomeBuilder).buildTo(JsonObject())
+                )
+            }
+            return this
         }
 
-        public static class BiomeBuilder extends TypedJsonBuilder<JsonObject> {
-            protected BiomeBuilder() {
-                super(new JsonObject(), j->j);
-            }
-
+        class BiomeBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
             /**
              * Set the biome ID.
              * @param id
              * @return
              */
-            public BiomeBuilder biome(String id) {
-                this.root.addProperty("biome", id);
-                return this;
+            fun biome(id: String?): BiomeBuilder {
+                this.root.addProperty("biome", id)
+                return this
             }
 
             /**
@@ -105,70 +110,68 @@ public class BiomeSourceBuilder extends TypedJsonBuilder<JsonObject> {
              * @param biomeSettingsBuilder
              * @return
              */
-            public BiomeBuilder parameters(Processor<BiomeParametersBuilder> biomeSettingsBuilder) {
-                with("parameters", JsonObject::new, biomeSettings -> biomeSettingsBuilder.process(new BiomeParametersBuilder()).buildTo(biomeSettings));
-                return this;
+            fun parameters(biomeSettingsBuilder: BiomeParametersBuilder.() -> Unit): BiomeBuilder {
+                with("parameters", { JsonObject() }) { biomeSettings: JsonObject ->
+                    BiomeParametersBuilder().apply(biomeSettingsBuilder).buildTo(biomeSettings)
+                }
+                return this
             }
         }
 
-        public static class BiomeParametersBuilder extends TypedJsonBuilder<JsonObject> {
-            protected BiomeParametersBuilder() {
-                super(new JsonObject(), j->j);
-            }
-
+        class BiomeParametersBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
             /**
              * @param altitude
              * @return
              */
-            public BiomeParametersBuilder altitude(float altitude) {
-                if (altitude > 2.0F) throw new IllegalArgumentException("altitude can't be higher than 2.0F! Found " + altitude);
-                if (altitude < -2.0F) throw new IllegalArgumentException("altitude can't be smaller than 2.0F! Found " + altitude);
-                this.root.addProperty("altitude", altitude);
-                return this;
+            fun altitude(altitude: Float): BiomeParametersBuilder {
+                require(altitude <= 2.0f) { "altitude can't be higher than 2.0F! Found $altitude" }
+                require(altitude >= -2.0f) { "altitude can't be smaller than 2.0F! Found $altitude" }
+                this.root.addProperty("altitude", altitude)
+                return this
             }
 
             /**
              * @param weirdness
              * @return
              */
-            public BiomeParametersBuilder weirdness(float weirdness) {
-                if (weirdness > 2.0F) throw new IllegalArgumentException("weirdness can't be higher than 2.0F! Found " + weirdness);
-                if (weirdness < -2.0F) throw new IllegalArgumentException("weirdness can't be smaller than 2.0F! Found " + weirdness);
-                this.root.addProperty("weirdness", weirdness);
-                return this;
+            fun weirdness(weirdness: Float): BiomeParametersBuilder {
+                require(weirdness <= 2.0f) { "weirdness can't be higher than 2.0F! Found $weirdness" }
+                require(weirdness >= -2.0f) { "weirdness can't be smaller than 2.0F! Found $weirdness" }
+                this.root.addProperty("weirdness", weirdness)
+                return this
             }
 
             /**
              * @param offset
              * @return
              */
-            public BiomeParametersBuilder offset(float offset) {
-                if (offset > 1.0F) throw new IllegalArgumentException("offset can't be higher than 1.0F! Found " + offset);
-                if (offset < 0.0F) throw new IllegalArgumentException("offset can't be smaller than 0.0F! Found " + offset);
-                this.root.addProperty("offset", offset);
-                return this;
+            fun offset(offset: Float): BiomeParametersBuilder {
+                require(offset <= 1.0f) { "offset can't be higher than 1.0F! Found $offset" }
+                require(offset >= 0.0f) { "offset can't be smaller than 0.0F! Found $offset" }
+                this.root.addProperty("offset", offset)
+                return this
             }
 
             /**
              * @param temperature
              * @return
              */
-            public BiomeParametersBuilder temperature(float temperature) {
-                if (temperature > 2.0F) throw new IllegalArgumentException("temperature can't be higher than 2.0F! Found " + temperature);
-                if (temperature < -2.0F) throw new IllegalArgumentException("temperature can't be smaller than 2.0F! Found " + temperature);
-                this.root.addProperty("temperature", temperature);
-                return this;
+            fun temperature(temperature: Float): BiomeParametersBuilder {
+                require(temperature <= 2.0f) { "temperature can't be higher than 2.0F! Found $temperature" }
+                require(temperature >= -2.0f) { "temperature can't be smaller than 2.0F! Found $temperature" }
+                this.root.addProperty("temperature", temperature)
+                return this
             }
 
             /**
              * @param humidity
              * @return
              */
-            public BiomeParametersBuilder humidity(float humidity) {
-                if (humidity > 2.0F) throw new IllegalArgumentException("humidity can't be higher than 2.0F! Found " + humidity);
-                if (humidity < -2.0F) throw new IllegalArgumentException("humidity can't be smaller than 2.0F! Found " + humidity);
-                this.root.addProperty("humidity", humidity);
-                return this;
+            fun humidity(humidity: Float): BiomeParametersBuilder {
+                require(humidity <= 2.0f) { "humidity can't be higher than 2.0F! Found $humidity" }
+                require(humidity >= -2.0f) { "humidity can't be smaller than 2.0F! Found $humidity" }
+                this.root.addProperty("humidity", humidity)
+                return this
             }
         }
 
@@ -176,101 +179,95 @@ public class BiomeSourceBuilder extends TypedJsonBuilder<JsonObject> {
          * @param noiseSettings
          * @return this
          */
-        public MultiNoiseBiomeSourceBuilder altitudeNoise(Processor<NoiseSettings> noiseSettings) {
-            with("altitude_noise", JsonObject::new, jsonObject -> noiseSettings.process(new NoiseSettings()).buildTo(jsonObject));
-            return this;
-        }
-
-        /**
-         * @param noiseSettings
-         * @return this
-         */
-        public MultiNoiseBiomeSourceBuilder weirdnessNoise(Processor<NoiseSettings> noiseSettings) {
-            with("weirdness_noise", JsonObject::new, jsonObject -> noiseSettings.process(new NoiseSettings()).buildTo(jsonObject));
-            return this;
-        }
-
-        /**
-         * @param noiseSettings
-         * @return this
-         */
-        public MultiNoiseBiomeSourceBuilder temperatureNoise(Processor<NoiseSettings> noiseSettings) {
-            with("temperature_noise", JsonObject::new, jsonObject -> noiseSettings.process(new NoiseSettings()).buildTo(jsonObject));
-            return this;
-        }
-
-        /**
-         * @param noiseSettings
-         * @return this
-         */
-        public MultiNoiseBiomeSourceBuilder humidityNoise(Processor<NoiseSettings> noiseSettings) {
-            with("humidity_noise", JsonObject::new, jsonObject -> noiseSettings.process(new NoiseSettings()).buildTo(jsonObject));
-            return this;
-        }
-
-        public static class NoiseSettings extends TypedJsonBuilder<JsonObject> {
-            protected NoiseSettings() {
-                super(new JsonObject(), j->j);
+        fun altitudeNoise(noiseSettings: NoiseSettings.() -> Unit): MultiNoiseBiomeSourceBuilder {
+            with("altitude_noise", { JsonObject() }) { jsonObject: JsonObject ->
+                NoiseSettings().apply(noiseSettings).buildTo(jsonObject)
             }
+            return this
+        }
 
+        /**
+         * @param noiseSettings
+         * @return this
+         */
+        fun weirdnessNoise(noiseSettings: NoiseSettings.() -> Unit): MultiNoiseBiomeSourceBuilder {
+            with("weirdness_noise", { JsonObject() }) { jsonObject: JsonObject ->
+                NoiseSettings().apply(noiseSettings).buildTo(jsonObject)
+            }
+            return this
+        }
+
+        /**
+         * @param noiseSettings
+         * @return this
+         */
+        fun temperatureNoise(noiseSettings: NoiseSettings.() -> Unit): MultiNoiseBiomeSourceBuilder {
+            with("temperature_noise", { JsonObject() }) { jsonObject: JsonObject ->
+                NoiseSettings().apply(noiseSettings).buildTo(jsonObject)
+            }
+            return this
+        }
+
+        /**
+         * @param noiseSettings
+         * @return this
+         */
+        fun humidityNoise(noiseSettings: NoiseSettings.() -> Unit): MultiNoiseBiomeSourceBuilder {
+            with("humidity_noise", { JsonObject() }) { jsonObject: JsonObject ->
+                NoiseSettings().apply(noiseSettings).buildTo(jsonObject)
+            }
+            return this
+        }
+
+        class NoiseSettings : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
             /**
              * Changes how much detail the noise of the respective value has
              * @param octave how much detail the noise of the respective value has
              * @return this
              */
-            public NoiseSettings firstOctave(int octave) {
-                this.root.addProperty("firstOctave", octave);
-                return this;
+            fun firstOctave(octave: Int): NoiseSettings {
+                this.root.addProperty("firstOctave", octave)
+                return this
             }
 
             /**
              * @param amplitudes the amplitudes you want
              * @return this
              */
-            public NoiseSettings amplitudes(float... amplitudes) {
-                jsonArray("amplitudes", jsonArrayBuilder -> {
-                    for (float amplitude : amplitudes) {
-                        jsonArrayBuilder.add(amplitude);
-                    }
-                });
-                return this;
+            fun amplitudes(vararg amplitudes: Float): NoiseSettings {
+                jsonArray("amplitudes") {
+                    amplitudes.forEach { add(it) }
+                }
+                return this
             }
         }
 
-        public static class AmplitudesBuilder extends TypedJsonBuilder<JsonObject> {
-            protected AmplitudesBuilder() {
-                super(new JsonObject(), j->j);
-            }
-
+        class AmplitudesBuilder private constructor() :
+            TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
             /**
              * @param amplitude idk
              * @return
              */
-            public AmplitudesBuilder amplitude(float amplitude) {
-                this.root.addProperty("altitude", amplitude);
-                return this;
+            fun amplitude(amplitude: Float): AmplitudesBuilder {
+                this.root.addProperty("altitude", amplitude)
+                return this
             }
         }
-
     }
 
-    public static class CheckerboardBiomeSourceBuilder extends BiomeSourceBuilder {
-
-        public CheckerboardBiomeSourceBuilder() {
-            super();
-            this.type("minecraft:checkerboard");
-            this.root.add("biomes", new JsonArray());
-        }
+    class CheckerboardBiomeSourceBuilder : BiomeSourceBuilder<CheckerboardBiomeSourceBuilder>(Identifier("checkerboard")) {
+        override val me: CheckerboardBiomeSourceBuilder
+            get() = this
 
         /**
          * @param scale
          * @return
          */
-        public CheckerboardBiomeSourceBuilder scale(int scale) {
-            if (scale > 62) throw new IllegalArgumentException("Scale can't be higher than 62! Found " + scale);
-            if (scale < 0) throw new IllegalArgumentException("Scale can't be smaller than 0! Found " + scale);
-            this.root.addProperty("scale", scale);
-            return this;
+        fun scale(scale: Int): CheckerboardBiomeSourceBuilder {
+            require(scale <= 62) { "Scale can't be higher than 62! Found $scale" }
+            require(scale >= 0) { "Scale can't be smaller than 0! Found $scale" }
+            this.root.addProperty("scale", scale)
+            return this
         }
 
         /**
@@ -278,26 +275,28 @@ public class BiomeSourceBuilder extends TypedJsonBuilder<JsonObject> {
          * @param biomeId
          * @return
          */
-        public CheckerboardBiomeSourceBuilder addBiome(String biomeId) {
-            this.root.getAsJsonArray("biomes").add(biomeId);
-            return this;
+        fun addBiome(biomeId: String?): CheckerboardBiomeSourceBuilder {
+            this.root.getAsJsonArray("biomes").add(biomeId)
+            return this
+        }
+
+        init {
+            this.root.add("biomes", JsonArray())
         }
     }
 
-    public static class FixedBiomeSourceBuilder extends BiomeSourceBuilder {
-        public FixedBiomeSourceBuilder() {
-            super();
-            this.type("minecraft:fixed");
-        }
+    class FixedBiomeSourceBuilder : BiomeSourceBuilder<FixedBiomeSourceBuilder>(Identifier("fixed")) {
+        override val me: FixedBiomeSourceBuilder
+            get() = this
 
         /**
          * Set biome ID.
          * @param biomeId
          * @return
          */
-        public FixedBiomeSourceBuilder biome(String biomeId) {
-            this.root.addProperty("biome", biomeId);
-            return this;
+        fun biome(biomeId: String?): FixedBiomeSourceBuilder {
+            this.root.addProperty("biome", biomeId)
+            return this
         }
     }
 }
