@@ -5,8 +5,6 @@ import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-
 public class ArtificeImpl {
 
     private static final Logger log4jLogger = LogManager.getLogger("Artifice");

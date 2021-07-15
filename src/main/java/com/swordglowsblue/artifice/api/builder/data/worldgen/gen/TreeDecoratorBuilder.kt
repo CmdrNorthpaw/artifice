@@ -1,27 +1,8 @@
 package com.swordglowsblue.artifice.api.builder.data.worldgen.gen
 
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.google.gson.JsonObject
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.BlockPlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.BlockPlacerBuilder.ColumnPlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder
-import java.lang.IllegalArgumentException
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder.TwoLayersFeatureSizeBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FeatureSizeBuilder.ThreeLayersFeatureSizeBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TrunkPlacerBuilder.GiantTrunkPlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.UniformIntDistributionBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.BlobFoliagePlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.SpruceFoliagePlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.PineFoliagePlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.JungleFoliagePlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.FoliagePlacerBuilder.MegaPineFoliagePlacerBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.CocoaTreeDecoratorBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.BeeHiveTreeDecoratorBuilder
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.gen.TreeDecoratorBuilder.AlterGroundTreeDecoratorBuilder
 import net.minecraft.util.Identifier
 import java.util.function.Function
 

@@ -1,9 +1,8 @@
 package com.swordglowsblue.artifice.api.builder.data.recipe
 
-import com.swordglowsblue.artifice.api.builder.data.recipe.RecipeBuilder
+import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
-import com.google.gson.JsonObject
 import net.minecraft.util.Identifier
 import java.util.function.Function
 

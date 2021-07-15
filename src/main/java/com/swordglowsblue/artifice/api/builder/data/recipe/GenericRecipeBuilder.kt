@@ -1,12 +1,9 @@
 package com.swordglowsblue.artifice.api.builder.data.recipe
 
-import com.swordglowsblue.artifice.api.builder.data.recipe.RecipeBuilder
-import com.swordglowsblue.artifice.api.builder.data.recipe.GenericRecipeBuilder
 import com.google.gson.JsonElement
-import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
+import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.util.Processor
-import com.swordglowsblue.artifice.api.util.process
 import net.minecraft.util.Identifier
 
 /**

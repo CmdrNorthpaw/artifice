@@ -1,13 +1,7 @@
 package com.swordglowsblue.artifice.api.builder
 
-import kotlin.jvm.JvmOverloads
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
-import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
-import com.google.gson.JsonObject
-import com.swordglowsblue.artifice.api.util.Processor
 
 class JsonArrayBuilder @JvmOverloads constructor(private val root: JsonArray = JsonArray()) {
     fun build(): JsonArray {

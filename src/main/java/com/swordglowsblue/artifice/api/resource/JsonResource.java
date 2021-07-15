@@ -2,12 +2,9 @@ package com.swordglowsblue.artifice.api.resource;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import org.apache.commons.io.input.ReaderInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 
 /** A virtual resource representing a JSON file.
  *  @param <T> The specific type of {@link JsonElement} contained in this file (usually {@link com.google.gson.JsonObject JsonObject}) */

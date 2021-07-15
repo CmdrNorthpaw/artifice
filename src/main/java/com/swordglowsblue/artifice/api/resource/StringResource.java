@@ -1,11 +1,7 @@
 package com.swordglowsblue.artifice.api.resource;
 
-import org.apache.commons.io.input.ReaderInputStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 
 /** A virtual resource representing an arbitrary string. */
 public class StringResource implements ArtificeResource<String> {

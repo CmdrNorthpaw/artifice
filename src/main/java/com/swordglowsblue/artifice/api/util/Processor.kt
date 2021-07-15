@@ -1,6 +1,5 @@
 package com.swordglowsblue.artifice.api.util
 
-import java.lang.FunctionalInterface
 import java.util.function.Consumer
 
 /** A wrapper around [Consumer] that returns its argument instead of `void`.

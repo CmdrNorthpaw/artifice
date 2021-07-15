@@ -1,10 +1,8 @@
 package com.swordglowsblue.artifice.api.builder.data.worldgen.configured
 
+import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
-import com.google.gson.JsonObject
-import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredCarverBuilder
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 import java.util.function.Function
 
 class ConfiguredCarverBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(

@@ -3,7 +3,6 @@ package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature
 import com.google.gson.JsonObject;
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config.FeatureConfigBuilder;
-import com.swordglowsblue.artifice.api.resource.JsonResource;
 import com.swordglowsblue.artifice.api.util.Processor;
 
 public class ConfiguredSubFeatureBuilder extends TypedJsonBuilder<JsonObject> {

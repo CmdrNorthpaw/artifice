@@ -1,15 +1,13 @@
 package com.swordglowsblue.artifice.common;
 
 import com.mojang.serialization.Lifecycle;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 public class ArtificeRegistry {
     /**

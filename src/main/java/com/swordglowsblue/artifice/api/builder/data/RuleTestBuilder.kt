@@ -1,14 +1,7 @@
 package com.swordglowsblue.artifice.api.builder.data
 
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.google.gson.JsonObject
-import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder
-import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.BlockRuleTestBuilder
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
-import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.BlockStateRuleTestBuilder
-import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.TagMatchRuleTestBuilder
-import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.RandomBlockMatchRuleTestBuilder
-import com.swordglowsblue.artifice.api.builder.data.RuleTestBuilder.RandomBlockStateMatchRuleTestBuilder
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.util.Processor
 import java.util.function.Function
 

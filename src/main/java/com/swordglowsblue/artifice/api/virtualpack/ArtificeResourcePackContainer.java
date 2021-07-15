@@ -2,11 +2,9 @@ package com.swordglowsblue.artifice.api.virtualpack;
 
 import com.swordglowsblue.artifice.api.ArtificeResourcePack;
 import com.swordglowsblue.artifice.impl.ArtificeResourcePackImpl;
-
-import net.minecraft.resource.ResourcePackProfile;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.resource.ResourcePackProfile;
 
 /**
  * A wrapper around {@link ResourcePackProfile} exposing optionality/visibility.

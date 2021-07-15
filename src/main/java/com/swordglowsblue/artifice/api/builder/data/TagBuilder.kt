@@ -1,10 +1,9 @@
 package com.swordglowsblue.artifice.api.builder.data
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
-import com.google.gson.JsonObject
-import com.swordglowsblue.artifice.api.builder.data.TagBuilder
-import com.google.gson.JsonArray
 import net.minecraft.util.Identifier
 import java.util.function.Function
 
@@ -14,7 +13,7 @@ import java.util.function.Function
  */
 class TagBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject?, JsonResource<JsonObject?>?> { root: JsonObject? -> JsonResource(root) }) {
     /**
      * Set whether this tag should override or append to versions of the same tag in lower priority data packs.
      * @param replace Whether to replace.

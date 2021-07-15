@@ -1,11 +1,10 @@
 package com.swordglowsblue.artifice.api.builder.data
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
-import com.google.gson.JsonObject
-import com.google.gson.JsonArray
-import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
-import com.swordglowsblue.artifice.api.util.process
 import net.minecraft.util.Identifier
 import java.util.function.Function
 

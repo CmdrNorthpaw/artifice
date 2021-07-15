@@ -1,16 +1,11 @@
 package com.swordglowsblue.artifice.api.builder
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonElement
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
-import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
-import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
 import com.google.gson.JsonArray
-import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.util.Processor
 import java.util.function.Consumer
 import java.util.function.Function
-import java.util.function.Supplier
 
 abstract class TypedJsonBuilder<T>(
     @JvmField protected val root: JsonObject,

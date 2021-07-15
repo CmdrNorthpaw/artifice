@@ -1,20 +1,7 @@
 package com.swordglowsblue.artifice.api.builder.data.worldgen.biome
 
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
-import com.swordglowsblue.artifice.api.resource.JsonResource
 import com.google.gson.JsonObject
-import net.minecraft.world.biome.Biome.Precipitation
-import net.minecraft.world.biome.Biome
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeEffectsBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeBuilder.SpawnDensityBuilder
-import net.minecraft.entity.SpawnGroup
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeSpawnEntryBuilder
-import net.minecraft.world.gen.GenerationStep
-import com.google.gson.JsonArray
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeEffectsBuilder.BiomeMoodSoundBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeEffectsBuilder.BiomeAdditionsSoundBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeEffectsBuilder.BiomeMusicSoundBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.biome.BiomeEffectsBuilder.BiomeParticleConfigBuilder
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import java.util.function.Function
 
 class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {

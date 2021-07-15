@@ -4,8 +4,6 @@ import com.google.gson.JsonObject;
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
 import com.swordglowsblue.artifice.api.util.Processor;
 
-import java.util.function.Function;
-
 public class StructureManagerBuilder extends TypedJsonBuilder<JsonObject> {
     public StructureManagerBuilder() {
         super(new JsonObject(), j->j);

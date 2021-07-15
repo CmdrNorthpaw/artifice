@@ -1,13 +1,9 @@
 package com.swordglowsblue.artifice.api.builder.data.worldgen
 
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
-import com.google.gson.JsonObject
-import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder
-import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder.SimpleBlockStateProviderBuilder
-import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder.WeightedBlockStateProviderBuilder
 import com.google.gson.JsonArray
-import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder.PillarBlockStateProviderBuilder
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 import com.swordglowsblue.artifice.api.util.Processor
 import java.util.function.Function
 

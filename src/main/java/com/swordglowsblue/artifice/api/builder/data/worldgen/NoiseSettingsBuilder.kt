@@ -1,12 +1,11 @@
 package com.swordglowsblue.artifice.api.builder.data.worldgen
 
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
-import com.swordglowsblue.artifice.api.resource.JsonResource
 import com.google.gson.JsonObject
-import com.swordglowsblue.artifice.api.builder.data.worldgen.NoiseSettingsBuilder
-import com.swordglowsblue.artifice.api.builder.data.dimension.NoiseConfigBuilder
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
+import com.swordglowsblue.artifice.api.builder.data.dimension.NoiseConfigBuilder
 import com.swordglowsblue.artifice.api.builder.data.dimension.StructureManagerBuilder
+import com.swordglowsblue.artifice.api.resource.JsonResource
 import java.util.function.Function
 
 class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject?>?>(

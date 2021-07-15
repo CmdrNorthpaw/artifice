@@ -6,8 +6,6 @@ import com.swordglowsblue.artifice.api.resource.JsonResource;
 import com.swordglowsblue.artifice.api.util.Processor;
 import net.minecraft.util.Identifier;
 
-import java.util.function.Function;
-
 public class DimensionBuilder extends TypedJsonBuilder<JsonResource<JsonObject>> {
     public DimensionBuilder() {
         super(new JsonObject(), JsonResource::new);
