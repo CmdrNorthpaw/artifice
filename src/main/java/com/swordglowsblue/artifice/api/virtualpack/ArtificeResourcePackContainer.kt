@@ -2,9 +2,8 @@ package com.swordglowsblue.artifice.api.virtualpack
 
 import net.fabricmc.api.EnvType
 import net.minecraft.resource.ResourcePackProfile
-import net.minecraft.resource.ResourcePack
 import com.swordglowsblue.artifice.impl.ArtificeResourcePackImpl
-import com.swordglowsblue.artifice.api.ArtificeResourcePack
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack
 import net.fabricmc.api.Environment
 import java.util.function.Supplier
 

@@ -1,14 +1,13 @@
 package com.swordglowsblue.artifice.api
 
-import com.swordglowsblue.artifice.api.ArtificeResourcePack.ClientResourcePackBuilder
-import com.swordglowsblue.artifice.api.ArtificeResourcePack.ServerResourcePackBuilder
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack.ClientResourcePackBuilder
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack.ServerResourcePackBuilder
 import com.swordglowsblue.artifice.api.util.Processor
 import com.swordglowsblue.artifice.common.ArtificeRegistry
 import com.swordglowsblue.artifice.impl.ArtificeImpl
-import com.swordglowsblue.artifice.impl.DynamicResourcePackFactory
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.minecraft.resource.ResourceType
 import net.minecraft.util.Identifier
 
 /**
@@ -43,7 +42,8 @@ object Artifice {
     }
 
     @Deprecated("Deprecated in favor of registerDataPack",
-    replaceWith = ReplaceWith("registerDataPack(id: Identifier, register: Builder<ServerResourcePackBuilder>"))
+    replaceWith = ReplaceWith("registerDataPack(id: Identifier, register: Builder<ServerResourcePackBuilder>")
+    )
     fun registerData(id: Identifier, register: Processor<ServerResourcePackBuilder>): ArtificeResourcePack {
         ArtificeImpl.LOGGER.warn("Using deprecated Artifice#registerData! Please use registerDataPack! Issues may occur!")
         return ArtificeImpl.registerSafely(ArtificeRegistry.DATA, id, ArtificeResourcePack.ofData(register))

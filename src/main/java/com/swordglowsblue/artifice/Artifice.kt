@@ -2,10 +2,9 @@
 
 package com.swordglowsblue.artifice
 
-import com.swordglowsblue.artifice.api.Artifice
-import com.swordglowsblue.artifice.api.ArtificeResourcePack
-import com.swordglowsblue.artifice.api.ArtificeResourcePack.ClientResourcePackBuilder
-import com.swordglowsblue.artifice.api.ArtificeResourcePack.ServerResourcePackBuilder
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack.ClientResourcePackBuilder
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack.ServerResourcePackBuilder
 import com.swordglowsblue.artifice.api.util.Builder
 import com.swordglowsblue.artifice.common.ArtificeRegistry
 import com.swordglowsblue.artifice.impl.ArtificeImpl

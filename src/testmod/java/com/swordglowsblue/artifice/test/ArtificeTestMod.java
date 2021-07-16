@@ -3,7 +3,7 @@ package com.swordglowsblue.artifice.test;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.swordglowsblue.artifice.api.Artifice;
-import com.swordglowsblue.artifice.api.ArtificeResourcePack;
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack;
 import com.swordglowsblue.artifice.api.builder.data.dimension.ChunkGeneratorTypeBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.BlockStateProviderBuilder;
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.CountExtraDecoratorConfigBuilder;
