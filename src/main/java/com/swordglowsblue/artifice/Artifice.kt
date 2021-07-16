@@ -51,7 +51,8 @@ fun registerAssets(id: String, pack: ArtificeResourcePack): ArtificeResourcePack
  * @return The registered pack.
  */
 fun registerDataPack(id: String, pack: ArtificeResourcePack): ArtificeResourcePack {
-    return registerDataPack(Identifier.tryParse(id)!!, pack)
+    val identifier = requireNotNull(Identifier.tryParse(id)) { "Could not parse $id to an identifier!" }
+    return registerDataPack(identifier, pack)
 }
 
 fun registerDataPack(id: Identifier, pack: ArtificeResourcePack): ArtificeResourcePack {
@@ -82,7 +83,8 @@ fun registerAssets(id: Identifier, pack: ArtificeResourcePack): ArtificeResource
  */
 @Environment(EnvType.CLIENT)
 fun registerAssetPack(id: String, register: Builder<ClientResourcePackBuilder>) {
-    registerAssetPack(Identifier(id), register)
+    val identifier = requireNotNull(Identifier.tryParse(id)) { "Could not parse $id to an identifier!" }
+    registerAssetPack(identifier, register)
 }
 
 /**
@@ -93,7 +95,8 @@ fun registerAssetPack(id: String, register: Builder<ClientResourcePackBuilder>) 
  * @return The registered pack.
  */
 fun registerDataPack(id: String, register: Builder<ServerResourcePackBuilder>) {
-    registerDataPack(Identifier(id), register)
+    val identifier = requireNotNull(Identifier.tryParse(id)) { "Could not parse $id to an identifier!" }
+    registerDataPack(identifier, register)
 }
 
 /**
