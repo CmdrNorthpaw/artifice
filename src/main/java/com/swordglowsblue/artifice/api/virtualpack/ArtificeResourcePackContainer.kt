@@ -1,50 +1,37 @@
-package com.swordglowsblue.artifice.api.virtualpack;
+package com.swordglowsblue.artifice.api.virtualpack
 
-import com.swordglowsblue.artifice.api.ArtificeResourcePack;
-import com.swordglowsblue.artifice.impl.ArtificeResourcePackImpl;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.resource.ResourcePackProfile;
+import net.fabricmc.api.EnvType
+import net.minecraft.resource.ResourcePackProfile
+import net.minecraft.resource.ResourcePack
+import com.swordglowsblue.artifice.impl.ArtificeResourcePackImpl
+import com.swordglowsblue.artifice.api.ArtificeResourcePack
+import net.fabricmc.api.Environment
+import java.util.function.Supplier
 
 /**
- * A wrapper around {@link ResourcePackProfile} exposing optionality/visibility.
+ * A wrapper around [ResourcePackProfile] exposing optionality/visibility.
  *
- * @see ArtificeResourcePack.ClientResourcePackBuilder#setOptional
- * @see ArtificeResourcePack.ClientResourcePackBuilder#setVisible
+ * @see ArtificeResourcePack.ClientResourcePackBuilder.setOptional
+ *
+ * @see ArtificeResourcePack.ClientResourcePackBuilder.setVisible
  */
 @Environment(EnvType.CLIENT)
-public class ArtificeResourcePackContainer extends ResourcePackProfile {
-    private final boolean optional;
-    private final boolean visible;
-
+class ArtificeResourcePackContainer(
     /**
      * @return Whether this pack is optional.
      */
-    public boolean isOptional() {
-        return this.optional;
-    }
-
+    val isOptional: Boolean,
     /**
      * @return Whether this pack is visible.
      */
-    public boolean isVisible() {
-        return this.visible;
-    }
-
-    public ArtificeResourcePackContainer(boolean optional, boolean visible, ResourcePackProfile wrapping) {
-        super(
-                        wrapping.getName(),
-                        !optional,
-                        wrapping::createResourcePack,
-                        wrapping.getDisplayName(),
-                        wrapping.getDescription(),
-                        wrapping.getCompatibility(),
-                        wrapping.getInitialPosition(),
-                        wrapping.isPinned(),
-                        ArtificeResourcePackImpl.ARTIFICE_RESOURCE_PACK_SOURCE
-        );
-
-        this.optional = optional;
-        this.visible = visible;
-    }
-}
+    val isVisible: Boolean, wrapping: ResourcePackProfile
+) : ResourcePackProfile(
+    wrapping.name,
+    !isOptional, Supplier { wrapping.createResourcePack() },
+    wrapping.displayName,
+    wrapping.description,
+    wrapping.compatibility,
+    wrapping.initialPosition,
+    wrapping.isPinned,
+    ArtificeResourcePackImpl.ARTIFICE_RESOURCE_PACK_SOURCE
+)
