@@ -73,6 +73,10 @@ class CookingRecipeBuilder(type: CookingRecipeType) : RecipeBuilder<CookingRecip
         SMELTING(Identifier("smelting")),
         SMOKING(Identifier("smoking")),
         CAMPFIRE(Identifier("campfire_cooking")),
-        BLASTING(Identifier("blasting"))
+        BLASTING(Identifier("blasting"));
+
+        companion object {
+            fun fromId(id: Identifier) = values().first { it.type == id }
+        }
     }
 }
