@@ -34,13 +34,16 @@ object Artifice {
     }
 
     @Environment(EnvType.CLIENT)
-    @Deprecated("Deprecated in favor of {@link Artifice#registerAssetPack(Identifier, Processor)}")
+    @Deprecated("Deprecated in favor of registerAssetPack",
+    replaceWith = ReplaceWith("registerAssetPack(id: Identifier, register: Builder<ClientResourcePackBuilder>",
+    imports = ["com.swordglowsblue.artifice.registerAssetPack"]))
     fun registerAssets(id: Identifier, register: Processor<ClientResourcePackBuilder>): ArtificeResourcePack {
         ArtificeImpl.LOGGER.warn("Using deprecated Artifice#registerAssets! Please use registerAssetPack! Issues may occur!")
         return ArtificeImpl.registerSafely(ArtificeRegistry.ASSETS, id, ArtificeResourcePack.ofAssets(register))
     }
 
-    @Deprecated("Deprecated in favor of registerDataPack")
+    @Deprecated("Deprecated in favor of registerDataPack",
+    replaceWith = ReplaceWith("registerDataPack(id: Identifier, register: Builder<ServerResourcePackBuilder>"))
     fun registerData(id: Identifier, register: Processor<ServerResourcePackBuilder>): ArtificeResourcePack {
         ArtificeImpl.LOGGER.warn("Using deprecated Artifice#registerData! Please use registerDataPack! Issues may occur!")
         return ArtificeImpl.registerSafely(ArtificeRegistry.DATA, id, ArtificeResourcePack.ofData(register))
