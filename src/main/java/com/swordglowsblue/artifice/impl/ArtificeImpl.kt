@@ -1,16 +1,14 @@
-package com.swordglowsblue.artifice.impl;
+package com.swordglowsblue.artifice.impl
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.swordglowsblue.artifice.impl.ArtificeImpl
+import net.minecraft.util.Identifier
+import net.minecraft.util.registry.Registry
+import org.apache.logging.log4j.LogManager
 
-public class ArtificeImpl {
-
-    private static final Logger log4jLogger = LogManager.getLogger("Artifice");
-    public static final Logger LOGGER = log4jLogger;
-
-    public static <V, T extends V> T registerSafely(Registry<V> registry, Identifier id, T entry) {
-        return Registry.register(registry, id, entry);
+object ArtificeImpl {
+    private val log4jLogger = LogManager.getLogger("Artifice")
+    val LOGGER = log4jLogger
+    fun <V, T : V?> registerSafely(registry: Registry<V>?, id: Identifier?, entry: T): T {
+        return Registry.register(registry, id, entry)
     }
 }
