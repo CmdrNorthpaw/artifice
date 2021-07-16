@@ -1,37 +1,46 @@
-package com.swordglowsblue.artifice.api.resource;
+package com.swordglowsblue.artifice.api.resource
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.JsonElement
+import com.swordglowsblue.artifice.api.resource.ArtificeResource
+import com.google.gson.GsonBuilder
+import java.io.ByteArrayInputStream
+import java.util.HashMap
+import com.swordglowsblue.artifice.api.resource.TemplateResource
+import java.io.InputStream
 
 /** A virtual resource representing a string with template expansions.
- *  Templates in the string take the form {@code $key}.
- *  @see TemplateResource#expand */
-public class TemplateResource implements ArtificeResource<String> {
-    private final String template;
-    private final Map<String, String> expansions = new HashMap<>();
-
-    /** @param template Individual lines of the template string. */
-    public TemplateResource(String... template) { this.template = String.join("\n", template); }
+ * Templates in the string take the form `$key`.
+ * @see TemplateResource.expand
+ */
+class TemplateResource(vararg template: String?) : ArtificeResource<String> {
+    private val template: String = template.joinToString("\n")
+    private val expansions: MutableMap<String, String> = HashMap()
 
     /**
      * Set the expansion string for a given key.
-     * @param key The key to be expanded (ex. {@code "key"} expands {@code $key}).
+     * @param key The key to be expanded (ex. `"key"` expands `$key`).
      * @param expansion The expanded string.
      * @return this
      */
-    public TemplateResource expand(String key, String expansion) {
-        expansions.put(key, expansion);
-        return this;
+    fun expand(key: String, expansion: String): TemplateResource {
+        expansions[key] = expansion
+        return this
     }
 
-    public InputStream toInputStream() { return new ByteArrayInputStream(this.getData().getBytes()); }
-    public String toOutputString() { return this.getData(); }
-    public String getData() {
-        String expanded = template;
-        for(String key : expansions.keySet())
-            expanded = expanded.replaceAll("\\$"+key, expansions.get(key));
-        return expanded;
+    override fun toInputStream(): InputStream {
+        return ByteArrayInputStream(data.toByteArray())
     }
+
+    override fun toOutputString(): String {
+        return data
+    }
+
+    override val data: String
+        get() {
+            var expanded = template
+            for (key in expansions.keys) expanded = expanded.replace("\\$" + key.toRegex(), expansions[key]!!)
+            return expanded
+        }
+
+
 }

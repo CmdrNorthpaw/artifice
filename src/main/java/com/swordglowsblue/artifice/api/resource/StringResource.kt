@@ -1,17 +1,22 @@
-package com.swordglowsblue.artifice.api.resource;
+package com.swordglowsblue.artifice.api.resource
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import com.google.gson.JsonElement
+import com.swordglowsblue.artifice.api.resource.ArtificeResource
+import com.google.gson.GsonBuilder
+import java.io.ByteArrayInputStream
+import java.util.HashMap
+import com.swordglowsblue.artifice.api.resource.TemplateResource
+import java.io.InputStream
 
-/** A virtual resource representing an arbitrary string. */
-public class StringResource implements ArtificeResource<String> {
-    private final String data;
-    /** @param lines Individual lines of the string this resource file contains. */
-    public StringResource(String... lines) { this.data = String.join("\n", lines); }
-
-    public String getData() { return this.data; }
-    public String toOutputString() { return this.data; }
-    public InputStream toInputStream() {
-        return new ByteArrayInputStream(this.data.getBytes());
+/** A virtual resource representing an arbitrary string.  */
+class StringResource(vararg lines: String) : ArtificeResource<String> {
+    override val data: String = lines.joinToString("\n")
+    override fun toOutputString(): String {
+        return data
     }
+
+    override fun toInputStream(): InputStream {
+        return ByteArrayInputStream(data.toByteArray())
+    }
+
 }
