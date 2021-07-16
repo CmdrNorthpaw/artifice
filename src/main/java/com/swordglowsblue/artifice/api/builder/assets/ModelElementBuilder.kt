@@ -1,22 +1,22 @@
-package com.swordglowsblue.artifice.api.builder.assets;
+package com.swordglowsblue.artifice.api.builder.assets
 
-import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder;
-import com.swordglowsblue.artifice.api.util.Processor;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
+import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.util.Builder
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.minecraft.util.Identifier
+import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
+import java.util.function.Function
 
 /**
  * Builder for an individual model element.
  * @see ModelBuilder
  */
 @Environment(EnvType.CLIENT)
-public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
-    ModelElementBuilder() { super(new JsonObject(), j->j); }
-
+class ModelElementBuilder internal constructor() :
+    TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     /**
      * Set the start point of this cuboid.
      * @param x The start point on the X axis. Clamped to between -16 and 32.
@@ -24,13 +24,15 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
      * @param z The start point on the Z axis. Clamped to between -16 and 32.
      * @return this
      */
-    public ModelElementBuilder from(float x, float y, float z) {
-        root.add("from", arrayOf(
-            MathHelper.clamp(x, -16, 32),
-            MathHelper.clamp(y, -16, 32),
-            MathHelper.clamp(z, -16, 32)
-        ));
-        return this;
+    fun from(x: Float, y: Float, z: Float): ModelElementBuilder {
+        root.add(
+            "from", arrayOf(
+                MathHelper.clamp(x, -16f, 32f),
+                MathHelper.clamp(y, -16f, 32f),
+                MathHelper.clamp(z, -16f, 32f)
+            )
+        )
+        return this
     }
 
     /**
@@ -40,23 +42,27 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
      * @param z The end point on the Z axis. Clamped to between -16 and 32.
      * @return this
      */
-    public ModelElementBuilder to(float x, float y, float z) {
-        root.add("to", arrayOf(
-            MathHelper.clamp(x, -16, 32),
-            MathHelper.clamp(y, -16, 32),
-            MathHelper.clamp(z, -16, 32)
-        ));
-        return this;
+    fun to(x: Float, y: Float, z: Float): ModelElementBuilder {
+        root.add(
+            "to", arrayOf(
+                MathHelper.clamp(x, -16f, 32f),
+                MathHelper.clamp(y, -16f, 32f),
+                MathHelper.clamp(z, -16f, 32f)
+            )
+        )
+        return this
     }
 
     /**
      * Set the rotation of this cuboid.
-     * @param settings A callback which will be passed a {@link Rotation}.
+     * @param settings A callback which will be passed a [Rotation].
      * @return this
      */
-    public ModelElementBuilder rotation(Processor<Rotation> settings) {
-        with("rotation", JsonObject::new, rotation -> settings.process(new Rotation(rotation)).buildTo(rotation));
-        return this;
+    fun rotation(settings: Builder<Rotation>): ModelElementBuilder {
+        with("rotation", { JsonObject() }) { rotation: JsonObject ->
+            Rotation(rotation).apply(settings).buildTo(rotation)
+        }
+        return this
     }
 
     /**
@@ -64,21 +70,27 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
      * @param shade Whether to shade (default: true).
      * @return this
      */
-    public ModelElementBuilder shade(boolean shade) {
-        root.addProperty("shade", shade);
-        return this;
+    fun shade(shade: Boolean): ModelElementBuilder {
+        root.addProperty("shade", shade)
+        return this
     }
 
     /**
      * Define properties of the face in the given direction.
      * @param side The direction of the face.
-     * @param settings A callback which will be passed a {@link Face}.
+     * @param settings A callback which will be passed a [Face].
      * @return this
      */
-    public ModelElementBuilder face(Direction side, Processor<Face> settings) {
-        with("faces", JsonObject::new, faces -> with(faces, side.getName(), JsonObject::new, face ->
-            settings.process(new Face(face)).buildTo(face)));
-        return this;
+    fun face(side: Direction, settings: Builder<Face>): ModelElementBuilder {
+        with("faces", { JsonObject() }) { faces: JsonObject? ->
+            with(
+                faces!!,
+                side.getName(),
+                { JsonObject() }) { face: JsonObject ->
+                Face(face).apply(settings).buildTo(face)
+            }
+        }
+        return this
     }
 
     /**
@@ -86,9 +98,7 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
      * @see ModelElementBuilder
      */
     @Environment(EnvType.CLIENT)
-    public static final class Rotation extends TypedJsonBuilder<JsonObject> {
-        private Rotation(JsonObject root) { super(root, j->j); }
-
+    class Rotation(root: JsonObject) : TypedJsonBuilder<JsonObject?>(root, Function { j: JsonObject? -> j }) {
         /**
          * Set the origin point of this rotation.
          * @param x The origin point on the X axis. Clamped to between -16 and 32.
@@ -96,13 +106,15 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
          * @param z The origin point on the Z axis. Clamped to between -16 and 32.
          * @return this
          */
-        public Rotation origin(float x, float y, float z) {
-            root.add("origin", arrayOf(
-                MathHelper.clamp(x, -16, 32),
-                MathHelper.clamp(y, -16, 32),
-                MathHelper.clamp(z, -16, 32)
-            ));
-            return this;
+        fun origin(x: Float, y: Float, z: Float): Rotation {
+            root.add(
+                "origin", arrayOf(
+                    MathHelper.clamp(x, -16f, 32f),
+                    MathHelper.clamp(y, -16f, 32f),
+                    MathHelper.clamp(z, -16f, 32f)
+                )
+            )
+            return this
         }
 
         /**
@@ -110,9 +122,9 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
          * @param axis The axis.
          * @return this
          */
-        public Rotation axis(Direction.Axis axis) {
-            root.addProperty("axis", axis.getName());
-            return this;
+        fun axis(axis: Direction.Axis): Rotation {
+            root.addProperty("axis", axis.getName())
+            return this
         }
 
         /**
@@ -121,11 +133,16 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
          * @return this
          * @throws IllegalArgumentException if the angle is not between -45 and 45 or is not divisible by 22.5.
          */
-        public Rotation angle(float angle) {
-            if(angle != MathHelper.clamp(angle, -45f, 45f) || angle % 22.5f != 0)
-                throw new IllegalArgumentException("Angle must be between -45 and 45 in increments of 22.5");
-            root.addProperty("angle", angle);
-            return this;
+        fun angle(angle: Float): Rotation {
+            require(
+                !(angle != MathHelper.clamp(
+                    angle,
+                    -45f,
+                    45f
+                ) || angle % 22.5f != 0f)
+            ) { "Angle must be between -45 and 45 in increments of 22.5" }
+            root.addProperty("angle", angle)
+            return this
         }
 
         /**
@@ -133,9 +150,9 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
          * @param rescale Whether to rescale (default: false).
          * @return this
          */
-        public Rotation rescale(boolean rescale) {
-            root.addProperty("rescale", rescale);
-            return this;
+        fun rescale(rescale: Boolean): Rotation {
+            root.addProperty("rescale", rescale)
+            return this
         }
     }
 
@@ -144,9 +161,7 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
      * @see ModelElementBuilder
      */
     @Environment(EnvType.CLIENT)
-    public static final class Face extends TypedJsonBuilder<JsonObject> {
-        private Face(JsonObject root) { super(root, j->j); }
-
+    class Face(root: JsonObject) : TypedJsonBuilder<JsonObject?>(root, Function { j: JsonObject? -> j }) {
         /**
          * Set the texture UV to apply to this face. Detected by position within the block if not specified.
          * @param x1 The start point on the X axis. Clamped to between 0 and 16.
@@ -155,34 +170,36 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
          * @param y2 The end point on the Y axis. Clamped to between 0 and 16.
          * @return this
          */
-        public Face uv(int x1, int x2, int y1, int y2) {
-            root.add("uv", arrayOf(
-                MathHelper.clamp(x1, 0, 16),
-                MathHelper.clamp(x2, 0, 16),
-                MathHelper.clamp(y1, 0, 16),
-                MathHelper.clamp(y2, 0, 16)
-            ));
-            return this;
+        fun uv(x1: Int, x2: Int, y1: Int, y2: Int): Face {
+            root.add(
+                "uv", arrayOf(
+                    MathHelper.clamp(x1, 0, 16),
+                    MathHelper.clamp(x2, 0, 16),
+                    MathHelper.clamp(y1, 0, 16),
+                    MathHelper.clamp(y2, 0, 16)
+                )
+            )
+            return this
         }
 
         /**
          * Set the texture of this face to the given texture variable.
-         * @param varName The variable name (e.g. {@code particle}).
+         * @param varName The variable name (e.g. `particle`).
          * @return this
          */
-        public Face texture(String varName) {
-            root.addProperty("texture", "#"+varName);
-            return this;
+        fun texture(varName: String): Face {
+            root.addProperty("texture", "#$varName")
+            return this
         }
 
         /**
          * Set the texture of this face to the given texture id.
-         * @param path The texture path ({@code namespace:type/textureid}).
+         * @param path The texture path (`namespace:type/textureid`).
          * @return this
          */
-        public Face texture(Identifier path) {
-            root.addProperty("texture", path.toString());
-            return this;
+        fun texture(path: Identifier): Face {
+            root.addProperty("texture", path.toString())
+            return this
         }
 
         /**
@@ -190,9 +207,9 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
          * @param side The side to cull on (defaults to the side specified for this face).
          * @return this
          */
-        public Face cullface(Direction side) {
-            root.addProperty("cullface", side.getName());
-            return this;
+        fun cullface(side: Direction): Face {
+            root.addProperty("cullface", side.getName())
+            return this
         }
 
         /**
@@ -201,11 +218,16 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
          * @return this
          * @throws IllegalArgumentException if the rotation is not between 0 and 270 or is not divisible by 90.
          */
-        public Face rotation(int rotation) {
-            if(rotation != MathHelper.clamp(rotation, 0, 270) || rotation % 90 != 0)
-                throw new IllegalArgumentException("Rotation must be between 0 and 270 in increments of 90");
-            root.addProperty("rotation", rotation);
-            return this;
+        fun rotation(rotation: Int): Face {
+            require(
+                !(rotation != MathHelper.clamp(
+                    rotation,
+                    0,
+                    270
+                ) || rotation % 90 != 0)
+            ) { "Rotation must be between 0 and 270 in increments of 90" }
+            root.addProperty("rotation", rotation)
+            return this
         }
 
         /**
@@ -213,9 +235,9 @@ public final class ModelElementBuilder extends TypedJsonBuilder<JsonObject> {
          * @param tintindex The tint index.
          * @return this
          */
-        public Face tintindex(int tintindex) {
-            root.addProperty("tintindex", tintindex);
-            return this;
+        fun tintindex(tintindex: Int): Face {
+            root.addProperty("tintindex", tintindex)
+            return this
         }
     }
 }
