@@ -6,7 +6,7 @@ import java.util.function.Consumer
  * @param <T> The type to be passed in and returned.
 </T> */
 @Deprecated(message = "Please use a Kotlin lambda instead",
-    replaceWith = ReplaceWith("Builder<T>", imports = ["com.swordglowsblue.artifice.api.util"]))
+    replaceWith = ReplaceWith("Builder<T>", imports = ["com.swordglowsblue.artifice.api.util.Builder"]))
 @FunctionalInterface
 fun interface Processor<T> : Consumer<T> {
     fun process(t: T): T {
