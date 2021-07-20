@@ -1,5 +1,7 @@
 package com.swordglowsblue.artifice.impl
 
+import com.swordglowsblue.artifice.registerDataPack
+import com.swordglowsblue.artifice.registerAssetPack
 import com.swordglowsblue.artifice.api.builder.assets.*
 import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder
 import com.swordglowsblue.artifice.api.builder.data.LootTableBuilder
@@ -13,24 +15,20 @@ import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.Configur
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.ConfiguredSurfaceBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.ConfiguredFeatureBuilder
 import com.swordglowsblue.artifice.api.resource.ArtificeResource
-import com.swordglowsblue.artifice.api.util.Processor
-import com.swordglowsblue.artifice.api.virtualpack.ArtificeResourcePackContainer
-import com.swordglowsblue.artifice.common.ClientOnly
+import com.swordglowsblue.artifice.api.util.Builder
 import com.swordglowsblue.artifice.common.ClientResourcePackProfileLike
 import com.swordglowsblue.artifice.common.ServerResourcePackProfileLike
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.resource.language.LanguageDefinition
 import net.minecraft.resource.ResourcePack
-import net.minecraft.resource.ResourcePackProfile
 import net.minecraft.resource.ResourceType
-import net.minecraft.resource.VanillaDataPackProvider
 import net.minecraft.util.Identifier
 import java.io.IOException
 
 /**
  * A resource pack containing Artifice-based resources. May be used
- * as a virtual resource pack with [Artifice.registerAssets] or [Artifice.registerData].
+ * as a virtual resource pack with [registerAssetPack] or [registerDataPack].
  */
 sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileLike, ClientResourcePackProfileLike {
     /**
@@ -55,7 +53,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
      * @throws IOException              if there is an error creating the necessary directories.
      * @throws IllegalArgumentException if the given path points to a file that is not a directory.
      */
-    @Deprecated("")
+    @Deprecated("", replaceWith = ReplaceWith("dumpResources(folderPath, type)"))
     @Throws(IOException::class)
     fun dumpResources(folderPath: String)
 
@@ -63,48 +61,6 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
      * The pack will be placed on top of all other packs in order to overwrite them, it will not be optional or visible.
      */
     val isShouldOverwrite: Boolean
-
-    /**
-     * Create a client-side [ResourcePackProfile] for this pack.
-     *
-     * @param factory The factory function passed to [VanillaDataPackProvider.register].
-     * @return The created container.
-     */
-    @Environment(EnvType.CLIENT)
-    override fun <T : ResourcePackProfile> toClientResourcePackProfile(factory: ResourcePackProfile.Factory): ClientOnly<ResourcePackProfile> {
-        return ClientOnly(getAssetsContainer(factory))
-    }
-
-    /**
-     * Create a server-side [ResourcePackProfile] for this pack.
-     *
-     * @param factory The factory function passed to [VanillaDataPackProvider.register].
-     * @return The created container.
-     */
-    override fun <T : ResourcePackProfile> toServerResourcePackProfile(factory: ResourcePackProfile.Factory): ResourcePackProfile {
-        return getDataContainer(factory)
-    }
-
-    /**
-     * @param factory The factory function passed to [VanillaDataPackProvider.register].
-     * @return The created container.
-     */
-    @Environment(EnvType.CLIENT)
-    @Deprecated(
-        """use {@link ArtificeResourcePack#toClientResourcePackProfile(ResourcePackProfile.Factory)}
-      Create a client-side {@link ResourcePackProfile} for this pack."""
-    )
-    fun getAssetsContainer(factory: ResourcePackProfile.Factory): ArtificeResourcePackContainer
-
-    /**
-     * @param factory The factory function passed to [VanillaDataPackProvider.register].
-     * @return The created container.
-     */
-    @Deprecated(
-        """use {@link ArtificeResourcePack#toServerResourcePackProfile(ResourcePackProfile.Factory)}
-      Create a server-side {@link ResourcePackProfile} for this pack."""
-    )
-    fun getDataContainer(factory: ResourcePackProfile.Factory): ResourcePackProfile
 
     /**
      * Passed to resource construction callbacks to register resources.
@@ -158,7 +114,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id An item ID, which will be converted into the correct path.
          * @param f  A callback which will be passed a [ModelBuilder] to create the item model.
          */
-        fun addItemModel(id: Identifier, f: Processor<ModelBuilder>)
+        fun addItemModel(id: Identifier, f: Builder<ModelBuilder>)
 
         /**
          * Add a block model for the given block ID.
@@ -166,7 +122,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id A block ID, which will be converted into the correct path.
          * @param f  A callback which will be passed a [ModelBuilder] to create the block model.
          */
-        fun addBlockModel(id: Identifier, f: Processor<ModelBuilder>)
+        fun addBlockModel(id: Identifier, f: Builder<ModelBuilder>)
 
         /**
          * Add a blockstate definition for the given block ID.
@@ -174,7 +130,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id A block ID, which will be converted into the correct path.
          * @param f  A callback which will be passed a [BlockStateBuilder] to create the blockstate definition.
          */
-        fun addBlockState(id: Identifier, f: Processor<BlockStateBuilder>)
+        fun addBlockState(id: Identifier, f: Builder<BlockStateBuilder>)
 
         /**
          * Add a translation file for the given language.
@@ -182,7 +138,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The namespace and language code of the desired language.
          * @param f  A callback which will be passed a [TranslationBuilder] to create the language file.
          */
-        fun addTranslations(id: Identifier, f: Processor<TranslationBuilder>)
+        fun addTranslations(id: Identifier, f: Builder<TranslationBuilder>)
 
         /**
          * Add a particle definition for the given particle ID.
@@ -190,7 +146,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id A particle ID, which will be converted into the correct path.
          * @param f  A callback which will be passed a [ParticleBuilder] to create the particle definition.
          */
-        fun addParticle(id: Identifier, f: Processor<ParticleBuilder>)
+        fun addParticle(id: Identifier, f: Builder<ParticleBuilder>)
 
         /**
          * Add a texture animation for the given item ID.
@@ -198,7 +154,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id An item ID, which will be converted into the correct path.
          * @param f  A callback which will be passed an [AnimationBuilder] to create the texture animation.
          */
-        fun addItemAnimation(id: Identifier, f: Processor<AnimationBuilder>)
+        fun addItemAnimation(id: Identifier, f: Builder<AnimationBuilder>)
 
         /**
          * Add a texture animation for the given block ID.
@@ -206,7 +162,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id A block ID, which will be converted into the correct path.
          * @param f  A callback which will be passed an [AnimationBuilder] to create the texture animation.
          */
-        fun addBlockAnimation(id: Identifier, f: Processor<AnimationBuilder>)
+        fun addBlockAnimation(id: Identifier, f: Builder<AnimationBuilder>)
 
         /**
          * Add a custom language. Translations must be added separately with [ClientResourcePackBuilder.addTranslations].
@@ -241,7 +197,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the advancement, which will be converted into the correct path.
          * @param f  A callback which will be passed an [AdvancementBuilder] to create the advancement.
          */
-        fun addAdvancement(id: Identifier, f: Processor<AdvancementBuilder>)
+        fun addAdvancement(id: Identifier, f: Builder<AdvancementBuilder>)
 
         /**
          * Add a Dimension Type with the given ID.
@@ -249,7 +205,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the dimension type, which will be converted into the correct path.
          * @param f A callback which will be passed an [DimensionTypeBuilder] to create the dimension type.
          */
-        fun addDimensionType(id: Identifier, f: Processor<DimensionTypeBuilder>)
+        fun addDimensionType(id: Identifier, f: Builder<DimensionTypeBuilder>)
 
         /**
          * Add a Dimension with the given ID.
@@ -257,7 +213,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the dimension, which will be converted into the correct path.
          * @param f A callback which will be passed an [DimensionBuilder] to create the dimension.
          */
-        fun addDimension(id: Identifier, f: Processor<DimensionBuilder>)
+        fun addDimension(id: Identifier, f: Builder<DimensionBuilder>)
 
         /**
          * Add a Biome with the given ID.
@@ -265,7 +221,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the biome, which will be converted into the correct path.
          * @param f A callback which will be passed an [BiomeBuilder] to create the biome.
          */
-        fun addBiome(id: Identifier, f: Processor<BiomeBuilder>)
+        fun addBiome(id: Identifier, f: Builder<BiomeBuilder>)
 
         /**
          * Add a Carver with the given ID.
@@ -273,7 +229,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the carver, which will be converted into the correct path.
          * @param f A callback which will be passed an [ConfiguredCarverBuilder] to create the carver.
          */
-        fun addConfiguredCarver(id: Identifier, f: Processor<ConfiguredCarverBuilder>)
+        fun addConfiguredCarver(id: Identifier, f: Builder<ConfiguredCarverBuilder>)
 
         /**
          * Add a Feature with the given ID.
@@ -281,7 +237,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the feature, which will be converted into the correct path.
          * @param f A callback which will be passed an [ConfiguredFeatureBuilder] to create the feature.
          */
-        fun addConfiguredFeature(id: Identifier, f: Processor<ConfiguredFeatureBuilder>)
+        fun addConfiguredFeature(id: Identifier, f: Builder<ConfiguredFeatureBuilder>)
 
         /**
          * Add a ConfiguredSurfaceBuilder with the given ID.
@@ -290,7 +246,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param f A callback which will be passed an [ConfiguredSurfaceBuilder]
          * to create the configured surface .
          */
-        fun addConfiguredSurfaceBuilder(id: Identifier, f: Processor<ConfiguredSurfaceBuilder>)
+        fun addConfiguredSurfaceBuilder(id: Identifier, f: Builder<ConfiguredSurfaceBuilder>)
 
         /**
          * Add a NoiseSettingsBuilder with the given ID.
@@ -299,7 +255,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param f A callback which will be passed an [NoiseSettingsBuilder]
          * to create the noise settings .
          */
-        fun addNoiseSettingsBuilder(id: Identifier, f: Processor<NoiseSettingsBuilder>)
+        fun addNoiseSettingsBuilder(id: Identifier, f: Builder<NoiseSettingsBuilder>)
 
         /**
          * Add a loot table with the given ID.
@@ -307,7 +263,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the loot table, which will be converted into the correct path.
          * @param f  A callback which will be passed a [LootTableBuilder] to create the loot table.
          */
-        fun addLootTable(id: Identifier, f: Processor<LootTableBuilder>)
+        fun addLootTable(id: Identifier, f: Builder<LootTableBuilder>)
 
         /**
          * Add an item tag with the given ID.
@@ -315,7 +271,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the tag, which will be converted into the correct path.
          * @param f  A callback which will be passed a [TagBuilder] to create the tag.
          */
-        fun addItemTag(id: Identifier, f: Processor<TagBuilder>)
+        fun addItemTag(id: Identifier, f: Builder<TagBuilder>)
 
         /**
          * Add a block tag with the given ID.
@@ -323,7 +279,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the tag, which will be converted into the correct path.
          * @param f  A callback which will be passed a [TagBuilder] to create the tag.
          */
-        fun addBlockTag(id: Identifier, f: Processor<TagBuilder>)
+        fun addBlockTag(id: Identifier, f: Builder<TagBuilder>)
 
         /**
          * Add an entity type tag with the given ID.
@@ -331,7 +287,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the tag, which will be converted into the correct path.
          * @param f  A callback which will be passed a [TagBuilder] to create the tag.
          */
-        fun addEntityTypeTag(id: Identifier, f: Processor<TagBuilder>)
+        fun addEntityTypeTag(id: Identifier, f: Builder<TagBuilder>)
 
         /**
          * Add a fluid tag with the given ID.
@@ -339,7 +295,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the tag, which will be converted into the correct path.
          * @param f  A callback which will be passed a [TagBuilder] to create the tag.
          */
-        fun addFluidTag(id: Identifier, f: Processor<TagBuilder>)
+        fun addFluidTag(id: Identifier, f: Builder<TagBuilder>)
 
         /**
          * Add a function tag with the given ID.
@@ -347,7 +303,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the tag, which will be converted into the correct path.
          * @param f  A callback which will be passed a [TagBuilder] to create the tag.
          */
-        fun addFunctionTag(id: Identifier, f: Processor<TagBuilder>)
+        fun addFunctionTag(id: Identifier, f: Builder<TagBuilder>)
 
         /**
          * Add a recipe with the given ID.
@@ -355,7 +311,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [GenericRecipeBuilder] to create the recipe.
          */
-        fun addGenericRecipe(id: Identifier, f: Processor<GenericRecipeBuilder>)
+        fun addGenericRecipe(recipeType: Identifier, id: Identifier, f: Builder<GenericRecipeBuilder>)
 
         /**
          * Add a shaped crafting recipe with the given ID.
@@ -363,7 +319,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [ShapedRecipeBuilder] to create the recipe.
          */
-        fun addShapedRecipe(id: Identifier, f: Processor<ShapedRecipeBuilder>)
+        fun addShapedRecipe(id: Identifier, f: Builder<ShapedRecipeBuilder>)
 
         /**
          * Add a shapeless crafting recipe with the given ID.
@@ -371,7 +327,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [ShapelessRecipeBuilder] to create the recipe.
          */
-        fun addShapelessRecipe(id: Identifier, f: Processor<ShapelessRecipeBuilder>)
+        fun addShapelessRecipe(id: Identifier, f: Builder<ShapelessRecipeBuilder>)
 
         /**
          * Add a stonecutter recipe with the given ID.
@@ -379,7 +335,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [StonecuttingRecipeBuilder] to create the recipe.
          */
-        fun addStonecuttingRecipe(id: Identifier, f: Processor<StonecuttingRecipeBuilder>)
+        fun addStonecuttingRecipe(id: Identifier, f: Builder<StonecuttingRecipeBuilder>)
 
         /**
          * Add a smelting recipe with the given ID.
@@ -387,7 +343,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [CookingRecipeBuilder] to create the recipe.
          */
-        fun addSmeltingRecipe(id: Identifier, f: Processor<CookingRecipeBuilder>)
+        fun addSmeltingRecipe(id: Identifier, f: Builder<CookingRecipeBuilder>)
 
         /**
          * Add a blast furnace recipe with the given ID.
@@ -395,7 +351,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [CookingRecipeBuilder] to create the recipe.
          */
-        fun addBlastingRecipe(id: Identifier, f: Processor<CookingRecipeBuilder>)
+        fun addBlastingRecipe(id: Identifier, f: Builder<CookingRecipeBuilder>)
 
         /**
          * Add a smoker recipe with the given ID.
@@ -403,7 +359,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [CookingRecipeBuilder] to create the recipe.
          */
-        fun addSmokingRecipe(id: Identifier, f: Processor<CookingRecipeBuilder>)
+        fun addSmokingRecipe(id: Identifier, f: Builder<CookingRecipeBuilder>)
 
         /**
          * Add a campfire recipe with the given ID.
@@ -411,7 +367,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [CookingRecipeBuilder] to create the recipe.
          */
-        fun addCampfireRecipe(id: Identifier, f: Processor<CookingRecipeBuilder>)
+        fun addCampfireRecipe(id: Identifier, f: Builder<CookingRecipeBuilder>)
 
         /**
          * Add a smithing table recipe with the given ID.
@@ -419,7 +375,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @param id The ID of the recipe, which will be converted into the correct path.
          * @param f  A callback which will be passed a [CookingRecipeBuilder] to create the recipe.
          */
-        fun addSmithingRecipe(id: Identifier, f: Processor<SmithingRecipeBuilder>)
+        fun addSmithingRecipe(id: Identifier, f: Builder<SmithingRecipeBuilder>)
     }
 
     companion object {
@@ -429,7 +385,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          */
         @JvmStatic
         @Environment(EnvType.CLIENT)
-        fun ofAssets(register: Processor<ClientResourcePackBuilder>): ArtificeResourcePack {
+        fun ofAssets(register: Builder<ClientResourcePackBuilder>): ArtificeResourcePack {
             return ArtificeResourcePackImpl(ResourceType.CLIENT_RESOURCES, null, register)
         }
 
@@ -440,7 +396,7 @@ sealed interface ArtificeResourcePack : ResourcePack, ServerResourcePackProfileL
          * @return The created pack.
          */
         @JvmStatic
-        fun ofData(register: Processor<ServerResourcePackBuilder>): ArtificeResourcePack {
+        fun ofData(register: Builder<ServerResourcePackBuilder>): ArtificeResourcePack {
             return ArtificeResourcePackImpl(ResourceType.SERVER_DATA, null, register)
         }
     }
