@@ -1,8 +1,9 @@
-package com.swordglowsblue.artifice.common;
+package com.swordglowsblue.artifice.common
 
-import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.resource.ResourcePackProfile
+import com.swordglowsblue.artifice.common.ClientOnly
 
-public interface ClientResourcePackProfileLike {
+interface ClientResourcePackProfileLike {
     // Supplier to avoid loading ClientResourcePackProfile on the server
-    <T extends ResourcePackProfile> ClientOnly<ResourcePackProfile> toClientResourcePackProfile(ResourcePackProfile.Factory factory);
+    fun <T : ResourcePackProfile> toClientResourcePackProfile(factory: ResourcePackProfile.Factory): ClientOnly<ResourcePackProfile>
 }
