@@ -1,23 +1,19 @@
-package com.swordglowsblue.artifice.impl;
+package com.swordglowsblue.artifice.impl
 
-import com.swordglowsblue.artifice.common.ArtificeRegistry;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackProvider;
-import net.minecraft.util.Identifier;
+import com.swordglowsblue.artifice.common.ArtificeRegistry
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.minecraft.resource.ResourcePackProfile
+import net.minecraft.resource.ResourcePackProvider
+import java.util.function.Consumer
 
-import java.util.function.Consumer;
-
-
-public final class ArtificeAssetsResourcePackProvider implements ResourcePackProvider {
-
+class ArtificeAssetsResourcePackProvider : ResourcePackProvider {
     @Environment(EnvType.CLIENT)
-    @Override
-    public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
-        for (Identifier id : ArtificeRegistry.ASSETS.getIds()) {
-            consumer.accept( ArtificeRegistry.ASSETS.get(id).toClientResourcePackProfile(factory).get());
+    override fun register(consumer: Consumer<ResourcePackProfile>, factory: ResourcePackProfile.Factory) {
+        for (id in ArtificeRegistry.ASSETS.ids) {
+            consumer.accept(
+                ArtificeRegistry.ASSETS[id]!!.toClientResourcePackProfile<ResourcePackProfile>(factory).get()
+            )
         }
     }
 }
-

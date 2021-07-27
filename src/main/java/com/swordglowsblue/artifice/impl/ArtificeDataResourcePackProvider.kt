@@ -1,18 +1,14 @@
-package com.swordglowsblue.artifice.impl;
+package com.swordglowsblue.artifice.impl
 
-import com.swordglowsblue.artifice.common.ArtificeRegistry;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackProvider;
-import net.minecraft.util.Identifier;
+import com.swordglowsblue.artifice.common.ArtificeRegistry
+import net.minecraft.resource.ResourcePackProfile
+import net.minecraft.resource.ResourcePackProvider
+import java.util.function.Consumer
 
-import java.util.function.Consumer;
-
-public final class ArtificeDataResourcePackProvider implements ResourcePackProvider {
-
-    @Override
-    public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
-        for (Identifier id : ArtificeRegistry.DATA.getIds()) {
-            consumer.accept(ArtificeRegistry.DATA.get(id).toServerResourcePackProfile(factory));
+class ArtificeDataResourcePackProvider : ResourcePackProvider {
+    override fun register(consumer: Consumer<ResourcePackProfile>, factory: ResourcePackProfile.Factory) {
+        for (id in ArtificeRegistry.DATA.ids) {
+            consumer.accept(ArtificeRegistry.DATA[id]!!.toServerResourcePackProfile<ResourcePackProfile>(factory))
         }
     }
 }
