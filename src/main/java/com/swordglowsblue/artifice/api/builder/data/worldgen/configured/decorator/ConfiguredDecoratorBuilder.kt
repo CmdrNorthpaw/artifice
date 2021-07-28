@@ -5,7 +5,7 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.decorator.config.DecoratorConfigBuilder
 import java.util.function.Function
 
-class ConfiguredDecoratorBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+class ConfiguredDecoratorBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     fun name(decoratorID: String): ConfiguredDecoratorBuilder {
         this.root.addProperty("type", decoratorID)
         return this

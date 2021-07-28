@@ -5,7 +5,7 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import java.util.function.Function
 import com.swordglowsblue.artifice.api.util.Builder
 
-class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     /**
      * Build stronghold settings.
      * @param strongholdSettingsBuilder
@@ -34,7 +34,7 @@ class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Funct
         return this
     }
 
-    class StrongholdSettingsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class StrongholdSettingsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * @param distance
          * @return
@@ -70,7 +70,7 @@ class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Funct
         }
     }
 
-    class StructureConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class StructureConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         fun spacing(spacing: Int): StructureConfigBuilder {
             require(spacing <= 4096) { "Count can't be higher than 4096! Found $spacing" }
             require(spacing >= 0) { "Count can't be smaller than 0! Found $spacing" }

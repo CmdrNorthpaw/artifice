@@ -7,7 +7,7 @@ import java.util.function.Function
 
 class ConfiguredCarverBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * @param id ID of an existing carver.
      * @return this

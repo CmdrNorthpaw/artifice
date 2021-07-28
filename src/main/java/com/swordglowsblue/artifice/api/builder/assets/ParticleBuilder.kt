@@ -15,7 +15,7 @@ import java.util.function.Function
 @Environment(EnvType.CLIENT)
 class ParticleBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root -> JsonResource(root) }) {
+    { root -> JsonResource(root) }) {
     /**
      * Add a texture to this particle.
      * Calling this multiple times will add to the list instead of overwriting.

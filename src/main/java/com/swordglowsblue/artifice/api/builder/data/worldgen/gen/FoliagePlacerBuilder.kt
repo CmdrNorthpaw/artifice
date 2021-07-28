@@ -8,7 +8,7 @@ import java.util.function.Function
 
 sealed class FoliagePlacerBuilder<out F: FoliagePlacerBuilder<F>>(
     type: Identifier
-) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     protected abstract val me: F
 
     init {

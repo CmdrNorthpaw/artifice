@@ -19,7 +19,7 @@ import java.util.function.Function
 @Environment(EnvType.CLIENT)
 class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * Add a variant for the given state key.
      * Calling this multiple times for the same key will modify the existing value.
@@ -80,8 +80,8 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      */
     @Environment(EnvType.CLIENT)
     class Variant : TypedJsonBuilder<JsonObject> {
-        constructor() : super(JsonObject(), Function<JsonObject, JsonObject> { j: JsonObject -> j }) {}
-        constructor(root: JsonObject) : super(root, Function<JsonObject, JsonObject> { j: JsonObject -> j }) {}
+        constructor() : super(JsonObject(), { j: JsonObject -> j }) {}
+        constructor(root: JsonObject) : super(root, { j: JsonObject -> j }) {}
 
         /**
          * Set the model this variant should use.
@@ -145,7 +145,7 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see BlockStateBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Case : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class Case : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * Set the condition for this case to be applied.
          * Calling this multiple times with different keys will require all of the specified properties to match.

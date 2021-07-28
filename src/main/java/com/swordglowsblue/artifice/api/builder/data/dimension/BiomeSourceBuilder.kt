@@ -8,7 +8,7 @@ import java.util.function.Function
 
 sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
     type: Identifier
-) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     protected abstract val me: T
 
     init {
@@ -94,7 +94,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
             return this
         }
 
-        class BiomeBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+        class BiomeBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
             /**
              * Set the biome ID.
              * @param id
@@ -118,7 +118,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
             }
         }
 
-        class BiomeParametersBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+        class BiomeParametersBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
             /**
              * @param altitude
              * @return
@@ -219,7 +219,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
             return this
         }
 
-        class NoiseSettings : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+        class NoiseSettings : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
             /**
              * Changes how much detail the noise of the respective value has
              * @param octave how much detail the noise of the respective value has
@@ -243,7 +243,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
         }
 
         class AmplitudesBuilder private constructor() :
-            TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+            TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
             /**
              * @param amplitude idk
              * @return

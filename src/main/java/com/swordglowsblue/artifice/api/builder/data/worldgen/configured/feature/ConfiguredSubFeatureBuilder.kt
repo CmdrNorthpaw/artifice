@@ -5,7 +5,7 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature.config.FeatureConfigBuilder
 import java.util.function.Function
 
-class ConfiguredSubFeatureBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+class ConfiguredSubFeatureBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     fun featureID(id: String): ConfiguredSubFeatureBuilder {
         this.root.addProperty("type", id)
         return this

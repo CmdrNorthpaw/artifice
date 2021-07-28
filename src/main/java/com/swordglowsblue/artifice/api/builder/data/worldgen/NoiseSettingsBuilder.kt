@@ -10,7 +10,7 @@ import java.util.function.Function
 
 class NoiseSettingsBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the bedrock roof position.
      * @param bedrockRoofPosition

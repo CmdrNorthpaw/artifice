@@ -15,7 +15,7 @@ abstract class RecipeBuilder<T : RecipeBuilder<T>>(
     type: Identifier
 ) : TypedJsonBuilder<JsonResource<JsonObject>>(
         JsonObject(),
-        Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+        { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the type of this recipe.
      * @param id The type [Identifier].

@@ -4,4 +4,4 @@ import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import java.util.function.Function
 
-open class DecoratorConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j })
+open class DecoratorConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j })

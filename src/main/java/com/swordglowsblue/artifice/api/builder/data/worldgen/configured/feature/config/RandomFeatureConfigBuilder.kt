@@ -17,7 +17,7 @@ class RandomFeatureConfigBuilder : FeatureConfigBuilder() {
         return this
     }
 
-    class RandomFeatureEntryBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class RandomFeatureEntryBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         fun chance(chance: Float): RandomFeatureEntryBuilder {
             require(chance <= 1.0f) { "chance can't be higher than 1.0F! Found $chance" }
             require(chance >= 0.0f) { "chance can't be smaller than 0.0F! Found $chance" }

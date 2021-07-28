@@ -8,7 +8,7 @@ import java.util.function.Function
 
 sealed class TreeDecoratorBuilder(
     type: Identifier
-) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     init {
         root.addProperty("type", type.toString())
     }

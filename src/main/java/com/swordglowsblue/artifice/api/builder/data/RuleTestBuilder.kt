@@ -5,7 +5,7 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.util.Processor
 import java.util.function.Function
 
-open class RuleTestBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+open class RuleTestBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     fun <R : RuleTestBuilder> predicateType(type: String): R {
         this.root.addProperty("predicate_type", type)
         return this as R

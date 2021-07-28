@@ -9,7 +9,7 @@ import java.util.function.Function
 
 abstract class TypedJsonBuilder<T>(
     @JvmField protected val root: JsonObject,
-    private val ctor: Function<JsonObject, T>
+    private val constructor: (JsonObject) -> T
 )  {
 
     fun build(): T {
@@ -22,7 +22,7 @@ abstract class TypedJsonBuilder<T>(
                 key, value
             )
         })
-        return ctor.apply(target)
+        return constructor(target)
     }
 
     protected fun <J : JsonElement> with(`in`: JsonObject, key: String, ctor: () -> J, run: (J) -> Unit) {

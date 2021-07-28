@@ -24,7 +24,7 @@ class EndSpikeFeatureConfigBuilder : FeatureConfigBuilder() {
         return this
     }
 
-    class SpikeBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class SpikeBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         fun centerX(centerX: Int): SpikeBuilder {
             this.root.addProperty("centerX", centerX)
             return this

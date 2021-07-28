@@ -17,7 +17,7 @@ import java.util.function.Function
 @Environment(EnvType.CLIENT)
 class AnimationBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { animation ->
+    { animation ->
         JsonResource(
             JsonObjectBuilder().add(
                 "animation",

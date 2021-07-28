@@ -7,7 +7,7 @@ import java.util.function.Function
 
 sealed class FeatureSizeBuilder(
     type: Identifier
-) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
 
     @Suppress("UNCHECKED_CAST")
     fun <S : FeatureSizeBuilder> minClippedHeight(minClippedHeight: Int): S {
