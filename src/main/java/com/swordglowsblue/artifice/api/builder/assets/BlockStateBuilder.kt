@@ -19,7 +19,7 @@ import java.util.function.Function
 @Environment(EnvType.CLIENT)
 class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Add a variant for the given state key.
      * Calling this multiple times for the same key will modify the existing value.

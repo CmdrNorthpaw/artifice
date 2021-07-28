@@ -17,7 +17,7 @@ import java.util.function.Function
 @Environment(EnvType.CLIENT)
 class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the parent model for this model to inherit from.
      * @param id The parent model ID (`namespace:block|item/modelid`

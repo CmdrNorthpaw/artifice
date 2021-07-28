@@ -9,7 +9,7 @@ import java.util.function.Function
 
 class ConfiguredFeatureBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject? -> JsonResource(root) }) {
+    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
     fun featureID(id: String?): ConfiguredFeatureBuilder {
         this.root.addProperty("type", id)
         return this
