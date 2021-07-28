@@ -314,7 +314,7 @@ class ArtificeTestMod : ModInitializer, ClientModInitializer {
         }
     }
 
-    class TestChunkGenerator(biomeSource: BiomeSource?, private val testBool: Boolean) :
+    class TestChunkGenerator(biomeSource: BiomeSource, private val testBool: Boolean) :
         ChunkGenerator(biomeSource, StructuresConfig(false)) {
         override fun getCodec(): Codec<out ChunkGenerator> {
             return CODEC
@@ -350,7 +350,7 @@ class ArtificeTestMod : ModInitializer, ClientModInitializer {
                 )
                     .apply(
                         instance, instance.stable(
-                            BiFunction { biomeSource: BiomeSource?, testBool: Boolean ->
+                            BiFunction { biomeSource: BiomeSource, testBool: Boolean ->
                                 TestChunkGenerator(
                                     biomeSource,
                                     testBool

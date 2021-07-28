@@ -25,7 +25,7 @@ class RandomFeatureConfigBuilder : FeatureConfigBuilder() {
             return this
         }
 
-        fun configuredFeatureID(configuredFeatureID: String?): RandomFeatureEntryBuilder {
+        fun configuredFeatureID(configuredFeatureID: String): RandomFeatureEntryBuilder {
             this.root.addProperty("feature", configuredFeatureID)
             return this
         }

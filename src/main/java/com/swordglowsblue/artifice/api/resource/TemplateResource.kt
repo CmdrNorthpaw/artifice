@@ -12,7 +12,7 @@ import java.io.InputStream
  * Templates in the string take the form `$key`.
  * @see TemplateResource.expand
  */
-class TemplateResource(vararg template: String?) : ArtificeResource<String> {
+class TemplateResource(vararg template: String) : ArtificeResource<String> {
     private val template: String = template.joinToString("\n")
     private val expansions: MutableMap<String, String> = HashMap()
 

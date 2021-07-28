@@ -10,13 +10,13 @@ import java.util.function.Function
 class ConfiguredFeatureBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
     Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
-    fun featureID(id: String?): ConfiguredFeatureBuilder {
+    fun featureID(id: String): ConfiguredFeatureBuilder {
         this.root.addProperty("type", id)
         return this
     }
 
-    fun <C : FeatureConfigBuilder?> featureConfig(processor: Processor<C>, instance: C): ConfiguredFeatureBuilder {
-        with("config", { JsonObject() }) { jsonObject: JsonObject? ->
+    fun <C : FeatureConfigBuilder> featureConfig(processor: Processor<C>, instance: C): ConfiguredFeatureBuilder {
+        with("config", { JsonObject() }) { jsonObject: JsonObject ->
             processor.process(instance)!!
                 .buildTo(jsonObject!!)
         }
@@ -24,6 +24,6 @@ class ConfiguredFeatureBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     }
 
     fun defaultConfig(): ConfiguredFeatureBuilder {
-        return featureConfig({ featureConfigBuilder: FeatureConfigBuilder? -> }, FeatureConfigBuilder())
+        return featureConfig({ featureConfigBuilder: FeatureConfigBuilder -> }, FeatureConfigBuilder())
     }
 }

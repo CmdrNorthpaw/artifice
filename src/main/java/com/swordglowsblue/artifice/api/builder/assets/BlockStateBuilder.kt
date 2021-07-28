@@ -48,9 +48,9 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param settings A callback which will be passed a [Variant].
      * @return this
      */
-    fun weightedVariant(name: String?, settings: Builder<Variant>): BlockStateBuilder {
+    fun weightedVariant(name: String, settings: Builder<Variant>): BlockStateBuilder {
         root.remove("multipart")
-        with("variants", { JsonObject() }) { variants: JsonObject? ->
+        with("variants", { JsonObject() }) { variants: JsonObject ->
             with(variants!!, name!!, { JsonArray() }) { options: JsonArray ->
                 options.add(
                     Variant().apply(settings).build()
@@ -79,9 +79,9 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see BlockStateBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Variant : TypedJsonBuilder<JsonObject?> {
-        constructor() : super(JsonObject(), Function<JsonObject, JsonObject?> { j: JsonObject? -> j }) {}
-        constructor(root: JsonObject) : super(root, Function<JsonObject, JsonObject?> { j: JsonObject? -> j }) {}
+    class Variant : TypedJsonBuilder<JsonObject> {
+        constructor() : super(JsonObject(), Function<JsonObject, JsonObject> { j: JsonObject -> j }) {}
+        constructor(root: JsonObject) : super(root, Function<JsonObject, JsonObject> { j: JsonObject -> j }) {}
 
         /**
          * Set the model this variant should use.
@@ -145,7 +145,7 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see BlockStateBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Case : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class Case : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         /**
          * Set the condition for this case to be applied.
          * Calling this multiple times with different keys will require all of the specified properties to match.
@@ -153,7 +153,7 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param state The state value (e.g. `north`).
          * @return this
          */
-        fun `when`(name: String?, state: String?): Case {
+        fun `when`(name: String, state: String): Case {
             with("when", { JsonObject() }) { `when`: JsonObject ->
                 `when`.remove("OR")
                 `when`.addProperty(name, state)
@@ -168,7 +168,7 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param state The state value (e.g. `north`).
          * @return this
          */
-        fun whenAny(name: String?, state: String?): Case {
+        fun whenAny(name: String, state: String): Case {
             with("when", { JsonObject() }) { `when`: JsonObject ->
                 with(`when`, "OR", { JsonArray() }) { cases: JsonArray ->
                     `when`.entrySet().forEach(Consumer { (key) ->

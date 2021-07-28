@@ -34,7 +34,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param path The texture ID (`namespace:type/textureid`).
      * @return this
      */
-    fun texture(name: String?, path: Identifier): ModelBuilder {
+    fun texture(name: String, path: Identifier): ModelBuilder {
         with("textures", { JsonObject() }) { textures: JsonObject -> textures.addProperty(name, path.toString()) }
         return this
     }
@@ -45,7 +45,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param settings A callback which will be passed a [Display].
      * @return this
      */
-    fun display(name: String?, settings: Builder<Display>): ModelBuilder {
+    fun display(name: String, settings: Builder<Display>): ModelBuilder {
         with("display", { JsonObject() }) { display: JsonObject ->
             display.add(
                 name, Display().apply(settings).buildTo(display)
@@ -97,7 +97,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see ModelBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Display : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class Display : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         /**
          * Set the rotation of this model around each axis.
          * @param x The rotation around the X axis.
@@ -140,7 +140,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see ModelBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Override : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class Override : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         /**
          * Set the required value of the given property.
          * Calling this multiple times will require all properties to match.
@@ -149,7 +149,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @return this
          * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Model.Item_tags)
          */
-        fun predicate(name: String?, value: Int): Override {
+        fun predicate(name: String, value: Int): Override {
             with("predicate", { JsonObject() }) { predicate: JsonObject -> predicate.addProperty(name, value) }
             return this
         }

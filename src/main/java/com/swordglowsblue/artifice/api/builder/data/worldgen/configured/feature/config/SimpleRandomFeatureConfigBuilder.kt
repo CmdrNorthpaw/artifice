@@ -3,7 +3,7 @@ package com.swordglowsblue.artifice.api.builder.data.worldgen.configured.feature
 import com.google.gson.JsonArray
 
 class SimpleRandomFeatureConfigBuilder : FeatureConfigBuilder() {
-    fun addConfiguredFeature(configuredFeatureID: String?): SimpleRandomFeatureConfigBuilder {
+    fun addConfiguredFeature(configuredFeatureID: String): SimpleRandomFeatureConfigBuilder {
         this.root.getAsJsonArray("features").add(configuredFeatureID)
         return this
     }

@@ -16,7 +16,7 @@ interface ArtificeResource<T> {
 
     /** @return The output-formatted string representation of this resource's data.
      */
-    fun toOutputString(): String?
+    fun toOutputString(): String
 
     /** @return This resource converted to an [InputStream].
      */

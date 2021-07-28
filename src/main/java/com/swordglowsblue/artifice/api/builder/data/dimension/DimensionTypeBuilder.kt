@@ -210,7 +210,7 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param effects thing
      * @return this
      */
-    fun effects(effects: String?): DimensionTypeBuilder {
+    fun effects(effects: String): DimensionTypeBuilder {
         root.addProperty("effects", effects)
         return this
     }

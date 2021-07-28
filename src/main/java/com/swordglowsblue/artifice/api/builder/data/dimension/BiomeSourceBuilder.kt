@@ -8,7 +8,7 @@ import java.util.function.Function
 
 sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
     type: Identifier
-) : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     protected abstract val me: T
 
     init {
@@ -32,7 +32,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
      * @param <T>
      * @return
     </T> */
-    fun type(type: String?): T {
+    fun type(type: String): T {
         this.root.addProperty("type", type)
         return me
     }
@@ -73,7 +73,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
          * @param preset
          * @return
          */
-        fun preset(preset: String?): MultiNoiseBiomeSourceBuilder {
+        fun preset(preset: String): MultiNoiseBiomeSourceBuilder {
             this.root.addProperty("preset", preset)
             return this
         }
@@ -100,7 +100,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
              * @param id
              * @return
              */
-            fun biome(id: String?): BiomeBuilder {
+            fun biome(id: String): BiomeBuilder {
                 this.root.addProperty("biome", id)
                 return this
             }
@@ -243,7 +243,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
         }
 
         class AmplitudesBuilder private constructor() :
-            TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+            TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
             /**
              * @param amplitude idk
              * @return
@@ -275,7 +275,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
          * @param biomeId
          * @return
          */
-        fun addBiome(biomeId: String?): CheckerboardBiomeSourceBuilder {
+        fun addBiome(biomeId: String): CheckerboardBiomeSourceBuilder {
             this.root.getAsJsonArray("biomes").add(biomeId)
             return this
         }
@@ -294,7 +294,7 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
          * @param biomeId
          * @return
          */
-        fun biome(biomeId: String?): FixedBiomeSourceBuilder {
+        fun biome(biomeId: String): FixedBiomeSourceBuilder {
             this.root.addProperty("biome", biomeId)
             return this
         }

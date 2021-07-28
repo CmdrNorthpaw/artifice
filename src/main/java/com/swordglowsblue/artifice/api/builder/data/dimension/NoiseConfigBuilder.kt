@@ -5,7 +5,7 @@ import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.util.Builder
 import java.util.function.Function
 
-class NoiseConfigBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+class NoiseConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
     fun height(height: Int): NoiseConfigBuilder {
         this.root.addProperty("height", height)
         return this
@@ -105,7 +105,7 @@ class NoiseConfigBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function 
         return slideConfig("bottom_slide", slideConfigBuilder)
     }
 
-    class NoiseSamplingConfigBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class NoiseSamplingConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         fun xzScale(xzScale: Double): NoiseSamplingConfigBuilder {
             require(xzScale <= 1000.0) { "xzScale can't be higher than 1000.0D! Found $xzScale" }
             require(xzScale >= 0.001) { "xzScale can't be smaller than 0.001D! Found $xzScale" }
@@ -135,7 +135,7 @@ class NoiseConfigBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function 
         }
     }
 
-    class SlideConfigBuilder : TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject? -> j }) {
+    class SlideConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
         fun offset(offset: Int): SlideConfigBuilder {
             this.root.addProperty("offset", offset)
             return this
