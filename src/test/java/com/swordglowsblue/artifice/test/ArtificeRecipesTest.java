@@ -1,6 +1,6 @@
 package com.swordglowsblue.artifice.test;
 
-import com.swordglowsblue.artifice.api.ArtificeResourcePack;
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;

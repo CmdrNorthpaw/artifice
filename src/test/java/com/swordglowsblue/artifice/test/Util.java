@@ -1,7 +1,7 @@
 package com.swordglowsblue.artifice.test;
 
 import com.google.gson.JsonObject;
-import com.swordglowsblue.artifice.api.ArtificeResourcePack;
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 

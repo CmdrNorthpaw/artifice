@@ -1,20 +1,18 @@
 package com.swordglowsblue.artifice.mixin;
 
-import java.util.Arrays;
-
 import com.google.common.collect.ImmutableSet;
 import com.swordglowsblue.artifice.impl.ArtificeAssetsResourcePackProvider;
 import com.swordglowsblue.artifice.impl.ArtificeDataResourcePackProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.resource.ClientBuiltinResourcePackProvider;
+import net.minecraft.resource.ResourcePackManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProvider;
+import java.util.Arrays;
 
 @Mixin(ResourcePackManager.class)
 public class MixinResourcePackManager {

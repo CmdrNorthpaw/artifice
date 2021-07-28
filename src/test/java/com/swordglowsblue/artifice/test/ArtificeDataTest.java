@@ -1,6 +1,6 @@
 package com.swordglowsblue.artifice.test;
 
-import com.swordglowsblue.artifice.api.ArtificeResourcePack;
+import com.swordglowsblue.artifice.impl.ArtificeResourcePack;
 import com.swordglowsblue.artifice.api.builder.data.AdvancementBuilder;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
