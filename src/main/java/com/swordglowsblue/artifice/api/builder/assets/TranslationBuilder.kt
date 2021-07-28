@@ -14,7 +14,7 @@ import java.util.function.Function
 @Environment(EnvType.CLIENT)
 class TranslationBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * Add a translation entry.
      * @param key The translation key (e.g. `block.example.example_block`).

@@ -7,7 +7,7 @@ import java.util.function.Function
 
 sealed class TrunkPlacerBuilder<out B: TrunkPlacerBuilder<B>>(
     type: Identifier
-) : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+) : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     protected abstract val me: B
 
     init {

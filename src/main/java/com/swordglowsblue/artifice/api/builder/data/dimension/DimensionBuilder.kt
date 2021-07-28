@@ -11,7 +11,7 @@ import java.util.function.Function
 
 class DimensionBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the dimension type.
      * @param identifier

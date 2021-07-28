@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import java.util.function.Function
 
-class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     /**
      * @param fog_color RGB value.
      * @return BiomeBuilder
@@ -103,7 +103,7 @@ class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function 
         return this
     }
 
-    class BiomeMoodSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class BiomeMoodSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         fun tickDelay(tick_delay: Int): BiomeMoodSoundBuilder {
             this.root.addProperty("tick_delay", tick_delay)
             return this
@@ -125,7 +125,7 @@ class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function 
         }
     }
 
-    class BiomeMusicSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class BiomeMusicSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         fun minDelay(min_delay: Int): BiomeMusicSoundBuilder {
             this.root.addProperty("min_delay", min_delay)
             return this
@@ -147,7 +147,7 @@ class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function 
         }
     }
 
-    class BiomeAdditionsSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class BiomeAdditionsSoundBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         fun tickChance(tick_chance: Double): BiomeAdditionsSoundBuilder {
             this.root.addProperty("tick_chance", tick_chance)
             return this
@@ -159,7 +159,7 @@ class BiomeEffectsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function 
         }
     }
 
-    class BiomeParticleConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class BiomeParticleConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         fun probability(probability: Float): BiomeParticleConfigBuilder {
             this.root.addProperty("probability", probability)
             return this

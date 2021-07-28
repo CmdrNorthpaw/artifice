@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier
 import java.util.function.Function
 
 open class ChunkGeneratorTypeBuilder (type: Identifier) :
-    TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j })
+    TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j })
 {
     init {
         root.addProperty("type", type.toString())
@@ -172,7 +172,7 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
             return this
         }
 
-        class LayersBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+        class LayersBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
             /**
              * Set the height of the layer.
              * @param height

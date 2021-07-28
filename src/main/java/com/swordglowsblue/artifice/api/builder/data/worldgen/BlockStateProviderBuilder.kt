@@ -7,7 +7,7 @@ import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
 import com.swordglowsblue.artifice.api.util.Processor
 import java.util.function.Function
 
-open class BlockStateProviderBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+open class BlockStateProviderBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     fun <P : BlockStateProviderBuilder> type(type: String): P {
         this.root.addProperty("type", type)
         return this as P

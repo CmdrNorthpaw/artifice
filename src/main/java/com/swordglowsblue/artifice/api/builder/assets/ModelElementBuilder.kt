@@ -16,7 +16,7 @@ import java.util.function.Function
  */
 @Environment(EnvType.CLIENT)
 class ModelElementBuilder internal constructor() :
-    TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     /**
      * Set the start point of this cuboid.
      * @param x The start point on the X axis. Clamped to between -16 and 32.
@@ -98,7 +98,7 @@ class ModelElementBuilder internal constructor() :
      * @see ModelElementBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Rotation(root: JsonObject) : TypedJsonBuilder<JsonObject>(root, Function { j: JsonObject -> j }) {
+    class Rotation(root: JsonObject) : TypedJsonBuilder<JsonObject>(root, { j: JsonObject -> j }) {
         /**
          * Set the origin point of this rotation.
          * @param x The origin point on the X axis. Clamped to between -16 and 32.
@@ -161,7 +161,7 @@ class ModelElementBuilder internal constructor() :
      * @see ModelElementBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Face(root: JsonObject) : TypedJsonBuilder<JsonObject>(root, Function { j: JsonObject -> j }) {
+    class Face(root: JsonObject) : TypedJsonBuilder<JsonObject>(root, { j: JsonObject -> j }) {
         /**
          * Set the texture UV to apply to this face. Detected by position within the block if not specified.
          * @param x1 The start point on the X axis. Clamped to between 0 and 16.

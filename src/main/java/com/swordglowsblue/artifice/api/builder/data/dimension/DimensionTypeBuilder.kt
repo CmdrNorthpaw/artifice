@@ -8,7 +8,7 @@ import java.util.function.Function
 
 class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * Overworld -> false
      * Nether -> true

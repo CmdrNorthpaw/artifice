@@ -76,7 +76,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * Builder for advancement display properties.
      * @see AdvancementBuilder
      */
-    class Display : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class Display : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * Set the icon item of this advancement.
          * @param item The item ID.
@@ -199,7 +199,7 @@ class AdvancementBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      *
      * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Advancements.List_of_triggers)
      */
-    class Criteria : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class Criteria : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * Set the trigger condition of this criteria.
          * @param id The trigger ID (`namespace:triggerid`).

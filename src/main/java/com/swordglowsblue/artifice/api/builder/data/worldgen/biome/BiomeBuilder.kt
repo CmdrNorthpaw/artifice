@@ -12,7 +12,7 @@ import java.util.function.Function
 
 class BiomeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     fun depth(depth: Float): BiomeBuilder {
         this.root.addProperty("depth", depth)
         return this
@@ -106,7 +106,7 @@ class BiomeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
-    class SpawnDensityBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class SpawnDensityBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         fun energyBudget(energy_budget: Double): SpawnDensityBuilder {
             this.root.addProperty("energy_budget", energy_budget)
             return this

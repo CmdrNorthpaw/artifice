@@ -17,7 +17,7 @@ import java.util.function.Function
 @Environment(EnvType.CLIENT)
 class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set the parent model for this model to inherit from.
      * @param id The parent model ID (`namespace:block|item/modelid`
@@ -97,7 +97,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see ModelBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Display : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class Display : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * Set the rotation of this model around each axis.
          * @param x The rotation around the X axis.
@@ -140,7 +140,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see ModelBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Override : TypedJsonBuilder<JsonObject>(JsonObject(), Function { j: JsonObject -> j }) {
+    class Override : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * Set the required value of the given property.
          * Calling this multiple times will require all properties to match.

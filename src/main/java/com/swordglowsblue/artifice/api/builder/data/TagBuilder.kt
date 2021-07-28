@@ -13,7 +13,7 @@ import java.util.function.Function
  */
 class TagBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
-    Function<JsonObject, JsonResource<JsonObject>> { root: JsonObject -> JsonResource(root) }) {
+    { root: JsonObject -> JsonResource(root) }) {
     /**
      * Set whether this tag should override or append to versions of the same tag in lower priority data packs.
      * @param replace Whether to replace.
