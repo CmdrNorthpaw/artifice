@@ -7,7 +7,7 @@ import com.swordglowsblue.artifice.api.builder.data.dimension.BiomeSourceBuilder
 import net.minecraft.util.Identifier
 import java.util.function.Function
 
-sealed class ChunkGeneratorTypeBuilder (type: Identifier) :
+open class ChunkGeneratorTypeBuilder (type: Identifier) :
     TypedJsonBuilder<JsonObject?>(JsonObject(), Function { j: JsonObject -> j })
 {
     init {
