@@ -15,13 +15,6 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
     }
 
     /**
-     * Set the type (ID) of the Chunk Generator.
-     * @param type
-     * @param <T>
-     * @return
-    </T> */
-
-    /**
      * Set the biome Source.
      * @param instance
      * @param builder
@@ -49,6 +42,10 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
             return this
         }
 
+        var seed: Int
+        get() = this.root["seed"].asInt
+        set(value) = root.addProperty("seed", value)
+
         @Deprecated("use noiseSettings instead.")
         fun presetSettings(presetId: String): NoiseChunkGeneratorTypeBuilder {
             noiseSettings(presetId)
@@ -64,6 +61,10 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
             this.root.addProperty("settings", noiseSettingsID)
             return this
         }
+
+        var noiseSettings: String
+        get() = root["settings"].asString
+        set(value) = root.addProperty("settings", value)
 
         /**
          * Build a vanilla layered biome source.
@@ -119,10 +120,17 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
             return this
         }
 
+        var simpleBiomeSource: String
+        get() = root["biome_source"].asString
+        set(value) = root.addProperty("biome_source", value)
+
 
     }
 
     class FlatChunkGeneratorTypeBuilder : ChunkGeneratorTypeBuilder(Identifier("flat")) {
+        private val settings
+        get() = root.getAsJsonObject("settings")
+
         /**
          * Build a structure manager.
          * @param structureManagerBuilder
@@ -145,15 +153,29 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
             return this
         }
 
+        @Deprecated("", replaceWith = ReplaceWith("useLakes()"))
         fun lakes(lakes: Boolean): FlatChunkGeneratorTypeBuilder {
             this.root.getAsJsonObject("settings").addProperty("lakes", lakes)
             return this
         }
 
+        fun useLakes(use: Boolean): FlatChunkGeneratorTypeBuilder { this.useLakes = use; return this }
+
+        var useLakes: Boolean
+        get() = root.getAsJsonObject("settings")["lakes"].asBoolean
+        set(value) = root.getAsJsonObject("settings").addProperty("lakes", value)
+
+        @Deprecated("", replaceWith = ReplaceWith("useFeatures()"))
         fun features(features: Boolean): FlatChunkGeneratorTypeBuilder {
             this.root.getAsJsonObject("settings").addProperty("features", features)
             return this
         }
+
+        fun useFeatures(features: Boolean): FlatChunkGeneratorTypeBuilder { this.useFeatures = features; return this }
+
+        var useFeatures: Boolean
+        get() = settings["features"].asBoolean
+        set(value) = settings.addProperty("features", value)
 
         /**
          * Add a block layer.
@@ -179,10 +201,16 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
              * @return
              */
             fun height(height: Int): LayersBuilder {
+                this.height = height
+                return this
+            }
+
+            var height: Int
+            get() = root["height"].asInt
+            set(value) {
                 require(height <= 255) { "Height can't be higher than 255! Found $height" }
                 require(height >= 0) { "Height can't be smaller than 0! Found $height" }
-                this.root.addProperty("height", height)
-                return this
+                this.root.addProperty("height", value)
             }
 
             /**
@@ -194,6 +222,10 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
                 this.root.addProperty("block", blockId)
                 return this
             }
+
+            var block: String
+            get() = root["block"].asString
+            set(value) = root.addProperty("block", value)
         }
 
         init {
