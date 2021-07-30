@@ -1,10 +1,10 @@
 package com.swordglowsblue.artifice.api.builder.data.dimension
 
 import com.google.gson.JsonObject
+import com.sun.org.apache.xpath.internal.operations.Bool
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
 import net.minecraft.util.Identifier
-import java.util.function.Function
 
 class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
@@ -21,6 +21,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var ultraWarm: Boolean
+    get() = root["ultrawarm"].asBoolean
+    set(value) = root.addProperty("ultrawarm", value)
+
     /**
      * Overworld -> true
      * Nether -> false
@@ -33,6 +37,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var isNatural: Boolean
+    get() = root["isNatural"].asBoolean
+    set(value) = root.addProperty("natural", value)
+
     /**
      * Overworld -> 1.0D
      * Nether -> 8.0D
@@ -40,11 +48,24 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param coordinate_scale
      * @return this
      */
-    fun coordinate_scale(coordinate_scale: Double): DimensionTypeBuilder {
-        require(coordinate_scale >= 0.00001) { "Coordinate scale can't be higher than 0.00001D! Found $coordinate_scale" }
-        require(coordinate_scale <= 30000000) { "Coordinate scale can't be higher than 30000000D! Found $coordinate_scale" }
-        root.addProperty("coordinate_scale", coordinate_scale)
+    @Deprecated("", replaceWith = ReplaceWith("coordinateScale"))
+    fun coordinate_scale(scale: Double): DimensionTypeBuilder {
+        return coordinateScale(scale)
+    }
+
+    fun coordinateScale(scale: Double): DimensionTypeBuilder {
+        require(scale >= 0.00001) { "Coordinate scale can't be higher than 0.00001D! Found $scale" }
+        require(scale <= 30000000) { "Coordinate scale can't be higher than 30000000D! Found $scale" }
+        root.addProperty("coordinate_scale", scale)
         return this
+    }
+
+    var coordinateScale: Double
+    get() = root["coordinate_scale"].asDouble
+    set(value) {
+        require(value >= 0.00001) { "Coordinate scale can't be higher than 0.00001D! Found $value" }
+        require(value <= 30000000) { "Coordinate scale can't be higher than 30000000D! Found $value" }
+        root.addProperty("coordinate_scale", value)
     }
 
     /**
@@ -60,6 +81,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var ambientLight: Float
+    get() = root["ambientLight"].asFloat
+    set(value) = root.addProperty("ambientLight", value)
+
     /**
      * Overworld -> true
      * Nether -> false
@@ -71,6 +96,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         root.addProperty("has_skylight", hasSkylight)
         return this
     }
+
+    var hasSkylight: Boolean
+    get() = root["has_skylight"].asBoolean
+    set(value) = root.addProperty("has_skylight", value)
 
     /**
      * Overworld -> false
@@ -84,6 +113,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var hasCeiling: Boolean
+    get() = root["has_ceiling"].asBoolean
+    set(value) = root.addProperty("has_ceiling", value)
+
     /**
      * Overworld -> false
      * Nether -> false
@@ -95,6 +128,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         root.addProperty("has_ender_dragon_fight", hasEnderDragonFight)
         return this
     }
+
+    var hasEnderDragonFight: Boolean
+    get() = root["has_ender_dragon_fight"].asBoolean
+    set(value) = root.addProperty("has_ender_dragon_fight", value)
 
     /**
      * A block tag of which the blocks will not stop burning in the dimension.
@@ -109,6 +146,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var infiniburnTag: Identifier
+    get() = Identifier.tryParse(root["infiniburn"].asString)!!
+    set(value) = root.addProperty("infiniburn", value.toString())
+
     /**
      * Overworld -> 384
      * Nether -> 128
@@ -119,6 +160,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var minimumY: Int
+    get() = root["min_y"].asInt
+    set(value) = root.addProperty("min_y", value)
+
     /**
      * Overworld -> 384
      * Nether -> 128
@@ -128,6 +173,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         root.addProperty("height", height)
         return this
     }
+
+    var height: Int
+    get() = root["height"].asInt
+    set(value) = root.addProperty("height", value)
 
     /**
      * Overworld -> 256
@@ -141,6 +190,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var logicalHeight: Int
+    get() = root["logical_height"].asInt
+    set(value) = root.addProperty("logical_height", value)
+
     /**
      * Set the fixed time of a dimension, do not set if you want a day-night cycle.
      * Nether -> 18000
@@ -152,6 +205,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         root.addProperty("fixed_time", fixedTime)
         return this
     }
+
+    var fixedTime: Long
+    get() = root["fixed_time"].asLong
+    set(value) = root.addProperty("fixed_time", value)
 
     /**
      * Overworld -> true
@@ -165,6 +222,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var hasRaids: Boolean
+    get() = root["has_raids"].asBoolean
+    set(value) = root.addProperty("has_raids", value)
+
     /**
      * Overworld -> false
      * Nether -> true
@@ -176,6 +237,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         root.addProperty("respawn_anchor_works", respawnAnchorWork)
         return this
     }
+
+    var respawnAnchorWorks: Boolean
+    get() = root["respawn_anchor_works"].asBoolean
+    set(value) = root.addProperty("respawn_anchor_works", value)
 
     /**
      * Overworld -> true
@@ -189,6 +254,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var bedWorks: Boolean
+    get() = root["bed_works"].asBoolean
+    set(value) = root.addProperty("bed_works", value)
+
     /**
      * Overworld -> false
      * Nether -> true
@@ -201,6 +270,10 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var isPiglinSafe: Boolean
+    get() = root["piglin_safe"].asBoolean
+    set(value) = root.addProperty("piglin_safe", value)
+
     /**
      * Effects determine the sky effect of the dimension.
      *
@@ -210,8 +283,14 @@ class DimensionTypeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param effects thing
      * @return this
      */
+    fun effects(effects: Identifier): DimensionTypeBuilder { this.effects = effects; return this }
+
     fun effects(effects: String): DimensionTypeBuilder {
         root.addProperty("effects", effects)
         return this
     }
+
+    var effects: Identifier
+    get() = Identifier.tryParse(root["effects"].asString)!!
+    set(value) = root.addProperty("effects", value.toString())
 }

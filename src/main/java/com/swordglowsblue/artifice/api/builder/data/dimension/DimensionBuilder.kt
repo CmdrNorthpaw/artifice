@@ -22,6 +22,10 @@ class DimensionBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
         return this
     }
 
+    var dimensionType: Identifier
+    get() = Identifier.tryParse(root["type"].asString)!!
+    set(value) = this.root.addProperty("type", value.toString())
+
     /**
      * Make a Chunk Generator.
      * @param instance
