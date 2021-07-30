@@ -46,6 +46,10 @@ class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: 
             return this
         }
 
+        var distance: Int
+        get() = root["distance"].asInt
+        set(value) { distance(value) }
+
         /**
          * @param spread
          * @return
@@ -56,6 +60,10 @@ class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: 
             this.root.addProperty("spread", spread)
             return this
         }
+
+        var spread: Int
+        get() = root["spread"].asInt
+        set(value) { spread(value) }
 
         /**
          * Set the number of stronghold in the dimension.
@@ -68,6 +76,10 @@ class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: 
             this.root.addProperty("count", count)
             return this
         }
+
+        var count: Int
+        get() = root["count"].asInt
+        set(value) { count(value) }
     }
 
     class StructureConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
@@ -78,6 +90,10 @@ class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: 
             return this
         }
 
+        var spacing: Int
+        get() = root["spacing"].asInt
+        set(value) { spacing(value) }
+
         fun separation(separation: Int): StructureConfigBuilder {
             require(separation <= 4096) { "Count can't be higher than 4096! Found $separation" }
             require(separation >= 0) { "Count can't be smaller than 0! Found $separation" }
@@ -85,11 +101,19 @@ class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: 
             return this
         }
 
+        var seperation: Int
+        get() = root["seperation"].asInt
+        set(value) { separation(value) }
+
         fun salt(salt: Int): StructureConfigBuilder {
             require(salt >= 0) { "Count can't be smaller than 0! Found $salt" }
             this.root.addProperty("salt", salt)
             return this
         }
+
+        var salt: Int
+        get() = root["salt"].asInt
+        set(value) { salt(value) }
     }
 
     init {
