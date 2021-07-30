@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import net.minecraft.util.Identifier
+import net.minecraft.world.biome.Biome
 import java.util.function.Function
 
 sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
@@ -44,20 +45,21 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
             get() = this
 
         /**
-         * @param largeBiomes
+         * @param use
          * @return
          */
-        fun largeBiomes(largeBiomes: Boolean): VanillaLayeredBiomeSourceBuilder {
-            this.root.addProperty("large_biomes", largeBiomes)
-            return this
-        }
+        fun largeBiomes(use: Boolean): VanillaLayeredBiomeSourceBuilder { this.largeBiomes = largeBiomes; return this }
 
-        /**
-         * @param legacyBiomeInitLayer
-         * @return
-         */
+        var largeBiomes
+            get() = root.get("large_biomes").asBoolean
+            set(value) = root.addProperty("large_biomes", value)
+
+        var legacyBiomeInitLayer: Boolean
+            get() = root.get("legacy_biome_init_layer").asBoolean
+            set(value) = this.root.addProperty("legacy_biome_init_layer", value)
+
         fun legacyBiomeInitLayer(legacyBiomeInitLayer: Boolean): VanillaLayeredBiomeSourceBuilder {
-            this.root.addProperty("legacy_biome_init_layer", legacyBiomeInitLayer)
+            this.legacyBiomeInitLayer = legacyBiomeInitLayer
             return this
         }
     }
@@ -70,11 +72,13 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
 
         /**
          * Set the preset.
-         * @param preset
-         * @return
          */
+        var preset: String
+            get() = root.get("preset").asString
+            set(value) = root.addProperty("preset", value)
+
         fun preset(preset: String): MultiNoiseBiomeSourceBuilder {
-            this.root.addProperty("preset", preset)
+            this.preset = preset
             return this
         }
 
@@ -105,6 +109,10 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
                 return this
             }
 
+            var biome: String
+                get() = root.get("biome").asString
+                set(value) = root.addProperty("biome", value)
+
             /**
              * Build biome parameters.
              * @param biomeSettingsBuilder
@@ -123,55 +131,64 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
              * @param altitude
              * @return
              */
-            fun altitude(altitude: Float): BiomeParametersBuilder {
+            fun altitude(altitude: Float): BiomeParametersBuilder { this.altitude = altitude; return this }
+
+            var altitude: Float
+            get() = root.get("altitude").asFloat
+            set(value) {
                 require(altitude <= 2.0f) { "altitude can't be higher than 2.0F! Found $altitude" }
                 require(altitude >= -2.0f) { "altitude can't be smaller than 2.0F! Found $altitude" }
-                this.root.addProperty("altitude", altitude)
-                return this
+                this.root.addProperty("altitude", value)
             }
 
             /**
              * @param weirdness
              * @return
              */
-            fun weirdness(weirdness: Float): BiomeParametersBuilder {
+            fun weirdness(weirdness: Float): BiomeParametersBuilder { this.weirdness = weirdness; return this }
+
+            var weirdness: Float
+            get() = root.get("weirdness").asFloat
+            set(value) {
                 require(weirdness <= 2.0f) { "weirdness can't be higher than 2.0F! Found $weirdness" }
                 require(weirdness >= -2.0f) { "weirdness can't be smaller than 2.0F! Found $weirdness" }
-                this.root.addProperty("weirdness", weirdness)
-                return this
+                this.root.addProperty("weirdness", value)
             }
 
             /**
              * @param offset
              * @return
              */
-            fun offset(offset: Float): BiomeParametersBuilder {
+            var offset: Float
+            get() = root.get("offset").asFloat
+            set(value) {
                 require(offset <= 1.0f) { "offset can't be higher than 1.0F! Found $offset" }
                 require(offset >= 0.0f) { "offset can't be smaller than 0.0F! Found $offset" }
-                this.root.addProperty("offset", offset)
-                return this
+                this.root.addProperty("offset", value)
             }
 
             /**
              * @param temperature
              * @return
              */
-            fun temperature(temperature: Float): BiomeParametersBuilder {
+            var temperature: Float
+            get() = root.get("temperature").asFloat
+            set(value) {
                 require(temperature <= 2.0f) { "temperature can't be higher than 2.0F! Found $temperature" }
                 require(temperature >= -2.0f) { "temperature can't be smaller than 2.0F! Found $temperature" }
-                this.root.addProperty("temperature", temperature)
-                return this
+                this.root.addProperty("temperature", value)
             }
 
             /**
              * @param humidity
              * @return
              */
-            fun humidity(humidity: Float): BiomeParametersBuilder {
+            var humidity: Float
+            get() = root.get("humidity").asFloat
+            set(value) {
                 require(humidity <= 2.0f) { "humidity can't be higher than 2.0F! Found $humidity" }
                 require(humidity >= -2.0f) { "humidity can't be smaller than 2.0F! Found $humidity" }
-                this.root.addProperty("humidity", humidity)
-                return this
+                this.root.addProperty("humidity", value)
             }
         }
 
@@ -230,16 +247,24 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
                 return this
             }
 
+            var firstOctave: Int
+            get() = root.get("firstOctave").asInt
+            set(value) = root.addProperty("firstOctave", value)
+
             /**
              * @param amplitudes the amplitudes you want
              * @return this
              */
             fun amplitudes(vararg amplitudes: Float): NoiseSettings {
-                jsonArray("amplitudes") {
-                    amplitudes.forEach { add(it) }
-                }
+                this.amplitudes = amplitudes
                 return this
             }
+
+            var amplitudes: FloatArray
+            get() = root.get("amplitudes").asJsonArray.map { it.asFloat }.toFloatArray()
+            set(value) { jsonArray("amplitudes") {
+                value.forEach { add(it) }
+            } }
         }
 
         class AmplitudesBuilder private constructor() :
@@ -270,6 +295,10 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
             return this
         }
 
+        var scale: Int
+        get() = this.root.get("scale").asInt
+        set(value) = this.root.addProperty("scale", value)
+
         /**
          * Add biome.
          * @param biomeId
@@ -298,5 +327,9 @@ sealed class BiomeSourceBuilder<T: BiomeSourceBuilder<T>>(
             this.root.addProperty("biome", biomeId)
             return this
         }
+
+        var biome: String
+        get() = root.get("biome").asString
+        set(value) = root.addProperty("biome", value)
     }
 }
