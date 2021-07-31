@@ -2,6 +2,8 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.google.gson.JsonArray
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.util.IdUtils.id
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
 /**
@@ -11,15 +13,15 @@ import net.minecraft.util.Identifier
 class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder>(Identifier("crafting_shapeless")) {
     /**
      * Add an ingredient item.
-     * @param id The item ID.
+     * @param item The item ID.
      * @return this
      */
-    fun ingredientItem(id: Identifier): ShapelessRecipeBuilder {
+    fun addItemIngredient(item: Item): ShapelessRecipeBuilder {
         with("ingredients", { JsonArray() }) { ingredients: JsonArray ->
             ingredients.add(
                 JsonObjectBuilder().add(
                     "item",
-                    id.toString()
+                    item.id.toString()
                 ).build()
             )
         }
@@ -31,7 +33,7 @@ class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder>(Identifier(
      * @param id The tag ID.
      * @return this
      */
-    fun ingredientTag(id: Identifier): ShapelessRecipeBuilder {
+    fun addTagIngredient(id: Identifier): ShapelessRecipeBuilder {
         with("ingredients", { JsonArray() }) { ingredients: JsonArray ->
             ingredients.add(
                 JsonObjectBuilder().add(
@@ -59,12 +61,15 @@ class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder>(Identifier(
 
     /**
      * Set the item produced by this recipe.
-     * @param id The item ID.
+     * @param item The item ID.
      * @param count The number of result items.
      * @return this
      */
-    fun result(id: Identifier, count: Int): ShapelessRecipeBuilder {
-        root.add("result", JsonObjectBuilder().add("item", id.toString()).add("count", count).build())
+    @JvmOverloads
+    fun result(item: Item, count: Int = 1): ShapelessRecipeBuilder {
+        root.add("result", JsonObjectBuilder()
+            .add("item", item.id.toString())
+            .add("count", count).build())
         return this
     }
 }
