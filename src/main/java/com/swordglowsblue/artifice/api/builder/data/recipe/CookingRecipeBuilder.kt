@@ -18,7 +18,7 @@ class CookingRecipeBuilder(private val type: CookingRecipeType) : RecipeBuilder<
      * @param id The item ID.
      * @return this
      */
-    fun ingredientItem(id: Identifier): CookingRecipeBuilder {
+    fun ingredientItem(id: Item): CookingRecipeBuilder {
         root.add("ingredient", JsonObjectBuilder().add("item", id.toString()).build())
         return this
     }
@@ -64,7 +64,7 @@ class CookingRecipeBuilder(private val type: CookingRecipeType) : RecipeBuilder<
      * @param id The item ID.
      * @return this
      */
-    fun result(id: Identifier): CookingRecipeBuilder {
+    fun result(id: Item): CookingRecipeBuilder {
         root.addProperty("result", id.toString())
         return this
     }
