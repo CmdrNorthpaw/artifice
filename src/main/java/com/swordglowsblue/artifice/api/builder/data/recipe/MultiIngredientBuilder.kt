@@ -22,7 +22,7 @@ class MultiIngredientBuilder internal constructor() {
      * @param id The item ID.
      * @return this
      */
-    fun item(id: Identifier): MultiIngredientBuilder {
+    fun addItem(id: Identifier): MultiIngredientBuilder {
         ingredients.add(JsonObjectBuilder().add("item", id.toString()).build())
         return this
     }
@@ -32,7 +32,7 @@ class MultiIngredientBuilder internal constructor() {
      * @param id The tag ID.
      * @return this
      */
-    fun tag(id: Identifier): MultiIngredientBuilder {
+    fun addTag(id: Identifier): MultiIngredientBuilder {
         ingredients.add(JsonObjectBuilder().add("tag", id.toString()).build())
         return this
     }
