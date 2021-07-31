@@ -3,6 +3,7 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 import com.google.gson.JsonElement
 import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.util.Builder
 import com.swordglowsblue.artifice.api.util.Processor
 import net.minecraft.util.Identifier
 
@@ -72,8 +73,8 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param settings A callback which will be passed a [JsonObjectBuilder].
      * @return this
      */
-    fun addObject(name: String, settings: Processor<JsonObjectBuilder>): RecipeBuilder<*> {
-        root.add(name, settings.process(JsonObjectBuilder()).build())
+    fun addObject(name: String, settings: Builder<JsonObjectBuilder>): RecipeBuilder<*> {
+        root.add(name, JsonObjectBuilder().apply(settings).build())
         return this
     }
 
@@ -83,7 +84,7 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param settings A callback which will be passed a [JsonArrayBuilder].
      * @return this
      */
-    fun addArray(name: String, settings: JsonArrayBuilder.() -> Unit): RecipeBuilder<*> {
+    fun addArray(name: String, settings: Builder<JsonArrayBuilder>): RecipeBuilder<*> {
         root.add(name, JsonArrayBuilder().apply(settings).build())
         return this
     }
