@@ -2,6 +2,8 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.util.IdUtils.id
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
 /**
@@ -16,7 +18,7 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @return this
      */
     fun pattern(vararg rows: String): ShapedRecipeBuilder {
-        root.add("pattern", arrayOf(*rows))
+        root.add("pattern", this.arrayOf(*rows))
         return this
     }
 
@@ -26,7 +28,7 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @param id The item ID.
      * @return this
      */
-    fun ingredientItem(key: Char, id: Identifier): ShapedRecipeBuilder {
+    fun addItemIngredient(key: Char, id: Identifier): ShapedRecipeBuilder {
         with("key", { JsonObject() }) { ingredients: JsonObject ->
             ingredients.add(
                 key.toString(),
@@ -42,7 +44,7 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @param id The tag ID.
      * @return this
      */
-    fun ingredientTag(key: Char, id: Identifier): ShapedRecipeBuilder {
+    fun addTagIngredient(key: Char, id: Identifier): ShapedRecipeBuilder {
         with("key", { JsonObject() }) { ingredients: JsonObject ->
             ingredients.add(
                 key.toString(),
@@ -70,12 +72,16 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
 
     /**
      * Set the item produced by this recipe.
-     * @param id The item ID.
+     * @param item The item ID.
      * @param count The number of result items.
      * @return this
      */
-    fun result(id: Identifier, count: Int): ShapedRecipeBuilder {
-        root.add("result", JsonObjectBuilder().add("item", id.toString()).add("count", count).build())
+    @JvmOverloads
+    fun result(item: Item, count: Int = 1): ShapedRecipeBuilder {
+        root.add("result", JsonObjectBuilder()
+            .add("item", item.id.toString())
+            .add("count", count)
+            .build())
         return this
     }
 }
