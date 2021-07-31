@@ -1,7 +1,11 @@
 package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.util.IdUtils.asItem
+import com.swordglowsblue.artifice.api.util.IdUtils.id
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
+import kotlin.jvm.Throws
 
 /**
  * Builder for a stonecutting recipe (`namespace:recipes/id.json`).
@@ -18,6 +22,14 @@ class StonecuttingRecipeBuilder : RecipeBuilder<StonecuttingRecipeBuilder>(Ident
         return this
     }
 
+    @set:Throws(IllegalArgumentException::class)
+    var ingredientItem: Item?
+    get() = Identifier.tryParse(root["ingredient"].asJsonObject["item"]?.asString)?.asItem
+    set(value) {
+        requireNotNull(value)
+        root.add("ingredient", JsonObjectBuilder().add("item", value.id.toString()).build())
+    }
+
     /**
      * Set the item being cut as any of the given tag.
      * @param id The tag ID.
@@ -26,6 +38,13 @@ class StonecuttingRecipeBuilder : RecipeBuilder<StonecuttingRecipeBuilder>(Ident
     fun ingredientTag(id: Identifier): StonecuttingRecipeBuilder {
         root.add("ingredient", JsonObjectBuilder().add("tag", id.toString()).build())
         return this
+    }
+
+    var ingredientTag: Identifier?
+    get() = Identifier.tryParse(root["ingredient"].asJsonObject["tag"]?.asString)
+    set(value) {
+        requireNotNull(value)
+        ingredientTag(value)
     }
 
     /**
@@ -43,17 +62,9 @@ class StonecuttingRecipeBuilder : RecipeBuilder<StonecuttingRecipeBuilder>(Ident
      * @param id The item ID.
      * @return this
      */
-    fun result(id: Identifier): StonecuttingRecipeBuilder {
-        root.addProperty("result", id.toString())
-        return this
-    }
-
-    /**
-     * Set the number of items produced by this recipe.
-     * @param count The number of result items.
-     * @return this
-     */
-    fun count(count: Int): StonecuttingRecipeBuilder {
+    @JvmOverloads
+    fun result(item: Item, count: Int = 1): StonecuttingRecipeBuilder {
+        root.addProperty("result", item.id.toString())
         root.addProperty("count", count)
         return this
     }
