@@ -1,6 +1,9 @@
 package com.swordglowsblue.artifice.api.util
 
+import net.minecraft.block.Block
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
+import net.minecraft.util.registry.Registry
 
 /** Utilities for modifying [Identifier]s.  */
 object IdUtils {
@@ -39,4 +42,22 @@ object IdUtils {
     fun withDefaultNamespace(id: Identifier, defaultNamespace: String): Identifier {
         return if (id.namespace == "minecraft") Identifier(defaultNamespace, id.path) else id
     }
+
+    val Item.id
+        get() = Registry.ITEM.getId(this)
+
+    val Block.id
+        get() = Registry.BLOCK.getId(this)
+
+    val Identifier.asItem: Item?
+        get() {
+            val itemOptional = Registry.ITEM.getOrEmpty(this)
+            return if (itemOptional.isEmpty) null else itemOptional.get()
+        }
+
+    val Identifier.asBlock: Block?
+        get() {
+            val blockOptional = Registry.BLOCK.getOrEmpty(this)
+            return if (blockOptional.isEmpty) null else blockOptional.get()
+        }
 }
