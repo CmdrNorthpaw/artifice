@@ -4,65 +4,57 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.builder.data.StateDataBuilder
+import com.swordglowsblue.artifice.api.util.Builder
 import com.swordglowsblue.artifice.api.util.Processor
+import net.minecraft.util.Identifier
 import java.util.function.Function
 
-open class BlockStateProviderBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
-    fun <P : BlockStateProviderBuilder> type(type: String): P {
-        this.root.addProperty("type", type)
-        return this as P
+sealed class BlockStateProviderBuilder(
+    type: Identifier
+) : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
+
+    init {
+       root.addProperty("type", type.toString())
     }
 
-    class SimpleBlockStateProviderBuilder : BlockStateProviderBuilder() {
-        fun state(processor: Processor<StateDataBuilder>): SimpleBlockStateProviderBuilder {
+    class SimpleBlockStateProviderBuilder
+        : BlockStateProviderBuilder(Identifier("minecraft", "simple_state_provider")) {
+        fun state(processor: Builder<StateDataBuilder>): SimpleBlockStateProviderBuilder {
             with("state", { JsonObject() }) { jsonObject: JsonObject ->
-                processor.process(StateDataBuilder()).buildTo(jsonObject)
+                StateDataBuilder().apply(processor).buildTo(jsonObject)
             }
             return this
         }
-
-        init {
-            type<BlockStateProviderBuilder>("minecraft:simple_state_provider")
-        }
     }
 
-    class WeightedBlockStateProviderBuilder : BlockStateProviderBuilder() {
-        fun addEntry(weight: Int, processor: Processor<StateDataBuilder>): WeightedBlockStateProviderBuilder {
+    class WeightedBlockStateProviderBuilder
+        : BlockStateProviderBuilder(Identifier("minecraft", "weighted_state_provider")) {
+        fun addEntry(weight: Int, processor: Builder<StateDataBuilder>): WeightedBlockStateProviderBuilder {
             val jsonObject = JsonObject()
             jsonObject.addProperty("weight", weight)
-            jsonObject.add("data", processor.process(StateDataBuilder()).buildTo(JsonObject()))
+            jsonObject.add("data", StateDataBuilder().apply(processor).buildTo(JsonObject()))
             this.root.getAsJsonArray("entries").add(jsonObject)
             return this
         }
 
         init {
-            type<BlockStateProviderBuilder>("minecraft:weighted_state_provider")
             this.root.add("entries", JsonArray())
         }
     }
 
-    class PlainFlowerBlockStateProviderBuilder : BlockStateProviderBuilder() {
-        init {
-            type<BlockStateProviderBuilder>("minecraft:plain_flower_provider")
-        }
-    }
+    class PlainFlowerBlockStateProviderBuilder
+        : BlockStateProviderBuilder(Identifier("minecraft", "plain_flower_provider"))
 
-    class ForestFlowerBlockStateProviderBuilder : BlockStateProviderBuilder() {
-        init {
-            type<BlockStateProviderBuilder>("minecraft:forest_flower_provider")
-        }
-    }
+    class ForestFlowerBlockStateProviderBuilder
+        : BlockStateProviderBuilder(Identifier("minecraft", "forest_flower_provider"))
 
-    class PillarBlockStateProviderBuilder : BlockStateProviderBuilder() {
-        fun state(processor: Processor<StateDataBuilder>): PillarBlockStateProviderBuilder {
+    class PillarBlockStateProviderBuilder
+        : BlockStateProviderBuilder(Identifier("minecraft", "pillar_state_provider")) {
+        fun state(processor: Builder<StateDataBuilder>): PillarBlockStateProviderBuilder {
             with("state", { JsonObject() }) { jsonObject: JsonObject ->
-                processor.process(StateDataBuilder()).buildTo(jsonObject)
+                StateDataBuilder().apply(processor).buildTo(jsonObject)
             }
             return this
-        }
-
-        init {
-            type<BlockStateProviderBuilder>("minecraft:pillar_state_provider")
         }
     }
 }
