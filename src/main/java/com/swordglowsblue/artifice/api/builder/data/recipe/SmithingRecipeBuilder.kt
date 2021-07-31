@@ -3,7 +3,11 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.util.IdUtils.asItem
+import com.swordglowsblue.artifice.api.util.IdUtils.id
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
+import kotlin.jvm.Throws
 
 /**
  * Builder for a smithing recipe (`namespace:recipes/id.json`).
@@ -15,9 +19,17 @@ class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder>(Identifier("s
      * @param id The item [Identifier]
      * @return this
      */
-    fun baseItem(id: Identifier): SmithingRecipeBuilder {
-        root.add("base", item(id))
+    fun baseItem(item: Item): SmithingRecipeBuilder {
+        root.add("base", item(item.id))
         return this
+    }
+
+    @set:Throws(IllegalArgumentException::class)
+    var baseItem: Item?
+    get() = Identifier.tryParse(root["base"].asJsonObject["item"].asString)?.asItem
+    set(value) {
+        requireNotNull(value)
+        root.add("base", item(value.id))
     }
 
     /**
@@ -28,6 +40,13 @@ class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder>(Identifier("s
     fun baseTag(id: Identifier): SmithingRecipeBuilder {
         root.add("base", tag(id))
         return this
+    }
+
+    var baseTag: Identifier?
+    get() = Identifier.tryParse(root["ingredient"].asJsonObject["tag"]?.asString)
+    set(value) {
+        requireNotNull(value)
+        root.add("base", tag(value))
     }
 
     /**
@@ -50,6 +69,13 @@ class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder>(Identifier("s
         return this
     }
 
+    var additionItem: Item?
+        get() = Identifier.tryParse(root["base"].asJsonObject["item"].asString)?.asItem
+        set(value) {
+            requireNotNull(value)
+            root.add("addition", item(value.id))
+        }
+
     /**
      * Set the item to be added on to be any one of the given tag
      * @param id The ta [Identifier]
@@ -58,6 +84,14 @@ class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder>(Identifier("s
     fun additionTag(id: Identifier): SmithingRecipeBuilder {
         root.add("addition", tag(id))
         return this
+    }
+
+    @set:Throws(IllegalArgumentException::class)
+    var additionTag: Identifier?
+    get() = Identifier.tryParse(root["ingredient"].asJsonObject["tag"]?.asString)
+    set(value) {
+        requireNotNull(value)
+        root.add("base", tag(value))
     }
 
     /**
@@ -73,13 +107,17 @@ class SmithingRecipeBuilder : RecipeBuilder<SmithingRecipeBuilder>(Identifier("s
     /**
      * Set the result of the smithing.
      * Item NBT will be preserved.
-     * @param id The [Identifier] of the resulting item
+     * @param item The [Identifier] of the resulting item
      * @return this
      */
-    fun result(id: Identifier): SmithingRecipeBuilder {
-        root.add("result", JsonPrimitive(id.toString()))
+    fun result(item: Item): SmithingRecipeBuilder {
+        root.add("result", JsonPrimitive(item.id.toString()))
         return this
     }
+
+    var result: Item
+    get() = Identifier.tryParse(root["result"].asString)!!.asItem!!
+    set(value) = root.addProperty("result", value.id.toString())
 
     private fun item(id: Identifier): JsonObject {
         return JsonObjectBuilder().add("item", id.toString()).build()
