@@ -3,13 +3,15 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 import com.google.gson.JsonElement
 import com.swordglowsblue.artifice.api.builder.JsonArrayBuilder
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
-import com.swordglowsblue.artifice.api.util.Processor
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
+import com.swordglowsblue.artifice.api.util.Builder
 import net.minecraft.util.Identifier
 
 /**
  * Builder for a recipe of an unknown type (`namespace:recipes/id.json`)
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
+@ArtificeDsl
 class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilder>(type) {
     /**
      * Add a JSON element to this recipe.
@@ -72,8 +74,8 @@ class GenericRecipeBuilder(type: Identifier) : RecipeBuilder<GenericRecipeBuilde
      * @param settings A callback which will be passed a [JsonObjectBuilder].
      * @return this
      */
-    fun addObject(name: String, settings: Processor<JsonObjectBuilder>): RecipeBuilder<*> {
-        root.add(name, settings.process(JsonObjectBuilder()).build())
+    fun addObject(name: String, settings: Builder<JsonObjectBuilder>): RecipeBuilder<*> {
+        root.add(name, JsonObjectBuilder().apply(settings).build())
         return this
     }
 

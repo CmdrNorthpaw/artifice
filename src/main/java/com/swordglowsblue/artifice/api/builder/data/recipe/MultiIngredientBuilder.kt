@@ -2,6 +2,9 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.google.gson.JsonArray
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
+import com.swordglowsblue.artifice.api.util.IdUtils.id
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
 /**
@@ -14,6 +17,7 @@ import net.minecraft.util.Identifier
  *
  * @see StonecuttingRecipeBuilder
  */
+@ArtificeDsl
 class MultiIngredientBuilder internal constructor() {
     private val ingredients = JsonArray()
 
@@ -22,9 +26,8 @@ class MultiIngredientBuilder internal constructor() {
      * @param id The item ID.
      * @return this
      */
-    fun item(id: Identifier): MultiIngredientBuilder {
-        ingredients.add(JsonObjectBuilder().add("item", id.toString()).build())
-        return this
+    fun addItemIngredient(item: Item) = apply {
+        ingredients.add(JsonObjectBuilder().add("item", item.id.toString()).build())
     }
 
     /**
@@ -32,12 +35,10 @@ class MultiIngredientBuilder internal constructor() {
      * @param id The tag ID.
      * @return this
      */
-    fun tag(id: Identifier): MultiIngredientBuilder {
+    fun addTagIngredient(id: Identifier) = apply {
         ingredients.add(JsonObjectBuilder().add("tag", id.toString()).build())
         return this
     }
 
-    fun build(): JsonArray {
-        return ingredients
-    }
+    fun build() = ingredients
 }
