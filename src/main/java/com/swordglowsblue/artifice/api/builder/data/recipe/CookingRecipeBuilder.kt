@@ -1,7 +1,6 @@
 package com.swordglowsblue.artifice.api.builder.data.recipe
 
-import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
-import com.swordglowsblue.artifice.api.dsl.DSL
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
 import com.swordglowsblue.artifice.api.util.Builder
 import com.swordglowsblue.artifice.api.util.IdUtils.asItem
 import com.swordglowsblue.artifice.api.util.IdUtils.parseId
@@ -13,7 +12,7 @@ import net.minecraft.util.Identifier
  * Used for all types of cooking (smelting, blasting, smoking, campfire_cooking).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-@DSL
+@ArtificeDsl
 class CookingRecipeBuilder(private val type: CookingRecipeType) : RecipeBuilder<CookingRecipeBuilder>(type.type) {
     /**
      * Set the item being cooked.
