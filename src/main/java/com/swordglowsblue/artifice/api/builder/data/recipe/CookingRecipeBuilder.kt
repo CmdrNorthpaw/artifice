@@ -1,6 +1,7 @@
 package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
+import com.swordglowsblue.artifice.api.dsl.Tag
 import com.swordglowsblue.artifice.api.util.Builder
 import com.swordglowsblue.artifice.api.util.IdUtils.asItem
 import com.swordglowsblue.artifice.api.util.IdUtils.parseId
@@ -30,11 +31,11 @@ class CookingRecipeBuilder(private val type: CookingRecipeType) : RecipeBuilder<
      * @param id The tag ID.
      * @return this
      */
-    fun ingredientTag(id: Identifier) = apply { ingredientTag = id }
+    fun ingredientTag(id: Tag) = apply { ingredientTag = id }
 
-    var ingredientTag: Identifier?
-    get() = parseId(root["ingredient"].asString)
-    set(value) { requireNotNull(value); root.addTag("ingredient", value) }
+    var ingredientTag: Tag?
+    get() = tagOrNull(parseId(root["ingredient"].asString))
+    set(value) = root.addTag("ingredient", value)
 
     /**
      * Set the item being cooked as one of a list of options.

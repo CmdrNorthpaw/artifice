@@ -3,6 +3,7 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 import com.google.gson.JsonArray
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
+import com.swordglowsblue.artifice.api.dsl.Tag
 import com.swordglowsblue.artifice.api.util.IdUtils.id
 import net.minecraft.item.Item
 import net.minecraft.util.Identifier
@@ -35,7 +36,7 @@ class MultiIngredientBuilder internal constructor() {
      * @param id The tag ID.
      * @return this
      */
-    fun addTagIngredient(id: Identifier) = apply {
+    fun addTagIngredient(id: Tag) = apply {
         ingredients.add(JsonObjectBuilder().add("tag", id.toString()).build())
         return this
     }
