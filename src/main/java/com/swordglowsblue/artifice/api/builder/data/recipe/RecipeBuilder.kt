@@ -7,7 +7,6 @@ import com.swordglowsblue.artifice.api.resource.JsonResource
 import com.swordglowsblue.artifice.api.util.IdUtils.id
 import net.minecraft.item.Item
 import net.minecraft.util.Identifier
-import java.util.function.Function
 
 /**
  * Base builder for a recipe (`namespace:recipes/id.json`).
@@ -15,29 +14,22 @@ import java.util.function.Function
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
 </T> */
 abstract class RecipeBuilder<T : RecipeBuilder<T>>(
-    type: Identifier
-) : TypedJsonBuilder<JsonResource<JsonObject>>(
-        JsonObject(),
-        { root: JsonObject -> JsonResource(root) }) {
-    /**
-     * Set the type of this recipe.
-     * @param id The type [Identifier].
-     * @return this
-     */
+    type: Identifier,
+    group: Identifier? = null
+) : TypedJsonBuilder<JsonResource<JsonObject>>(JsonObject(), { JsonResource(it) }) {
 
     init {
         type.let { root.addProperty("type", type.toString()) }
+        group?.let { root.addProperty("group", group.toString()) }
     }
 
-    protected fun JsonObject.addItem(key: String, item: Item?) {
-        val ingredientObject = JsonObjectBuilder().add("item", item?.id.toString()).build()
-        this.add(key, ingredientObject)
-    }
+    protected fun JsonObject.addItem(key: String, item: Item?) = this.add(key, itemObject(item))
 
-    protected fun JsonObject.addTag(key: String, tag: Identifier?) {
-        val ingredientObject = JsonObjectBuilder().add("tag", tag.toString()).build()
-        this.add(key, ingredientObject)
-    }
+    protected fun JsonObject.addTag(key: String, tag: Identifier?) = this.add(key, tagObject(tag))
+
+    protected fun itemObject(from: Item?) = JsonObjectBuilder().add("item", from?.id.toString()).build()
+
+    protected fun tagObject(from: Identifier?) = JsonObjectBuilder().add("item", from.toString()).build()
 
     /**
      * Set the recipe book group of this recipe.
