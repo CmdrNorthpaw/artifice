@@ -1,6 +1,11 @@
 package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.dsl.DSL
+import com.swordglowsblue.artifice.api.util.Builder
+import com.swordglowsblue.artifice.api.util.IdUtils.asItem
+import com.swordglowsblue.artifice.api.util.IdUtils.parseId
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
 /**
@@ -8,46 +13,50 @@ import net.minecraft.util.Identifier
  * Used for all types of cooking (smelting, blasting, smoking, campfire_cooking).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
-class CookingRecipeBuilder(type: CookingRecipeType) : RecipeBuilder<CookingRecipeBuilder>(type.type) {
+@DSL
+class CookingRecipeBuilder(private val type: CookingRecipeType) : RecipeBuilder<CookingRecipeBuilder>(type.type) {
     /**
      * Set the item being cooked.
-     * @param id The item ID.
+     * @param item The item ID.
      * @return this
      */
-    fun ingredientItem(id: Identifier): CookingRecipeBuilder {
-        root.add("ingredient", JsonObjectBuilder().add("item", id.toString()).build())
-        return this
-    }
+    fun ingredientItem(item: Item) = apply { ingredientItem = item }
+
+    var ingredientItem: Item?
+    get() = parseId(root["ingredient"].asString)?.asItem
+    set(value) = if (value != null) root.addItem("ingredient", value) else Unit
 
     /**
      * Set the item being cooked as any of the given tag.
      * @param id The tag ID.
      * @return this
      */
-    fun ingredientTag(id: Identifier): CookingRecipeBuilder {
-        root.add("ingredient", JsonObjectBuilder().add("tag", id.toString()).build())
-        return this
-    }
+    fun ingredientTag(id: Identifier) = apply { ingredientTag = id }
+
+    var ingredientTag: Identifier?
+    get() = parseId(root["ingredient"].asString)
+    set(value) { requireNotNull(value); root.addTag("ingredient", value) }
 
     /**
      * Set the item being cooked as one of a list of options.
      * @param settings A callback which will be passed a [MultiIngredientBuilder].
      * @return this
      */
-    fun multiIngredient(settings: MultiIngredientBuilder.() -> Unit): CookingRecipeBuilder {
+    fun multiIngredient(settings: Builder<MultiIngredientBuilder>): CookingRecipeBuilder {
         root.add("ingredient", MultiIngredientBuilder().apply(settings).build())
         return this
     }
 
     /**
      * Set the item produced by this recipe.
-     * @param id The item ID.
+     * @param item The item ID.
      * @return this
      */
-    fun result(id: Identifier): CookingRecipeBuilder {
-        root.addProperty("result", id.toString())
-        return this
-    }
+    fun result(item: Item) = apply { result = item }
+
+    var result: Item?
+    get() = parseId(root["result"]?.asString)?.asItem
+    set(value) = root.addItem("result", value)
 
     /**
      * Set the amount of experience given by this recipe.
@@ -59,24 +68,25 @@ class CookingRecipeBuilder(type: CookingRecipeType) : RecipeBuilder<CookingRecip
         return this
     }
 
+    var experience: Double?
+    get() = root["experience"]?.asDouble
+    set(value) = root.addProperty("experience", value)
+
     /**
      * Set how long this recipe should take to complete in ticks.
      * @param time The number of ticks.
      * @return this
      */
-    fun cookingTime(time: Int): CookingRecipeBuilder {
-        root.addProperty("cookingtime", time)
-        return this
-    }
+    fun cookingTime(time: Int) = apply { cookingTime = time }
 
-    enum class CookingRecipeType(val type: Identifier) {
-        SMELTING(Identifier("smelting")),
-        SMOKING(Identifier("smoking")),
-        CAMPFIRE(Identifier("campfire_cooking")),
-        BLASTING(Identifier("blasting"));
+    var cookingTime: Int
+    get() = root["cookingtime"]?.asInt ?: type.defaultCookingTime
+    set(value) = root.addProperty("cookingtime", value)
 
-        companion object {
-            fun fromId(id: Identifier) = values().first { it.type == id }
-        }
+    enum class CookingRecipeType(val type: Identifier, val defaultCookingTime: Int) {
+        SMELTING(Identifier("smelting"), 200),
+        SMOKING(Identifier("smoking"), 100),
+        CAMPFIRE(Identifier("campfire_cooking"), 100),
+        BLASTING(Identifier("blasting"), 100);
     }
 }
