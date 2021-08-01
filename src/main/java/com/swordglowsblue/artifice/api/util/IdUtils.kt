@@ -47,4 +47,6 @@ object IdUtils {
 
     val Identifier.asItem: Item?
     get() = Registry.ITEM.getOrEmpty(this).orElse(null)
+
+    fun parseId(toParse: String): Identifier? = Identifier.tryParse(toParse)
 }
