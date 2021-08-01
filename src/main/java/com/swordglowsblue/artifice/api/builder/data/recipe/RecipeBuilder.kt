@@ -29,12 +29,12 @@ abstract class RecipeBuilder<T : RecipeBuilder<T>>(
         type.let { root.addProperty("type", type.toString()) }
     }
 
-    protected fun JsonObject.addIngredient(key: String, item: Item) {
-        val ingredientObject = JsonObjectBuilder().add("item", item.id.toString()).build()
+    protected fun JsonObject.addItem(key: String, item: Item?) {
+        val ingredientObject = JsonObjectBuilder().add("item", item?.id.toString()).build()
         this.add(key, ingredientObject)
     }
 
-    protected fun JsonObject.addIngredient(key: String, tag: Identifier) {
+    protected fun JsonObject.addTag(key: String, tag: Identifier?) {
         val ingredientObject = JsonObjectBuilder().add("tag", tag.toString()).build()
         this.add(key, ingredientObject)
     }
