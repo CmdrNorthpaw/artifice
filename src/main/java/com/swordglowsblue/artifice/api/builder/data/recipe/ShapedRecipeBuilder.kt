@@ -79,11 +79,10 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @param count The number of result items.
      * @return this
      */
-    @JvmOverloads
-    fun setResult(item: Item, count: Int = 1) = apply {
-        root.add("result", JsonObjectBuilder()
-            .add("item", item.id.toString())
-            .add("count", count)
-            .build())
-    }
+
+    fun result(result: RecipeResult) = apply { this.result = result }
+
+    var result: RecipeResult?
+    get() = RecipeResult.from(root["result"].asJsonObject)
+    set(value) = root.add("result", value?.jsonObject)
 }
