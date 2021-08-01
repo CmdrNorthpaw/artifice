@@ -1,8 +1,11 @@
 package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.google.gson.JsonObject
+import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.swordglowsblue.artifice.api.util.IdUtils.id
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 import java.util.function.Function
 
@@ -24,6 +27,16 @@ abstract class RecipeBuilder<T : RecipeBuilder<T>>(
 
     init {
         type.let { root.addProperty("type", type.toString()) }
+    }
+
+    protected fun JsonObject.addIngredient(key: String, item: Item) {
+        val ingredientObject = JsonObjectBuilder().add("item", item.id.toString()).build()
+        this.add(key, ingredientObject)
+    }
+
+    protected fun JsonObject.addIngredient(key: String, tag: Identifier) {
+        val ingredientObject = JsonObjectBuilder().add("tag", tag.toString()).build()
+        this.add(key, ingredientObject)
     }
 
     /**
