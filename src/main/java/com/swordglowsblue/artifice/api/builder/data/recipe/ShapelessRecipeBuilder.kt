@@ -2,28 +2,27 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.google.gson.JsonArray
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
+import com.swordglowsblue.artifice.api.dsl.Tag
+import com.swordglowsblue.artifice.api.util.Builder
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
 /**
  * Builder for a shapeless crafting recipe (`namespace:recipes/id.json`).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
+@ArtificeDsl
 class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder>(Identifier("crafting_shapeless")) {
     /**
      * Add an ingredient item.
      * @param id The item ID.
      * @return this
      */
-    fun ingredientItem(id: Identifier): ShapelessRecipeBuilder {
+    fun addItemIngredient(item: Item) = apply {
         with("ingredients", { JsonArray() }) { ingredients: JsonArray ->
-            ingredients.add(
-                JsonObjectBuilder().add(
-                    "item",
-                    id.toString()
-                ).build()
-            )
+            ingredients.add(itemObject(item))
         }
-        return this
     }
 
     /**
@@ -31,16 +30,10 @@ class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder>(Identifier(
      * @param id The tag ID.
      * @return this
      */
-    fun ingredientTag(id: Identifier): ShapelessRecipeBuilder {
+    fun addTagIngredient(tag: Tag) = apply {
         with("ingredients", { JsonArray() }) { ingredients: JsonArray ->
-            ingredients.add(
-                JsonObjectBuilder().add(
-                    "tag",
-                    id.toString()
-                ).build()
-            )
+            ingredients.add(tagObject(tag))
         }
-        return this
     }
 
     /**
@@ -48,13 +41,10 @@ class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder>(Identifier(
      * @param settings A callback which will be passed a [MultiIngredientBuilder].
      * @return this
      */
-    fun multiIngredient(settings: MultiIngredientBuilder.() -> Unit): ShapelessRecipeBuilder {
+    fun multiIngredient(settings: Builder<MultiIngredientBuilder>) = apply {
         with("ingredients", { JsonArray() }) { ingredients: JsonArray ->
-            ingredients.add(
-                MultiIngredientBuilder().apply(settings).build()
-            )
+            ingredients.add(MultiIngredientBuilder().apply(settings).build())
         }
-        return this
     }
 
     /**
@@ -63,8 +53,9 @@ class ShapelessRecipeBuilder : RecipeBuilder<ShapelessRecipeBuilder>(Identifier(
      * @param count The number of result items.
      * @return this
      */
-    fun result(id: Identifier, count: Int): ShapelessRecipeBuilder {
-        root.add("result", JsonObjectBuilder().add("item", id.toString()).add("count", count).build())
-        return this
-    }
+    fun result(result: RecipeResult) = apply { this.result = result }
+
+    var result: RecipeResult?
+    get() = RecipeResult.from(root["result"].asJsonObject)
+    set(value) = root.add("result", value?.jsonObject)
 }
