@@ -2,12 +2,18 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
+import com.swordglowsblue.artifice.api.dsl.Tag
+import com.swordglowsblue.artifice.api.util.Builder
+import com.swordglowsblue.artifice.api.util.IdUtils.id
+import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
 /**
  * Builder for a shaped crafting recipe (`namespace:recipes/id.json`).
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Recipe.JSON_format)
  */
+@ArtificeDsl
 class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("crafting_shaped")) {
     /**
      * Set the recipe pattern for this recipe.
@@ -15,9 +21,14 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @param rows The individual rows of the pattern.
      * @return this
      */
-    fun pattern(vararg rows: String): ShapedRecipeBuilder {
-        root.add("pattern", arrayOf(*rows))
-        return this
+    fun pattern(vararg rows: String) = apply {
+        require(rows.size == 3) { "The pattern must have exactly 3 rows, found ${rows.size}" }
+        rows.forEachIndexed { index, row ->
+            require(row.length == 3) {
+                "Pattern rows must have a length of at least 3. Pattern at $index had length ${row.length}"
+            }
+        }
+        root.add("pattern", this.arrayOf(*rows))
     }
 
     /**
@@ -26,14 +37,10 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @param id The item ID.
      * @return this
      */
-    fun ingredientItem(key: Char, id: Identifier): ShapedRecipeBuilder {
+    fun addItemIngredient(key: Char, item: Item) = apply {
         with("key", { JsonObject() }) { ingredients: JsonObject ->
-            ingredients.add(
-                key.toString(),
-                JsonObjectBuilder().add("item", id.toString()).build()
-            )
+            ingredients.add(key.toString(), itemObject(item))
         }
-        return this
     }
 
     /**
@@ -42,14 +49,13 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @param id The tag ID.
      * @return this
      */
-    fun ingredientTag(key: Char, id: Identifier): ShapedRecipeBuilder {
+    fun addTagIngredient(key: Char, tag: Tag) = apply {
         with("key", { JsonObject() }) { ingredients: JsonObject ->
             ingredients.add(
                 key.toString(),
-                JsonObjectBuilder().add("tag", id.toString()).build()
+                tagObject(tag)
             )
         }
-        return this
     }
 
     /**
@@ -58,14 +64,13 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @param settings A callback which will be passed a [MultiIngredientBuilder].
      * @return this
      */
-    fun multiIngredient(key: Char, settings: MultiIngredientBuilder.() -> Unit): ShapedRecipeBuilder {
+    fun addMultiIngredient(key: Char, settings: Builder<MultiIngredientBuilder>) = apply {
         with("key", { JsonObject() }) { ingredients: JsonObject ->
             ingredients.add(
                 key.toString(),
                 MultiIngredientBuilder().apply(settings).build()
             )
         }
-        return this
     }
 
     /**
@@ -74,8 +79,11 @@ class ShapedRecipeBuilder : RecipeBuilder<ShapedRecipeBuilder>(Identifier("craft
      * @param count The number of result items.
      * @return this
      */
-    fun result(id: Identifier, count: Int): ShapedRecipeBuilder {
-        root.add("result", JsonObjectBuilder().add("item", id.toString()).add("count", count).build())
-        return this
+    @JvmOverloads
+    fun setResult(item: Item, count: Int = 1) = apply {
+        root.add("result", JsonObjectBuilder()
+            .add("item", item.id.toString())
+            .add("count", count)
+            .build())
     }
 }
