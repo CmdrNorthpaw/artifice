@@ -2,6 +2,7 @@ package com.swordglowsblue.artifice.api.util
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import net.minecraft.block.Block
 import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -47,8 +48,14 @@ object IdUtils {
     val Item.id: Identifier
     get()  = Registry.ITEM.getId(this)
 
+    val Block.id
+    get() = Registry.BLOCK.getId(this)
+
     val Identifier.asItem: Item?
     get() = Registry.ITEM.getOrEmpty(this).orElse(null)
+
+    val Identifier.asBlock: Block?
+    get() = Registry.BLOCK.getOrEmpty(this).orElse(null)
 
     fun parseId(toParse: String?): Identifier? = Identifier.tryParse(toParse)
 
