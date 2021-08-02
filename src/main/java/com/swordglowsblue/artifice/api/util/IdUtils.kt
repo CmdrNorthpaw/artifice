@@ -1,5 +1,7 @@
 package com.swordglowsblue.artifice.api.util
 
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -49,4 +51,7 @@ object IdUtils {
     get() = Registry.ITEM.getOrEmpty(this).orElse(null)
 
     fun parseId(toParse: String?): Identifier? = Identifier.tryParse(toParse)
+
+    val JsonElement.asId: Identifier?
+    get() = Identifier.tryParse(this.asString)
 }

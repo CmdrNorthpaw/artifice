@@ -3,6 +3,7 @@ package com.swordglowsblue.artifice.api.builder.data.recipe
 import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
 import com.swordglowsblue.artifice.api.dsl.Tag
 import com.swordglowsblue.artifice.api.util.Builder
+import com.swordglowsblue.artifice.api.util.IdUtils.asId
 import com.swordglowsblue.artifice.api.util.IdUtils.asItem
 import com.swordglowsblue.artifice.api.util.IdUtils.parseId
 import net.minecraft.item.Item
@@ -23,7 +24,7 @@ class CookingRecipeBuilder(private val type: CookingRecipeType) : RecipeBuilder<
     fun ingredientItem(item: Item) = apply { ingredientItem = item }
 
     var ingredientItem: Item?
-    get() = parseId(root["ingredient"].asString)?.asItem
+    get() = extractItem("ingredient")
     set(value) = if (value != null) root.addItem("ingredient", value) else Unit
 
     /**
@@ -34,7 +35,7 @@ class CookingRecipeBuilder(private val type: CookingRecipeType) : RecipeBuilder<
     fun ingredientTag(id: Tag) = apply { ingredientTag = id }
 
     var ingredientTag: Tag?
-    get() = tagOrNull(parseId(root["ingredient"].asString))
+    get() = extractTag("ingredient")
     set(value) = root.addTag("ingredient", value)
 
     /**
@@ -55,7 +56,7 @@ class CookingRecipeBuilder(private val type: CookingRecipeType) : RecipeBuilder<
     fun result(item: Item) = apply { result = item }
 
     var result: Item?
-    get() = parseId(root["result"]?.asString)?.asItem
+    get() = root["result"]?.asId?.asItem
     set(value) = root.addItem("result", value)
 
     /**

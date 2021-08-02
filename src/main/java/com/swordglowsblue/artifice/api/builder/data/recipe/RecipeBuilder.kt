@@ -5,7 +5,10 @@ import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.dsl.Tag
 import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.swordglowsblue.artifice.api.util.IdUtils.asId
+import com.swordglowsblue.artifice.api.util.IdUtils.asItem
 import com.swordglowsblue.artifice.api.util.IdUtils.id
+import com.swordglowsblue.artifice.api.util.IdUtils.parseId
 import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
@@ -30,9 +33,13 @@ abstract class RecipeBuilder<T : RecipeBuilder<T>>(
 
     protected fun itemObject(from: Item?) = JsonObjectBuilder().add("item", from?.id.toString()).build()
 
-    protected fun tagObject(from: Tag?) = JsonObjectBuilder().add("item", from.toString()).build()
+    protected fun tagObject(from: Tag?) = JsonObjectBuilder().add("item", from?.id.toString()).build()
 
     protected fun tagOrNull(from: Identifier?): Tag? = if (from == null) null else Tag(from)
+
+    protected fun extractItem(key: String): Item? = parseId(root[key].asJsonObject["item"].asString)?.asItem
+
+    protected fun extractTag(key: String): Tag? = tagOrNull(root[key].asJsonObject["tag"].asId)
 
     /**
      * Set the recipe book group of this recipe.
