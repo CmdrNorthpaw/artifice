@@ -54,4 +54,6 @@ object IdUtils {
 
     val JsonElement.asId: Identifier?
     get() = Identifier.tryParse(this.asString)
+
+    fun JsonObject.addProperty(key: String, value: Identifier?) = this.addProperty(key, value.toString())
 }
