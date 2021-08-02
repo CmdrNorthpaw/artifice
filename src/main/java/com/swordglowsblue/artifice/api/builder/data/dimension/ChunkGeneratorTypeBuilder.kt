@@ -4,9 +4,17 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.builder.data.dimension.BiomeSourceBuilder.*
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
+import com.swordglowsblue.artifice.api.util.IdUtils.addProperty
+import com.swordglowsblue.artifice.api.util.IdUtils.asBlock
+import com.swordglowsblue.artifice.api.util.IdUtils.asId
+import com.swordglowsblue.artifice.api.util.IdUtils.id
+import com.swordglowsblue.artifice.api.util.IdUtils.parseId
+import net.minecraft.block.Block
 import net.minecraft.util.Identifier
 import java.util.function.Function
 
+@ArtificeDsl
 open class ChunkGeneratorTypeBuilder (type: Identifier) :
     TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j })
 {
@@ -15,43 +23,34 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
     }
 
     /**
-     * Set the type (ID) of the Chunk Generator.
-     * @param type
-     * @param <T>
-     * @return
-    </T> */
-
-    /**
      * Set the biome Source.
      * @param instance
      * @param builder
      * @param <T>
      * @return
     </T> */
-    fun <T : BiomeSourceBuilder<T>> biomeSource(
-        instance: T,
-        builder: T.() -> Unit
-    ): ChunkGeneratorTypeBuilder {
+    fun <T : BiomeSourceBuilder<T>> biomeSource(instance: T, builder: T.() -> Unit) = apply {
         with("biome_source", { JsonObject() }) { biomeSource: JsonObject ->
             instance.apply(builder).buildTo(biomeSource)
         }
-        return this
     }
 
+    @ArtificeDsl
     class NoiseChunkGeneratorTypeBuilder : ChunkGeneratorTypeBuilder(Identifier("noise")) {
         /**
          * Set a seed specially for this dimension.
          * @param seed
          * @return
          */
-        fun seed(seed: Int): NoiseChunkGeneratorTypeBuilder {
-            this.root.addProperty("seed", seed)
-            return this
-        }
+        fun seed(seed: Int) = apply { this.seed = seed }
+
+        var seed: Int?
+        get() = root["seed"]?.asInt
+        set(value) = root.addProperty("seed", value)
 
         @Deprecated("use noiseSettings instead.")
         fun presetSettings(presetId: String): NoiseChunkGeneratorTypeBuilder {
-            noiseSettings(presetId)
+            noiseSettings(parseId(presetId)!!)
             return this
         }
 
@@ -60,21 +59,19 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
          * @param noiseSettingsID
          * @return
          */
-        fun noiseSettings(noiseSettingsID: String): NoiseChunkGeneratorTypeBuilder {
-            this.root.addProperty("settings", noiseSettingsID)
-            return this
-        }
+        fun noiseSettings(noiseSettingsID: Identifier) = apply { noiseSettings = noiseSettingsID }
+
+        var noiseSettings: Identifier?
+        get() = root["settings"].asId
+        set(value) = root.addProperty("settings", value.toString())
 
         /**
          * Build a vanilla layered biome source.
          * @param biomeSourceBuilder
          * @return
          */
-        fun vanillaLayeredBiomeSource(
-            biomeSourceBuilder: VanillaLayeredBiomeSourceBuilder.() -> Unit
-        ): NoiseChunkGeneratorTypeBuilder {
+        fun vanillaLayeredBiomeSource(biomeSourceBuilder: VanillaLayeredBiomeSourceBuilder.() -> Unit) = apply {
             biomeSource(VanillaLayeredBiomeSourceBuilder(), biomeSourceBuilder)
-            return this
         }
 
         /**
@@ -82,9 +79,8 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
          * @param biomeSourceBuilder
          * @return
          */
-        fun multiNoiseBiomeSource(biomeSourceBuilder: MultiNoiseBiomeSourceBuilder.() -> Unit): NoiseChunkGeneratorTypeBuilder {
+        fun multiNoiseBiomeSource(biomeSourceBuilder: MultiNoiseBiomeSourceBuilder.() -> Unit) = apply {
             biomeSource(MultiNoiseBiomeSourceBuilder(), biomeSourceBuilder)
-            return this
         }
 
         /**
@@ -92,11 +88,8 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
          * @param biomeSourceBuilder
          * @return
          */
-        fun checkerboardBiomeSource(biomeSourceBuilder: CheckerboardBiomeSourceBuilder.() -> Unit)
-        : NoiseChunkGeneratorTypeBuilder
-        {
+        fun checkerboardBiomeSource(biomeSourceBuilder: CheckerboardBiomeSourceBuilder.() -> Unit) = apply {
             biomeSource(CheckerboardBiomeSourceBuilder(), biomeSourceBuilder)
-            return this
         }
 
         /**
@@ -104,9 +97,8 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
          * @param biomeSourceBuilder
          * @return
          */
-        fun fixedBiomeSource(biomeSourceBuilder: FixedBiomeSourceBuilder.() -> Unit): NoiseChunkGeneratorTypeBuilder {
+        fun fixedBiomeSource(biomeSourceBuilder: FixedBiomeSourceBuilder.() -> Unit) = apply {
             biomeSource(FixedBiomeSourceBuilder(), biomeSourceBuilder)
-            return this
         }
 
         /**
@@ -114,25 +106,25 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
          * @param id
          * @return
          */
-        fun simpleBiomeSource(id: String): NoiseChunkGeneratorTypeBuilder {
+        fun simpleBiomeSource(id: String) = apply {
             this.root.addProperty("biome_source", id)
-            return this
         }
-
-
     }
 
+    @ArtificeDsl
     class FlatChunkGeneratorTypeBuilder : ChunkGeneratorTypeBuilder(Identifier("flat")) {
+        private val settings
+        inline get() = root["settings"].asJsonObject
+
         /**
          * Build a structure manager.
          * @param structureManagerBuilder
          * @return
          */
-        fun structureManager(structureManagerBuilder: StructureManagerBuilder.() -> Unit): FlatChunkGeneratorTypeBuilder {
-            with(root.getAsJsonObject("settings"), "structures", { JsonObject() }) { jsonObject: JsonObject ->
+        fun structureManager(structureManagerBuilder: StructureManagerBuilder.() -> Unit) = apply {
+            with(settings, "structures", { JsonObject() }) { jsonObject: JsonObject ->
                 StructureManagerBuilder().apply(structureManagerBuilder).buildTo(jsonObject)
             }
-            return this
         }
 
         /**
@@ -140,36 +132,36 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
          * @param biomeId
          * @return
          */
-        fun biome(biomeId: String): FlatChunkGeneratorTypeBuilder {
-            this.root.getAsJsonObject("settings").addProperty("biome", biomeId)
-            return this
-        }
+        fun biome(biomeId: Identifier) = apply { this.biomeId = biomeId }
 
-        fun lakes(lakes: Boolean): FlatChunkGeneratorTypeBuilder {
-            this.root.getAsJsonObject("settings").addProperty("lakes", lakes)
-            return this
-        }
+        var biomeId: Identifier?
+        get() = settings["biome"].asId
+        set(value) = settings.addProperty("biome", value)
 
-        fun features(features: Boolean): FlatChunkGeneratorTypeBuilder {
-            this.root.getAsJsonObject("settings").addProperty("features", features)
-            return this
-        }
+        fun generateLakes(lakes: Boolean) = apply { generateLakes = lakes }
+
+        var generateLakes: Boolean?
+        get() = settings["lakes"].asBoolean
+        set(value) = settings.addProperty("lakes", value)
+
+        fun generateFeatures(features: Boolean) = apply { generateFeatures = features }
+
+        var generateFeatures: Boolean?
+        get() = settings["features"].asBoolean
+        set(value) = settings.addProperty("features", value)
 
         /**
          * Add a block layer.
          * @param layersBuilder
          * @return
          */
-        fun addLayer(layersBuilder: LayersBuilder.() -> Unit): FlatChunkGeneratorTypeBuilder {
+        fun addLayer(layersBuilder: LayersBuilder.() -> Unit) = apply {
             with(
-                root.getAsJsonObject("settings"),
-                "layers",
-                { JsonArray() }) { jsonElements: JsonArray ->
+                settings, "layers", { JsonArray() }) { jsonElements: JsonArray ->
                 jsonElements.add(
                     LayersBuilder().apply(layersBuilder).buildTo(JsonObject())
                 )
             }
-            return this
         }
 
         class LayersBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
@@ -178,11 +170,15 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
              * @param height
              * @return
              */
-            fun height(height: Int): LayersBuilder {
-                require(height <= 255) { "Height can't be higher than 255! Found $height" }
-                require(height >= 0) { "Height can't be smaller than 0! Found $height" }
+            fun height(height: Int) = apply { this.height = height }
+
+            var height: Int?
+            get() = root["height"].asInt
+            set(value) {
+                requireNotNull(value)
+                require(value <= 255) { "Height can't be higher than 255! Found $height" }
+                require(value >= 0) { "Height can't be smaller than 0! Found $height" }
                 this.root.addProperty("height", height)
-                return this
             }
 
             /**
@@ -194,6 +190,10 @@ open class ChunkGeneratorTypeBuilder (type: Identifier) :
                 this.root.addProperty("block", blockId)
                 return this
             }
+
+            var block: Block?
+            get() = root["block"].asId?.asBlock
+            set(value) = root.addProperty("block", value?.id)
         }
 
         init {
