@@ -2,20 +2,23 @@ package com.swordglowsblue.artifice.api.builder.data.dimension
 
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
 import java.util.function.Function
 import com.swordglowsblue.artifice.api.util.Builder
+import com.swordglowsblue.artifice.api.util.requireRange
+import net.minecraft.util.Identifier
 
+@ArtificeDsl
 class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
     /**
      * Build stronghold settings.
      * @param strongholdSettingsBuilder
      * @return
      */
-    fun strongholdSettings(strongholdSettingsBuilder: Builder<StrongholdSettingsBuilder>): StructureManagerBuilder {
+    fun strongholdSettings(strongholdSettingsBuilder: Builder<StrongholdSettingsBuilder>) = apply {
         with("stronghold", { JsonObject() }) { jsonObject: JsonObject ->
             StrongholdSettingsBuilder().apply(strongholdSettingsBuilder).buildTo(jsonObject)
         }
-        return this
     }
 
     /**
@@ -24,71 +27,68 @@ class StructureManagerBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: 
      * @param structureConfigBuilder
      * @return
      */
-    fun addStructure(
-        structureId: String,
-        structureConfigBuilder: Builder<StructureConfigBuilder>
-    ): StructureManagerBuilder {
-        this.with(this.root.getAsJsonObject("structures"), structureId, { JsonObject() }) { jsonObject ->
+    fun addStructure(structureId: Identifier, structureConfigBuilder: Builder<StructureConfigBuilder>) = apply {
+        with(root["structures"].asJsonObject, structureId.toString(), { JsonObject() }) { jsonObject ->
             StructureConfigBuilder().apply(structureConfigBuilder).buildTo(jsonObject)
         }
-        return this
     }
 
+    @ArtificeDsl
     class StrongholdSettingsBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * @param distance
          * @return
          */
-        fun distance(distance: Int): StrongholdSettingsBuilder {
-            require(distance <= 1023) { "Distance can't be higher than 1023! Found $distance" }
-            require(distance >= 0) { "Distance can't be smaller than 0! Found $distance" }
-            this.root.addProperty("distance", distance)
-            return this
-        }
+        fun distance(distance: Int) = apply { this.distance = distance }
+
+        var distance: Int?
+        get() = root["distance"].asInt
+        set(value) = root.addProperty("distance", requireRange(value, 0, 1023, "Spread"))
 
         /**
          * @param spread
          * @return
          */
-        fun spread(spread: Int): StrongholdSettingsBuilder {
-            require(spread <= 1023) { "Spread can't be higher than 1023! Found $spread" }
-            require(spread >= 0) { "Spread can't be smaller than 0! Found $spread" }
-            this.root.addProperty("spread", spread)
-            return this
-        }
+        fun spread(spread: Int) = apply { this.spread = spread }
+
+        var spread: Int?
+        get() = root["spread"].asInt
+        set(value) = root.addProperty("spread", requireRange(value, 0, 1023, "Spread"))
 
         /**
          * Set the number of stronghold in the dimension.
          * @param count
          * @return
          */
-        fun count(count: Int): StrongholdSettingsBuilder {
-            require(count <= 4095) { "Count can't be higher than 4095! Found $count" }
-            require(count >= 1) { "Count can't be smaller than 1! Found $count" }
-            this.root.addProperty("count", count)
-            return this
-        }
+        fun count(count: Int) = apply { this.count = count }
+
+        var count: Int?
+        get() = root["count"].asInt
+        set(value) = root.addProperty("count", requireRange(value, 1, 4095, "Count"))
     }
 
+    @ArtificeDsl
     class StructureConfigBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
-        fun spacing(spacing: Int): StructureConfigBuilder {
-            require(spacing <= 4096) { "Count can't be higher than 4096! Found $spacing" }
-            require(spacing >= 0) { "Count can't be smaller than 0! Found $spacing" }
-            this.root.addProperty("spacing", spacing)
-            return this
-        }
+        fun spacing(spacing: Int) = apply { this.spacing = spacing }
 
-        fun separation(separation: Int): StructureConfigBuilder {
-            require(separation <= 4096) { "Count can't be higher than 4096! Found $separation" }
-            require(separation >= 0) { "Count can't be smaller than 0! Found $separation" }
-            this.root.addProperty("separation", separation)
-            return this
-        }
+        var spacing: Int?
+        get() = root["spacing"].asInt
+        set(value) = root.addProperty("spacing", requireRange(value, 0, 4096, "Spacing"))
 
-        fun salt(salt: Int): StructureConfigBuilder {
-            require(salt >= 0) { "Count can't be smaller than 0! Found $salt" }
+        fun separation(separation: Int) = apply { this.separation = separation }
+
+        var separation: Int?
+        get() = root["seperation"].asInt
+        set(value) = root.addProperty("spacing", requireRange(value, 0, 4096, "Seperation"))
+
+        fun salt(salt: Int) = apply { this.salt = salt }
+
+        var salt: Int?
+        get() = root["salt"].asInt
+        set(value) {
+            requireNotNull(value)
+            require(value >= 0) { "Count can't be smaller than 0! Found $value" }
             this.root.addProperty("salt", salt)
-            return this
         }
     }
 
