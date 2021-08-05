@@ -4,8 +4,10 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.JsonObjectBuilder
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
 import com.swordglowsblue.artifice.api.resource.JsonResource
 import com.swordglowsblue.artifice.api.util.Builder
+import com.swordglowsblue.artifice.api.util.IdUtils.asId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.util.Identifier
@@ -17,6 +19,7 @@ import java.util.function.Function
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Model.Block_states)
  */
 @Environment(EnvType.CLIENT)
+@ArtificeDsl
 class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
     { root: JsonObject -> JsonResource(root) }) {
@@ -29,14 +32,13 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param settings A callback which will be passed a [Variant].
      * @return this
      */
-    fun variant(name: String, settings: Builder<Variant>): BlockStateBuilder {
+    fun addVariant(name: String, settings: Builder<Variant>) = apply {
         root.remove("multipart")
         with("variants", { JsonObject() }) { variants: JsonObject ->
             with(variants, name, { JsonObject() }) { variant: JsonObject ->
                 Variant(variant).apply(settings).buildTo(variant)
             }
         }
-        return this
     }
 
     /**
@@ -48,16 +50,15 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param settings A callback which will be passed a [Variant].
      * @return this
      */
-    fun weightedVariant(name: String, settings: Builder<Variant>): BlockStateBuilder {
+    fun addWeightedVariant(name: String, settings: Builder<Variant>) = apply {
         root.remove("multipart")
         with("variants", { JsonObject() }) { variants: JsonObject ->
-            with(variants!!, name!!, { JsonArray() }) { options: JsonArray ->
+            with(variants, name, { JsonArray() }) { options: JsonArray ->
                 options.add(
                     Variant().apply(settings).build()
                 )
             }
         }
-        return this
     }
 
     /**
@@ -68,10 +69,9 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param settings A callback which will be passed a [Case].
      * @return this
      */
-    fun multipartCase(settings: Builder<Case>): BlockStateBuilder {
+    fun multipartCase(settings: Builder<Case>) = apply {
         root.remove("variants")
         with("multipart", { JsonArray() }) { cases: JsonArray -> cases.add(Case().apply(settings).build()) }
-        return this
     }
 
     /**
@@ -79,19 +79,18 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see BlockStateBuilder
      */
     @Environment(EnvType.CLIENT)
-    class Variant : TypedJsonBuilder<JsonObject> {
-        constructor() : super(JsonObject(), { j: JsonObject -> j }) {}
-        constructor(root: JsonObject) : super(root, { j: JsonObject -> j }) {}
+    class Variant(root: JsonObject = JsonObject()) : TypedJsonBuilder<JsonObject>(root, { it }){
 
         /**
          * Set the model this variant should use.
          * @param id The model ID (`namespace:block|item/modelid`).
          * @return this
          */
-        fun model(id: Identifier): Variant {
-            root.addProperty("model", id.toString())
-            return this
-        }
+        fun model(id: Identifier) = apply { this.model = id }
+
+        var model: Identifier?
+        get() = root["model"].asId
+        set(value) = root.addProperty("model", value.toString())
 
         /**
          * Set the rotation of this variant around the X axis in increments of 90deg.
@@ -99,10 +98,14 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @return this
          * @throws IllegalArgumentException if `x` is not divisible by 90.
          */
-        fun rotationX(x: Int): Variant {
-            require(x % 90 == 0) { "X rotation must be in increments of 90" }
-            root.addProperty("x", x)
-            return this
+        fun xRotation(x: Int) = apply { this.xRotation = x }
+
+        var xRotation: Int?
+        get() = root["x"].asInt
+        set(value) {
+            if (value == null) return
+            require(value % 90 == 0) { "X rotation must be in increments of 90" }
+            root.addProperty("x", value)
         }
 
         /**
@@ -111,21 +114,25 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @return this
          * @throws IllegalArgumentException if `y` is not divisible by 90.
          */
-        fun rotationY(y: Int): Variant {
-            require(y % 90 == 0) { "Y rotation must be in increments of 90" }
-            root.addProperty("y", y)
-            return this
-        }
+        fun yRotation(y: Int) = apply { this.yRotation = y }
+
+        var yRotation: Int?
+        get() = root["y"].asInt
+        set(value) { value?.let {
+            require(it % 90 == 0)
+            root.addProperty("y", it)
+        } }
 
         /**
          * Set whether the textures of this model should not rotate with it.
          * @param uvlock Whether to lock texture rotation or not.
          * @return this
          */
-        fun uvlock(uvlock: Boolean): Variant {
-            root.addProperty("uvlock", uvlock)
-            return this
-        }
+        fun uvLock(uvLock: Boolean) = apply { this.uvLock = uvLock }
+
+        var uvLock: Boolean?
+        get() = root["uvlock"].asBoolean
+        set(value) = root.addProperty("uvlock", value)
 
         /**
          * Set the relative weight of this variant.
@@ -134,10 +141,11 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param weight The weight.
          * @return this
          */
-        fun weight(weight: Int): Variant {
-            root.addProperty("weight", weight)
-            return this
-        }
+        fun weight(weight: Int) = apply { this.weight = weight }
+
+        var weight: Int?
+        get() = root["weight"].asInt
+        set(value) = root.addProperty("weight", value)
     }
 
     /**
@@ -145,6 +153,7 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see BlockStateBuilder
      */
     @Environment(EnvType.CLIENT)
+    @ArtificeDsl
     class Case : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * Set the condition for this case to be applied.
@@ -153,12 +162,14 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param state The state value (e.g. `north`).
          * @return this
          */
-        fun `when`(name: String, state: String): Case {
-            with("when", { JsonObject() }) { `when`: JsonObject ->
-                `when`.remove("OR")
-                `when`.addProperty(name, state)
+        fun setConditional(name: String, state: String, any: Boolean = false) = apply {
+            if (any) whenAny(name, state)
+            else {
+                with("when", { JsonObject() }) { `when`: JsonObject ->
+                    `when`.remove("OR")
+                    `when`.addProperty(name, state)
+                }
             }
-            return this
         }
 
         /**
@@ -168,7 +179,7 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param state The state value (e.g. `north`).
          * @return this
          */
-        fun whenAny(name: String, state: String): Case {
+        private fun whenAny(name: String, state: String) = apply {
             with("when", { JsonObject() }) { `when`: JsonObject ->
                 with(`when`, "OR", { JsonArray() }) { cases: JsonArray ->
                     `when`.entrySet().forEach(Consumer { (key) ->
@@ -176,10 +187,9 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
                             key
                         )
                     })
-                    cases.add(JsonObjectBuilder().add(name!!, state!!).build())
+                    cases.add(JsonObjectBuilder().add(name, state).build())
                 }
             }
-            return this
         }
 
         /**
@@ -188,9 +198,8 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param settings A callback which will be passed a [Variant].
          * @return this
          */
-        fun apply(settings: Builder<Variant>): Case {
+        fun applyVariant(settings: Builder<Variant>) = apply {
             root.add("apply", Variant().apply(settings).build())
-            return this
         }
 
         /**
@@ -199,9 +208,10 @@ class BlockStateBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param settings A callback which will be passed a [Variant].
          * @return this
          */
-        fun weightedApply(settings: Builder<Variant>): Case {
-            with("apply", { JsonArray() }) { options: JsonArray -> options.add(Variant().apply(settings).build()) }
-            return this
+        fun weightedApplyVariant(settings: Builder<Variant>) = apply {
+            with("apply", { JsonArray() }) { options: JsonArray ->
+                options.add(Variant().apply(settings).build())
+            }
         }
     }
 }
