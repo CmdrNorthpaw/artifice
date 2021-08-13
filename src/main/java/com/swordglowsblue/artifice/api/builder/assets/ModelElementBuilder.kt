@@ -2,7 +2,9 @@ package com.swordglowsblue.artifice.api.builder.assets
 
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
 import com.swordglowsblue.artifice.api.util.Builder
+import com.swordglowsblue.artifice.api.util.IdUtils.asId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.util.Identifier
@@ -15,8 +17,10 @@ import java.util.function.Function
  * @see ModelBuilder
  */
 @Environment(EnvType.CLIENT)
+@ArtificeDsl
 class ModelElementBuilder internal constructor() :
     TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
+
     /**
      * Set the start point of this cuboid.
      * @param x The start point on the X axis. Clamped to between -16 and 32.
@@ -24,7 +28,7 @@ class ModelElementBuilder internal constructor() :
      * @param z The start point on the Z axis. Clamped to between -16 and 32.
      * @return this
      */
-    fun from(x: Float, y: Float, z: Float): ModelElementBuilder {
+    fun start(x: Float, y: Float, z: Float) = apply {
         root.add(
             "from", arrayOf(
                 MathHelper.clamp(x, -16f, 32f),
@@ -32,7 +36,6 @@ class ModelElementBuilder internal constructor() :
                 MathHelper.clamp(z, -16f, 32f)
             )
         )
-        return this
     }
 
     /**
@@ -42,7 +45,7 @@ class ModelElementBuilder internal constructor() :
      * @param z The end point on the Z axis. Clamped to between -16 and 32.
      * @return this
      */
-    fun to(x: Float, y: Float, z: Float): ModelElementBuilder {
+    fun end(x: Float, y: Float, z: Float) = apply {
         root.add(
             "to", arrayOf(
                 MathHelper.clamp(x, -16f, 32f),
@@ -50,7 +53,6 @@ class ModelElementBuilder internal constructor() :
                 MathHelper.clamp(z, -16f, 32f)
             )
         )
-        return this
     }
 
     /**
@@ -58,11 +60,10 @@ class ModelElementBuilder internal constructor() :
      * @param settings A callback which will be passed a [Rotation].
      * @return this
      */
-    fun rotation(settings: Builder<Rotation>): ModelElementBuilder {
+    fun rotation(settings: Builder<Rotation>) = apply {
         with("rotation", { JsonObject() }) { rotation: JsonObject ->
             Rotation(rotation).apply(settings).buildTo(rotation)
         }
-        return this
     }
 
     /**
@@ -75,22 +76,22 @@ class ModelElementBuilder internal constructor() :
         return this
     }
 
+    var shade: Boolean?
+    get() = root["shade"].asBoolean
+    set(value) = root.addProperty("shade", value)
+
     /**
      * Define properties of the face in the given direction.
      * @param side The direction of the face.
      * @param settings A callback which will be passed a [Face].
      * @return this
      */
-    fun face(side: Direction, settings: Builder<Face>): ModelElementBuilder {
+    fun face(side: Direction, settings: Builder<Face>) = apply {
         with("faces", { JsonObject() }) { faces: JsonObject ->
-            with(
-                faces!!,
-                side.getName(),
-                { JsonObject() }) { face: JsonObject ->
+            with(faces, side.getName(), { JsonObject() }) { face: JsonObject ->
                 Face(face).apply(settings).buildTo(face)
             }
         }
-        return this
     }
 
     /**
@@ -98,6 +99,7 @@ class ModelElementBuilder internal constructor() :
      * @see ModelElementBuilder
      */
     @Environment(EnvType.CLIENT)
+    @ArtificeDsl
     class Rotation(root: JsonObject) : TypedJsonBuilder<JsonObject>(root, { j: JsonObject -> j }) {
         /**
          * Set the origin point of this rotation.
@@ -106,7 +108,7 @@ class ModelElementBuilder internal constructor() :
          * @param z The origin point on the Z axis. Clamped to between -16 and 32.
          * @return this
          */
-        fun origin(x: Float, y: Float, z: Float): Rotation {
+        fun origin(x: Float, y: Float, z: Float) = apply {
             root.add(
                 "origin", arrayOf(
                     MathHelper.clamp(x, -16f, 32f),
@@ -114,7 +116,6 @@ class ModelElementBuilder internal constructor() :
                     MathHelper.clamp(z, -16f, 32f)
                 )
             )
-            return this
         }
 
         /**
@@ -122,10 +123,11 @@ class ModelElementBuilder internal constructor() :
          * @param axis The axis.
          * @return this
          */
-        fun axis(axis: Direction.Axis): Rotation {
-            root.addProperty("axis", axis.getName())
-            return this
-        }
+        fun axis(axis: Direction.Axis) = apply { this.axis = axis }
+
+        var axis: Direction.Axis?
+        get() = Direction.Axis.fromName(root["axis"].asString)
+        set(value) = root.addProperty("axis", value?.name)
 
         /**
          * Set the rotation angle in 22.5deg increments.
@@ -133,16 +135,16 @@ class ModelElementBuilder internal constructor() :
          * @return this
          * @throws IllegalArgumentException if the angle is not between -45 and 45 or is not divisible by 22.5.
          */
-        fun angle(angle: Float): Rotation {
-            require(
-                !(angle != MathHelper.clamp(
-                    angle,
-                    -45f,
-                    45f
-                ) || angle % 22.5f != 0f)
-            ) { "Angle must be between -45 and 45 in increments of 22.5" }
-            root.addProperty("angle", angle)
-            return this
+        fun angle(angle: Float) = apply { this.angle = angle }
+
+        var angle: Float?
+        get() = root["angle"].asFloat
+        set(value) {
+            if (value == null) return
+            require(!(value != MathHelper.clamp(value, -45f, 45f) || value % 22.5f != 0f)) {
+                "Angle must be between -45 and 45 in increments of 22.5"
+            }
+            root.addProperty("angle", value)
         }
 
         /**
@@ -154,6 +156,10 @@ class ModelElementBuilder internal constructor() :
             root.addProperty("rescale", rescale)
             return this
         }
+
+        var rescale: Boolean?
+        get() = root["rescale"].asBoolean
+        set(value) = root.addProperty("rescale", value)
     }
 
     /**
@@ -161,6 +167,7 @@ class ModelElementBuilder internal constructor() :
      * @see ModelElementBuilder
      */
     @Environment(EnvType.CLIENT)
+    @ArtificeDsl
     class Face(root: JsonObject) : TypedJsonBuilder<JsonObject>(root, { j: JsonObject -> j }) {
         /**
          * Set the texture UV to apply to this face. Detected by position within the block if not specified.
@@ -170,7 +177,7 @@ class ModelElementBuilder internal constructor() :
          * @param y2 The end point on the Y axis. Clamped to between 0 and 16.
          * @return this
          */
-        fun uv(x1: Int, x2: Int, y1: Int, y2: Int): Face {
+        fun uv(x1: Int, x2: Int, y1: Int, y2: Int) = apply {
             root.add(
                 "uv", arrayOf(
                     MathHelper.clamp(x1, 0, 16),
@@ -179,7 +186,6 @@ class ModelElementBuilder internal constructor() :
                     MathHelper.clamp(y2, 0, 16)
                 )
             )
-            return this
         }
 
         /**
@@ -187,10 +193,15 @@ class ModelElementBuilder internal constructor() :
          * @param varName The variable name (e.g. `particle`).
          * @return this
          */
-        fun texture(varName: String): Face {
-            root.addProperty("texture", "#$varName")
-            return this
-        }
+        fun texture(varName: String) = apply { this.textureVar = varName }
+
+        var textureVar: String?
+        get() = root["texture"].asString.removePrefix("#")
+        set(value) = root.addProperty("texture", "#$value")
+
+        var textureId: Identifier?
+        get() = root["texture"].asId
+        set(value) = root.addProperty("texture", value?.toString())
 
         /**
          * Set the texture of this face to the given texture id.
@@ -207,10 +218,11 @@ class ModelElementBuilder internal constructor() :
          * @param side The side to cull on (defaults to the side specified for this face).
          * @return this
          */
-        fun cullface(side: Direction): Face {
-            root.addProperty("cullface", side.getName())
-            return this
-        }
+        fun faceToCull(side: Direction) = apply { this.faceToCull = side }
+
+        var faceToCull: Direction?
+        get() = Direction.byName(root["cullface"].asString)
+        set(value) = root.addProperty("cullface", value?.name)
 
         /**
          * Set the rotation of this face's texture in 90deg increments.
@@ -218,16 +230,16 @@ class ModelElementBuilder internal constructor() :
          * @return this
          * @throws IllegalArgumentException if the rotation is not between 0 and 270 or is not divisible by 90.
          */
-        fun rotation(rotation: Int): Face {
-            require(
-                !(rotation != MathHelper.clamp(
-                    rotation,
-                    0,
-                    270
-                ) || rotation % 90 != 0)
-            ) { "Rotation must be between 0 and 270 in increments of 90" }
-            root.addProperty("rotation", rotation)
-            return this
+        fun rotation(rotation: Int) = apply { this.rotation = rotation }
+
+        var rotation: Int?
+        get() = root["rotation"].asInt
+        set(value) {
+            if (value == null) { root.remove("rotation"); return }
+            require(!(value != MathHelper.clamp(value, 0, 270) || value % 90 != 0)) {
+                "Rotation must be between 0 and 270 in increments of 90"
+            }
+            root.addProperty("rotation", value)
         }
 
         /**
@@ -235,9 +247,10 @@ class ModelElementBuilder internal constructor() :
          * @param tintindex The tint index.
          * @return this
          */
-        fun tintindex(tintindex: Int): Face {
-            root.addProperty("tintindex", tintindex)
-            return this
-        }
+        fun tintIndex(index: Int) = apply { this.tintIndex = index }
+
+        var tintIndex: Int?
+        get() = root["tintindex"].asInt
+        set(value) = root.addProperty("tintindex", value)
     }
 }

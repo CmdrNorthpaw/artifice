@@ -3,8 +3,10 @@ package com.swordglowsblue.artifice.api.builder.assets
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
+import com.swordglowsblue.artifice.api.dsl.ArtificeDsl
 import com.swordglowsblue.artifice.api.resource.JsonResource
 import com.swordglowsblue.artifice.api.util.Builder
+import com.swordglowsblue.artifice.api.util.IdUtils.asId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.util.Identifier
@@ -15,6 +17,7 @@ import java.util.function.Function
  * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Model)
  */
 @Environment(EnvType.CLIENT)
+@ArtificeDsl
 class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
     JsonObject(),
     { root: JsonObject -> JsonResource(root) }) {
@@ -23,10 +26,14 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param id The parent model ID (`namespace:block|item/modelid`
      * @return this
      */
-    fun parent(id: Identifier): ModelBuilder {
+    fun parent(id: Identifier) = apply {
         root.addProperty("parent", id.toString())
         return this
     }
+
+    var parent: Identifier?
+    get() = root["parent"].asId
+    set(value) = root.addProperty("parent", value?.toString())
 
     /**
      * Associate a texture with the given variable name.
@@ -34,9 +41,10 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param path The texture ID (`namespace:type/textureid`).
      * @return this
      */
-    fun texture(name: String, path: Identifier): ModelBuilder {
-        with("textures", { JsonObject() }) { textures: JsonObject -> textures.addProperty(name, path.toString()) }
-        return this
+    fun texture(name: String, path: Identifier) = apply {
+        with("textures", { JsonObject() }) { textures: JsonObject ->
+            textures.addProperty(name, path.toString())
+        }
     }
 
     /**
@@ -45,13 +53,12 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param settings A callback which will be passed a [Display].
      * @return this
      */
-    fun display(name: String, settings: Builder<Display>): ModelBuilder {
+    fun display(name: String, settings: Builder<Display>) = apply {
         with("display", { JsonObject() }) { display: JsonObject ->
             display.add(
                 name, Display().apply(settings).buildTo(display)
             )
         }
-        return this
     }
 
     /**
@@ -59,13 +66,12 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param settings A callback which will be passed a [ModelElementBuilder].
      * @return this
      */
-    fun element(settings: Builder<ModelElementBuilder>): ModelBuilder {
+    fun addElement(settings: Builder<ModelElementBuilder>) = apply {
         with("elements", { JsonArray() }) { elements: JsonArray ->
             elements.add(
                 ModelElementBuilder().apply(settings).build()
             )
         }
-        return this
     }
 
     /**
@@ -73,23 +79,23 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @param ambientocclusion Whether to use ambient occlusion.
      * @return this
      */
-    fun ambientocclusion(ambientocclusion: Boolean): ModelBuilder {
-        this.root.addProperty("ambientocclusion", ambientocclusion)
-        return this
-    }
+    fun ambientOcclusion(occlusion: Boolean) = apply { this.ambientOcclusion = occlusion }
+
+    var ambientOcclusion: Boolean?
+    get() = root["ambientocclusion"].asBoolean
+    set(value) = root.addProperty("ambientocclusion", value)
 
     /**
      * Add a property override to this model. Only applicable for item models.
      * @param settings A callback which will be passed a [Override].
      * @return this
      */
-    fun override(settings: Builder<Override>): ModelBuilder {
+    fun addOverride(settings: Builder<Override>) = apply {
         with("overrides", { JsonArray() }) { overrides: JsonArray ->
             overrides.add(
                 Override().apply(settings).build()
             )
         }
-        return this
     }
 
     /**
@@ -97,6 +103,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see ModelBuilder
      */
     @Environment(EnvType.CLIENT)
+    @ArtificeDsl
     class Display : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * Set the rotation of this model around each axis.
@@ -105,9 +112,8 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param z The rotation around the Z axis.
          * @return this
          */
-        fun rotation(x: Float, y: Float, z: Float): Display {
-            root.add("rotation", arrayOf(x, y, z))
-            return this
+        fun rotation(x: Float, y: Float, z: Float) = apply {
+            root.add("rotation", this.arrayOf(x, y, z))
         }
 
         /**
@@ -117,9 +123,8 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param z The translation along the Z axis. Clamped to between -80 and 80.
          * @return this
          */
-        fun translation(x: Float, y: Float, z: Float): Display {
-            root.add("translation", arrayOf(x, y, z))
-            return this
+        fun translation(x: Float, y: Float, z: Float) = apply {
+            root.add("translation", this.arrayOf(x, y, z))
         }
 
         /**
@@ -129,9 +134,8 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param z The scale on the Z axis. Clamped to &lt;= 4.
          * @return this
          */
-        fun scale(x: Float, y: Float, z: Float): Display {
-            root.add("scale", arrayOf(x, y, z))
-            return this
+        fun scale(x: Float, y: Float, z: Float) = apply {
+            root.add("scale", this.arrayOf(x, y, z))
         }
     }
 
@@ -140,6 +144,7 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
      * @see ModelBuilder
      */
     @Environment(EnvType.CLIENT)
+    @ArtificeDsl
     class Override : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
         /**
          * Set the required value of the given property.
@@ -150,7 +155,9 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @see [Minecraft Wiki](https://minecraft.gamepedia.com/Model.Item_tags)
          */
         fun predicate(name: String, value: Int): Override {
-            with("predicate", { JsonObject() }) { predicate: JsonObject -> predicate.addProperty(name, value) }
+            with("predicate", { JsonObject() }) { predicate: JsonObject ->
+                predicate.addProperty(name, value)
+            }
             return this
         }
 
@@ -159,9 +166,10 @@ class ModelBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
          * @param id The model id (`namespace:block|item/modelid`).
          * @return this
          */
-        fun model(id: Identifier): Override {
-            root.addProperty("model", id.toString())
-            return this
-        }
+        fun model(id: Identifier) = apply { this.model = id }
+
+        var model: Identifier?
+        get() = root["model"].asId
+        set(value) = root.addProperty("model", value?.toString())
     }
 }
