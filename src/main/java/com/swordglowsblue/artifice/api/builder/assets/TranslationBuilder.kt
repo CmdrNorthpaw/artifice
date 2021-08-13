@@ -13,16 +13,15 @@ import java.util.function.Function
  */
 @Environment(EnvType.CLIENT)
 class TranslationBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
-    JsonObject(),
-    { root: JsonObject -> JsonResource(root) }) {
+    JsonObject(), { root: JsonObject -> JsonResource(root) }
+) {
     /**
      * Add a translation entry.
      * @param key The translation key (e.g. `block.example.example_block`).
      * @param translation The translated string (e.g. `Example Block`).
      * @return this
      */
-    fun entry(key: String, translation: String): TranslationBuilder {
+    fun addEntry(key: String, translation: String) = apply {
         root.addProperty(key, translation)
-        return this
     }
 }

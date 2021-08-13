@@ -13,17 +13,14 @@ import java.util.function.Function
  * Builder for a particle definition (`namespace:particles/particleid.json`).
  */
 @Environment(EnvType.CLIENT)
-class ParticleBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
-    JsonObject(),
-    { root -> JsonResource(root) }) {
+class ParticleBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(JsonObject(), { root -> JsonResource(root) }) {
     /**
      * Add a texture to this particle.
      * Calling this multiple times will add to the list instead of overwriting.
      * @param id The texture ID (`namespace:textureid`).
      * @return this
      */
-    fun texture(id: Identifier): ParticleBuilder {
+    fun addTexture(id: Identifier) = apply {
         with("textures", { JsonArray() }) { textures: JsonArray -> textures.add(id.toString()) }
-        return this
     }
 }
