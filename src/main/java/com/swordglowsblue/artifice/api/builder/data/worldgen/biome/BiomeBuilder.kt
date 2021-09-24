@@ -4,106 +4,108 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.swordglowsblue.artifice.api.builder.TypedJsonBuilder
 import com.swordglowsblue.artifice.api.resource.JsonResource
+import com.swordglowsblue.artifice.api.util.IdUtils.asId
 import net.minecraft.entity.SpawnGroup
+import net.minecraft.util.Identifier
 import net.minecraft.world.biome.Biome
 import net.minecraft.world.biome.Biome.Precipitation
 import net.minecraft.world.gen.GenerationStep
 import java.util.function.Function
 
 class BiomeBuilder : TypedJsonBuilder<JsonResource<JsonObject>>(
-    JsonObject(),
-    { root: JsonObject -> JsonResource(root) }) {
-    fun depth(depth: Float): BiomeBuilder {
-        this.root.addProperty("depth", depth)
-        return this
-    }
+    JsonObject(), { root: JsonObject -> JsonResource(root) }
+) {
+    fun depth(depth: Float) = apply { this.depth = depth }
 
-    fun scale(scale: Float): BiomeBuilder {
-        this.root.addProperty("scale", scale)
-        return this
-    }
+    var depth: Float?
+    get() = root["depth"]?.asFloat
+    set(value) = root.addProperty("depth", value)
 
-    fun temperature(temperature: Float): BiomeBuilder {
-        this.root.addProperty("temperature", temperature)
-        return this
-    }
+    fun scale(scale: Float) = apply { this.scale = scale }
 
-    fun downfall(downfall: Float): BiomeBuilder {
-        this.root.addProperty("downfall", downfall)
-        return this
-    }
+    var scale: Float?
+    get() = root["scale"]?.asFloat
+    set(value) = root.addProperty("scale", value)
 
-    fun parent(parent: String): BiomeBuilder {
-        this.root.addProperty("parent", parent)
-        return this
-    }
+    fun temperature(temperature: Float) = apply { this.temperature = temperature }
 
-    fun surfaceBuilder(surface_builder: String): BiomeBuilder {
-        this.root.addProperty("surface_builder", surface_builder)
-        return this
-    }
+    var temperature: Float?
+    get() = root["temperature"]?.asFloat
+    set(value) = root.addProperty("temperature", value)
 
-    fun precipitation(precipitation: Precipitation): BiomeBuilder {
-        this.root.addProperty("precipitation", precipitation.getName())
-        return this
-    }
+    fun downfall(downfall: Float) = apply { this.downfall = downfall }
 
-    fun category(category: Biome.Category): BiomeBuilder {
-        this.root.addProperty("category", category.getName())
-        return this
-    }
+    var downfall: Float?
+    get() = root["downfall"]?.asFloat
+    set(value) = root.addProperty("downfall", value)
 
-    fun effects(biomeEffectsBuilder: BiomeEffectsBuilder.() -> Unit): BiomeBuilder {
-        with(
-            "effects",
-            { JsonObject() }) { biomeEffects: JsonObject ->
-            BiomeEffectsBuilder().also(biomeEffectsBuilder).buildTo(biomeEffects)
+    fun parent(parent: Identifier) = apply { this.parent = parent }
+
+    var parent: Identifier?
+    get() = root["parent"].asId
+    set(value) = root.addProperty("parent", value?.toString())
+
+    fun surfaceBuilder(builder: Identifier) = apply { this.surfaceBuilder = builder }
+
+    var surfaceBuilder: Identifier?
+    get() = root["surface_builder"].asId
+    set(value) = root.addProperty("surface_builder", value?.toString())
+
+    fun precipitation(precipitation: Precipitation) = apply { this.precipitation = precipitation }
+
+    var precipitation: Precipitation?
+    get() = Precipitation.byName(root["precipitation"].asString)
+    set(value) = root.addProperty("precipitation", value?.name)
+
+    fun category(category: Biome.Category) = apply { this.category = category }
+
+    var category: Biome.Category?
+    get() = Biome.Category.byName(root["category"]?.asString)
+    set(value) = root.addProperty("category", value?.getName())
+
+    fun effects(biomeEffectsBuilder: BiomeEffectsBuilder.() -> Unit) = apply {
+        with("effects", { JsonObject() }) { biomeEffects: JsonObject ->
+            BiomeEffectsBuilder().apply(biomeEffectsBuilder).buildTo(biomeEffects)
         }
-        return this
     }
 
-    fun addSpawnCosts(entityID: String, spawnDensityBuilderProcessor: SpawnDensityBuilder.() -> Unit): BiomeBuilder {
+    fun addSpawnCosts(entityID: String, spawnDensityBuilderPtrocessor: SpawnDensityBuilder.() -> Unit) = apply {
         with(entityID, { JsonObject() }) { spawnDensityBuilder: JsonObject ->
-            SpawnDensityBuilder().also(spawnDensityBuilderProcessor).buildTo(spawnDensityBuilder)
+            SpawnDensityBuilder().apply(spawnDensityBuilderPtrocessor).buildTo(spawnDensityBuilder)
         }
-        return this
     }
 
     fun addSpawnEntry(
-        spawnGroup: SpawnGroup,
-        biomeSpawnEntryBuilderProcessor: BiomeSpawnEntryBuilder.() -> Unit
-    ): BiomeBuilder {
+        spawnGroup: SpawnGroup, biomeSpawnEntryBuilder: BiomeSpawnEntryBuilder.() -> Unit) = apply {
         this.root.getAsJsonObject("spawners")[spawnGroup.getName()].asJsonArray
-            .add(BiomeSpawnEntryBuilder().also(biomeSpawnEntryBuilderProcessor).buildTo(JsonObject()))
-        return this
+            .add(BiomeSpawnEntryBuilder().apply(biomeSpawnEntryBuilder).buildTo(JsonObject()))
     }
 
-    private fun addCarver(carver: GenerationStep.Carver, configuredCaverIDs: Array<out String>): BiomeBuilder {
-        for (configuredCaverID in configuredCaverIDs) this.root.getAsJsonObject("carvers")
-            .getAsJsonArray(carver.getName()).add(configuredCaverID)
-        return this
+    private fun addCarver(carver: GenerationStep.Carver, configuredCaverIDs: Array<out Identifier>) {
+        configuredCaverIDs.forEach {
+            this.root.getAsJsonObject("carvers").getAsJsonArray(carver.getName()).add(it.toString())
+        }
     }
 
-    fun addAirCarvers(vararg configuredCarverIds: String): BiomeBuilder {
+    fun addAirCarvers(vararg configuredCarverIds: Identifier) = apply {
         this.root.getAsJsonObject("carvers").add(GenerationStep.Carver.AIR.getName(), JsonArray())
         addCarver(GenerationStep.Carver.AIR, configuredCarverIds)
-        return this
     }
 
-    fun addLiquidCarvers(vararg configuredCarverIds: String): BiomeBuilder {
+    fun addLiquidCarvers(vararg configuredCarverIds: Identifier): BiomeBuilder {
         this.root.getAsJsonObject("carvers").add(GenerationStep.Carver.LIQUID.getName(), JsonArray())
         addCarver(GenerationStep.Carver.LIQUID, configuredCarverIds)
         return this
     }
 
-    fun addFeaturesbyStep(step: GenerationStep.Feature, vararg featureIDs: String): BiomeBuilder {
-        for (featureID in featureIDs) this.root.getAsJsonArray("features")[step.ordinal].asJsonArray.add(featureID)
-        return this
+    fun addFeaturesbyStep(step: GenerationStep.Feature, vararg featureIDs: Identifier) = apply {
+        featureIDs.forEach {
+            this.root.getAsJsonArray("features")[step.ordinal].asJsonArray.add(it.toString())
+        }
     }
 
-    fun addStructure(structureID: String): BiomeBuilder {
+    fun addStructure(structureID: String) = apply {
         this.root.getAsJsonArray("starts").add(structureID)
-        return this
     }
 
     class SpawnDensityBuilder : TypedJsonBuilder<JsonObject>(JsonObject(), { j: JsonObject -> j }) {
